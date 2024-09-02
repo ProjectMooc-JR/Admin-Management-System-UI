@@ -5,9 +5,10 @@ import Login from "./pages/login/login";
 import Mainlayout from "./components/mainlayout/index";
 import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
+import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
 
-import { theme } from "./theme"
+import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
 
 function App() {
@@ -18,9 +19,39 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Mainlayout />}>
-          <Route path="/dashboard" element={<NeedAuth> <Dashboard /></NeedAuth>} />
-          <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
-          <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
+          <Route
+            path="/dashboard"
+            element={
+              <NeedAuth>
+                {" "}
+                <Dashboard />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <NeedAuth>
+                <User />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/users/adduser/:id?"
+            element={
+              <NeedAuth>
+                <AddUser />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/teachers"
+            element={
+              <NeedAuth>
+                <Teacher />
+              </NeedAuth>
+            }
+          />
         </Route>
       </Routes>
     </ThemeProvider>
