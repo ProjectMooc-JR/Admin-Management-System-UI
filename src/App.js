@@ -6,10 +6,10 @@ import Mainlayout from "./components/mainlayout/index";
 import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
 import AddUser from "./pages/users/adduser";
-
+import CourseCategory from "./pages/courseCategory/index"
 import { theme } from "./theme"
 import NeedAuth from "./components/NeedAuth";
-
+import AddCourseCategory from './pages/courseCategory/addcoursecategory'
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -21,6 +21,8 @@ function App() {
           <Route path="/dashboard" element={<NeedAuth> <Dashboard /></NeedAuth>} />
           <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
           <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
+          <Route path="/courseCategory" element={<NeedAuth><CourseCategory/></NeedAuth>}/>
+          <Route path="/courseCategory/addCategory" element={<NeedAuth><AddCourseCategory/></NeedAuth>}/>
         </Route>
       </Routes>
     </ThemeProvider>
