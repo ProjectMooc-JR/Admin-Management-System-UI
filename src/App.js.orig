@@ -24,6 +24,57 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Mainlayout />}>
+<<<<<<< HEAD
+          <Route
+            path="/dashboard"
+            element={
+              <NeedAuth>
+                {" "}
+                <Dashboard />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <NeedAuth>
+                <User />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/users/adduser/:id?"
+            element={
+              <NeedAuth>
+                <AddUser />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/teachers"
+            element={
+              <NeedAuth>
+                <Teacher />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments"
+            element={
+              <NeedAuth>
+                <Comment />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments/addcomment/:id?"
+            element={
+              <NeedAuth>
+                <AddComment />
+              </NeedAuth>
+            }
+          />
+=======
           <Route path="/dashboard" element={<NeedAuth> <Dashboard /></NeedAuth>} />
           <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
           <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
@@ -34,6 +85,7 @@ function App() {
           <Route path="/courses/:courseId/edit" element={<CourseForm />} /> 
           <Route path="/courses/:courseId" element={<CourseDetails />} /> 
           <Route path="/course-management" element={<CourseManagement />} /> 
+>>>>>>> 20fe45b8d888f7b61478be0da17dffe64975e7f0
         </Route>
       </Routes>
     </ThemeProvider>

@@ -75,8 +75,16 @@ export default function MainSidebar() {
               Users
             </MenuItem>
             <MenuItem component={<Link />} icon={<PeopleOutlinedIcon />} to="/teachers">
+<<<<<<< HEAD
+             Teachers
+           </MenuItem>
+           <MenuItem component={<Link />} icon={<PeopleOutlinedIcon />} to="/comments">
+             Comments
+           </MenuItem>
+=======
               Teachers
             </MenuItem>
+>>>>>>> 20fe45b8d888f7b61478be0da17dffe64975e7f0
             <MenuItem icon={<PeopleOutlinedIcon />}> Line charts </MenuItem>
   
             <MenuItem icon={<PeopleOutlinedIcon />}> Documentation </MenuItem>
