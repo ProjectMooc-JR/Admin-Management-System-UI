@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
 import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
+import Comment from "./pages/comments/index";
+import AddComment from "./pages/comments/addcomment";
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
@@ -49,6 +51,22 @@ function App() {
             element={
               <NeedAuth>
                 <Teacher />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments"
+            element={
+              <NeedAuth>
+                <Comment />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments/addcomment/:id?"
+            element={
+              <NeedAuth>
+                <AddComment />
               </NeedAuth>
             }
           />
