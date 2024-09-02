@@ -25,6 +25,10 @@ export default function Comment() {
         pageSize: e.pageSize,
         }));
     };
+
+    const setPaginationModel=()=>{
+
+    }
     
     const handleUpdate=(row)=>{
         
@@ -145,6 +149,8 @@ export default function Comment() {
             handlePaginationModel={handlePaginationModel}
             handleDeleteDialog={handleDeleteDialog}
             handleEdit={handleEdit}
+            setPaginationModel={setPaginationModel}
+            setRowSelectionModel={setRowSelectionModel}
             />
         </Stack>
         <AlterDialog
