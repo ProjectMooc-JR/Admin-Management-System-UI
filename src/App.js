@@ -25,6 +25,7 @@ function App() {
           <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
           <Route path="/comments" element={<NeedAuth>< Comment/></NeedAuth>} />
           <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
+          <Route path="/comments/addcomment" element={<NeedAuth><AddComment /></NeedAuth>} />
         </Route>
       </Routes>
     </ThemeProvider>
