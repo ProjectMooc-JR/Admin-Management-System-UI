@@ -5,12 +5,19 @@ import Login from "./pages/login/login";
 import Mainlayout from "./components/mainlayout/index";
 import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
+import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
 import Comment from "./pages/comments/index";
 import AddComment from "./pages/comments/addcomment";
+import CourseManagement from './pages/courseManagement/CourseManagement';
+import CourseDetails from './pages/courseManagement/CourseDetails';
+import CourseForm from './pages/courseManagement/CourseForm';
+import CourseCategory from './pages/courseCategory/index';
+import AddCourseCategory from './pages/courseCategory/addcoursecategory';
 
-import { theme } from "./theme"
+import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
+
 
 function App() {
   return (
@@ -23,9 +30,18 @@ function App() {
           <Route path="/dashboard" element={<NeedAuth> <Dashboard /></NeedAuth>} />
           <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
           <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
+          <Route path="/teachers" element={<NeedAuth>< Teacher/></NeedAuth>} />
+          <Route path="/courseCategory" element={<NeedAuth>< CourseCategory/></NeedAuth>} />
+             <Route path="/courseCategory/addCategory" element={<NeedAuth>< AddCourseCategory/></NeedAuth>} />
+     
           <Route path="/comments" element={<NeedAuth>< Comment/></NeedAuth>} />
           <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
           <Route path="/comments/addcomment" element={<NeedAuth><AddComment /></NeedAuth>} />
+          {/* <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> */}
+          <Route path="/courses/new" element={<CourseForm />} />
+          <Route path="/courses/:courseId/edit" element={<CourseForm />} /> 
+          <Route path="/courses/:courseId" element={<CourseDetails />} /> 
+          <Route path="/course-management" element={<CourseManagement />} /> 
         </Route>
       </Routes>
     </ThemeProvider>
