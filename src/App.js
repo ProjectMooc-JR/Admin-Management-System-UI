@@ -27,6 +27,7 @@ function App() {
           <Route path="/dashboard" element={<NeedAuth> <Dashboard /></NeedAuth>} />
           <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
           <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
+          <Route path="/teachers" element={<NeedAuth>< Teacher/></NeedAuth>} />
           <Route path="/comments" element={<NeedAuth>< Comment/></NeedAuth>} />
           <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
           {/* <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> */}
