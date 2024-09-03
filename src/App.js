@@ -12,9 +12,12 @@ import AddComment from "./pages/comments/addcomment";
 import CourseManagement from './pages/courseManagement/CourseManagement';
 import CourseDetails from './pages/courseManagement/CourseDetails';
 import CourseForm from './pages/courseManagement/CourseForm';
+import CourseCategory from './pages/courseCategory/index';
+import AddCourseCategory from './pages/courseCategory/addcoursecategory';
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
+
 
 function App() {
   return (
@@ -28,6 +31,9 @@ function App() {
           <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
           <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
           <Route path="/teachers" element={<NeedAuth>< Teacher/></NeedAuth>} />
+          <Route path="/courseCategory" element={<NeedAuth>< CourseCategory/></NeedAuth>} />
+             <Route path="/courseCategory/addCategory" element={<NeedAuth>< AddCourseCategory/></NeedAuth>} />
+     
           <Route path="/comments" element={<NeedAuth>< Comment/></NeedAuth>} />
           <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
           {/* <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> */}
