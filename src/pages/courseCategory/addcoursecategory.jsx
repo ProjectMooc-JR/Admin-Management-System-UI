@@ -170,7 +170,11 @@ const AddCourseCategory = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <MinHeightTextarea fullWidth />
+            <TextField fullWidth required type='text' label="Notes" multiline
+                name='Notes' onChange={formik.handleChange}
+                value={formik.values.Address} id="standard-required-99"
+                defaultValue="" />
+         
             </Grid>
             <Grid item xs={10}>
               <Box display="flex" gap={2}>
