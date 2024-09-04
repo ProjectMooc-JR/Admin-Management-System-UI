@@ -66,7 +66,7 @@ export default function CourseSchedule() {
   useEffect(() => {
     let getCourseschedule = async () => {
       let result = await getRequest(
-        `/users/${pageSearch.page}/${pageSearch.pageSize}`
+        `/courseschedule/${pageSearch.page}/${pageSearch.pageSize}`
       );
       if (result.status == 1) {
         setPageData(result.data);
@@ -84,36 +84,33 @@ export default function CourseSchedule() {
     navigate("/users/adduser");
   }
   const [alertMessage, setAlartMessage] = useState("");
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
-  function handledelete() {
-    if (rowSelectionModel.length == 0) {
-      setAlartMessage("Please select items");
-      setOpen(true);
-      return;
-    }
-    setAlartMessage("Are you sure to delete these items?");
-    setOpen(true);
-  }
-
-  const handleWinClose = async (data) => {
-    console.log("handleWinClose", data);
-    setOpen(false);
-    if (!data.isOk || rowSelectionModel.length == 0) {
-      return;
-    }
-
-    let ids = rowSelectionModel.join(",");
-    let result = await deleteRequest(`/users/${ids}`);
-    if (result.status == 1) {
-      toast.success("delete success!");
-    } else {
-      toast.success("delete fail!");
-    }
-
-    setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+  const handledelete = () => {
+    //   if (rowSelectionModel.length == 0) {
+    //     setAlartMessage("Please select items");
+    //     setOpen(true);
+    //     return;
+    //   }
+    //   setAlartMessage("Are you sure to delete these items?");
+    //   setOpen(true);
   };
 
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  const handleWinClose = async (data) => {
+    //   console.log("handleWinClose", data);
+    //   setOpen(false);
+    //   if (!data.isOk || rowSelectionModel.length == 0) {
+    //     return;
+    //   }
+    //   let ids = rowSelectionModel.join(",");
+    //   let result = await deleteRequest(`/users/${ids}`);
+    //   if (result.status == 1) {
+    //     toast.success("delete success!");
+    //   } else {
+    //     toast.success("delete fail!");
+    //   }
+    //   setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+  };
 
   return (
     <>
