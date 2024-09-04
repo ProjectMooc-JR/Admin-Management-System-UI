@@ -18,33 +18,30 @@ import Header from "../../components/Header";
 export default function AddComment () {
     const formik = useFormik({
       initialValues: {
-        CourseID: 0,
-        CommentContent: "",
+        CourseID: 2,
+        CommentContent: "This is sample comment",
         CommentTime: "",
-        UserID: 0,
+        UserID: 3,
       },
       validationSchema: Yup.object({
         CourseID: Yup.number()
           .required("Required"),
         CommentContent: Yup.string()
           .max(100, "Must be 30 characters or less")
-          .required("Required"),
-        CommentTime: Yup.string()
-          .min(6, "Must be 6 characters or more")
-          .max(100, "Must be 30 characters or less")
-          .required("Required"),   
+          .required("Required"),  
         UserID: Yup.number()
           .required("Required"),   
       }),
       onSubmit: async (values) => {
         let result = await postRequest("/comments", {
+            UserID: values.UserID,
             CommentContent: values.CommentContent,
             CommentTime: values.CommentTime,
             CourseID: values.CourseID,
-            UserID: values.UserID,
         });
   
         if (result.status == 1) {
+          console.log(result.status);
           toast.success("add success!");
           formik.resetForm();
           //navigate("/", { replace: true });
@@ -55,7 +52,7 @@ export default function AddComment () {
     });
     return (
       <Box m="20px">
-        <Header title="CREATE Comment" subtitle="Create a New Comment" url="/comments" urltitle={"CommentList"} />
+        <Header title="CREATE COMMENT" subtitle="Create a New Comment" url="/comments" urltitle={"CommentList"} />
         <form onSubmit={formik.handleSubmit}>
           <Box
             display="grid"
@@ -70,9 +67,9 @@ export default function AddComment () {
               name="UserID"
               autoComplete="4"
               onChange={formik.handleChange}
-              value={formik.values.CourseID}
-              error={formik.touched.CourseID && Boolean(formik.errors.CourseID)}
-              helperText={formik.touched.CourseID && formik.errors.CourseID}
+              value={formik.values.UserID}
+              error={formik.touched.UserID && Boolean(formik.errors.UserID)}
+              helperText={formik.touched.UserID && formik.errors.UserID}
               autoFocus
               sx={{ gridColumn: "span 4" }}
             />
@@ -83,9 +80,9 @@ export default function AddComment () {
               label="Comment Content"
               name="CommentContent"
               onChange={formik.handleChange}
-              value={formik.values.password}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
+              value={formik.values.CommentContent}
+              error={formik.touched.CommentContent && Boolean(formik.errors.CommentContent)}
+              helperText={formik.touched.CommentContent && formik.errors.CommentContent}
               autoComplete="This is a sample comment"
               autoFocus
               sx={{ gridColumn: "span 4" }}
@@ -93,19 +90,19 @@ export default function AddComment () {
             <TextField
               fullWidth
               variant="filled"
-              type="text"
+              type="datetime"
               label="Comment Time"
               name="CommentTime"
               onChange={formik.handleChange}
-              value={formik.values.confirmpassword}
+              value={formik.values.CommentTime}
               error={
-                formik.touched.confirmpassword &&
-                Boolean(formik.errors.confirmpassword)
+                formik.touched.CommentTime &&
+                Boolean(formik.errors.CommentTime)
               }
               helperText={
-                formik.touched.confirmpassword && formik.errors.confirmpassword
+                formik.touched.CommentTime && formik.errors.CommentTime
               }
-              autoComplete="current-password"
+              autoComplete="Comment Time"
               autoFocus
               sx={{ gridColumn: "span 4" }}
             />
@@ -115,60 +112,14 @@ export default function AddComment () {
               type="text"
               label="Course ID"
               name="CourseID"
-              autoComplete="3"
+              autoComplete="5"
               onChange={formik.handleChange}
-              value={formik.values.email}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
+              value={formik.values.CourseID}
+              error={formik.touched.CourseID && Boolean(formik.errors.CourseID)}
+              helperText={formik.touched.CourseID && formik.errors.CourseID}
               autoFocus
               sx={{ gridColumn: "span 4" }}
             />
-           
-            {/* <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="Gender"
-              name="gender"
-              autoComplete="text"
-              onChange={formik.handleChange}
-              value={formik.values.gender}
-              error={formik.touched.gender && Boolean(formik.errors.gender)}
-              helperText={formik.touched.gender && formik.errors.gender}
-              autoFocus
-              sx={{ gridColumn: "span 3" }}
-            /> */}
-  
-            {/* <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
-              <InputLabel id="demo-simple-select-label">gender</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                name="gender"
-                value={formik.values.gender}
-                label="gender"
-                error={formik.touched.gender && Boolean(formik.errors.gender)}
-                helperText={formik.touched.gender && formik.errors.gender}
-                onChange={formik.handleChange}
-              >
-                <MenuItem value={0}>Female</MenuItem>
-                <MenuItem value={1}>Male</MenuItem>
-              </Select>
-            </FormControl> */}
-            {/* <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="Age"
-              name="age"
-              autoComplete="text"
-              onChange={formik.handleChange}
-              value={formik.values.age}
-              error={formik.touched.age && Boolean(formik.errors.age)}
-              helperText={formik.touched.age && formik.errors.age}
-              autoFocus
-              sx={{ gridColumn: "span 4" }}
-            /> */}
           </Box>
           <Box display="flex" justifyContent="end" mt="20px">
             <Stack direction="row" spacing={2}>

@@ -36,6 +36,7 @@ function App() {
      
           <Route path="/comments" element={<NeedAuth>< Comment/></NeedAuth>} />
           <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
+          <Route path="/comments/addcomment" element={<NeedAuth><AddComment /></NeedAuth>} />
           {/* <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> */}
           <Route path="/courses/new" element={<CourseForm />} />
           <Route path="/courses/:courseId/edit" element={<CourseForm />} /> 
