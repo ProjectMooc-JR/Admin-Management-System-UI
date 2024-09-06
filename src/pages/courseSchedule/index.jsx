@@ -7,6 +7,7 @@ import CourseScheduleList from "./courseschedulelist";
 import { useEffect } from "react";
 import getRequest from "../../request/getRequest";
 import deleteRequest from "../../request/delRequest";
+import AddCourseSchedule from "./addcourseschedule";
 
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -30,19 +31,19 @@ export default function CourseSchedule() {
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "courseid",
-      headerName: "CourseID",
+      field: "CourseID",
+      headerName: "Course ID",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "startDate",
-      headerName: "StartDate",
+      field: "StartDate",
+      headerName: "Start Date",
       flex: 1,
     },
     {
-      field: "endDate",
-      headerName: "EndDate",
+      field: "EndDate",
+      headerName: "End Date",
       flex: 1,
     },
     {
@@ -59,6 +60,12 @@ export default function CourseSchedule() {
         );
       },
     },
+  ];
+
+  const rows = [
+    { id: 1, CourseID: 1, StartDate: "010224", EndDate: "020224" },
+    { id: 2, CourseID: 2, StartDate: "020224", EndDate: "020224" },
+    { id: 3, CourseID: 3, StartDate: "030224", EndDate: "020224" },
   ];
   //这里使用user做测试。
   const [pageData, setPageData] = useState({ items: [], total: 0 });
@@ -77,11 +84,12 @@ export default function CourseSchedule() {
     };
     getCourseschedule();
   }, [pageSearch]);
+
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
   function handleAddUser() {
-    navigate("/users/adduser");
+    navigate("/courseSchedule/addcourseschedule");
   }
   const [alertMessage, setAlartMessage] = useState("");
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
@@ -94,6 +102,10 @@ export default function CourseSchedule() {
     //   }
     //   setAlartMessage("Are you sure to delete these items?");
     //   setOpen(true);
+  };
+
+  const handleEdit = (row) => {
+    navigate(`/comments/addcomment/${row.id}`);
   };
 
   const handleWinClose = async (data) => {
@@ -151,7 +163,7 @@ export default function CourseSchedule() {
           <Box sx={{ mb: "15px" }}>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <Button variant="contained" onClick={handleAddUser}>
-                Add User
+                Add Course Schedule
               </Button>
               <Button
                 color="secondary"
@@ -163,8 +175,10 @@ export default function CourseSchedule() {
             </Stack>
           </Box>
           <CourseScheduleList
+            rows={pageData.items}
             columns={columns}
             pageData={pageData}
+            //handleEdit={handleEdit}
             setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
           ></CourseScheduleList>

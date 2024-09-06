@@ -5,8 +5,11 @@ import Login from "./pages/login/login";
 import Mainlayout from "./components/mainlayout/index";
 import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
+import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
-import CouresSchedule from "./pages/courseSchedule/index";
+import CourseSchedule from "./pages/courseSchedule/index";
+
+import AddCourseSchedule from "./pages/courseSchedule/addcourseschedule";
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
@@ -48,7 +51,15 @@ function App() {
             path="/courseSchedule"
             element={
               <NeedAuth>
-                <CouresSchedule />
+                <CourseSchedule />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/courseSchedule/addcourseschedule/:id?"
+            element={
+              <NeedAuth>
+                <AddCourseSchedule />
               </NeedAuth>
             }
           />

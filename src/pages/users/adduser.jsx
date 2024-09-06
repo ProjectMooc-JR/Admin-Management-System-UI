@@ -138,6 +138,7 @@ export default function AddUser() {
             label="Address"
             name="address"
             autoComplete="text"
+            multiline
             onChange={formik.handleChange}
             value={formik.values.address}
             error={formik.touched.address && Boolean(formik.errors.address)}
