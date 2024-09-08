@@ -19,25 +19,24 @@ export default function AddCourseSchedule() {
   const formik = useFormik({
     initialValues: {
       CourseID: 2,
-      CommentContent: "This is sample comment",
       StartTime: "",
       EndTime: "",
       CoursescheduleID: 3,
     },
     validationSchema: Yup.object({
       CourseID: Yup.number().required("Required"),
-      CommentContent: Yup.string()
-        .max(100, "Must be 30 characters or less")
-        .required("Required"),
+      StartTime: Yup.number().required("Required"),
       CoursescheduleID: Yup.number().required("Required"),
     }),
     onSubmit: async (values) => {
       let result = await postRequest("/courseSchedule", {
         CoursescheduleID: values.CoursescheduleID,
-        CommentContent: values.CommentContent,
         StartTime: values.StartTime,
+        EndTime: values.EndTime,
         CourseID: values.CourseID,
       });
+
+      console.log(result);
 
       if (result.status == 1) {
         console.log(result.status);
@@ -54,7 +53,7 @@ export default function AddCourseSchedule() {
       <Header
         title="CREATE CourseSchedule"
         subtitle="Create a New Course Schedule"
-        url="/courseschedule"
+        url="/courseSchedule"
         urltitle={"CourseScheduleList"}
       />
       <form onSubmit={formik.handleSubmit}>
@@ -82,20 +81,7 @@ export default function AddCourseSchedule() {
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />
-          <TextField
-            fullWidth
-            variant="filled"
-            type="datetime"
-            label="Start Time"
-            name="StartTime"
-            onChange={formik.handleChange}
-            value={formik.values.EndTime}
-            error={formik.touched.EndTime && Boolean(formik.errors.EndTime)}
-            helperText={formik.touched.EndTime && formik.errors.EndTime}
-            autoComplete="End Time"
-            autoFocus
-            sx={{ gridColumn: "span 4" }}
-          />
+
           <TextField
             fullWidth
             variant="filled"
@@ -107,6 +93,20 @@ export default function AddCourseSchedule() {
             error={formik.touched.StartTime && Boolean(formik.errors.StartTime)}
             helperText={formik.touched.StartTime && formik.errors.StartTime}
             autoComplete="Start Time"
+            autoFocus
+            sx={{ gridColumn: "span 4" }}
+          />
+          <TextField
+            fullWidth
+            variant="filled"
+            type="datetime"
+            label="End Time"
+            name="EndTime"
+            onChange={formik.handleChange}
+            value={formik.values.EndTime}
+            error={formik.touched.EndTime && Boolean(formik.errors.EndTime)}
+            helperText={formik.touched.EndTime && formik.errors.EndTime}
+            autoComplete="End Time"
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />
@@ -128,7 +128,7 @@ export default function AddCourseSchedule() {
         <Box display="flex" justifyContent="end" mt="20px">
           <Stack direction="row" spacing={2}>
             <Button type="submit" color="secondary" variant="contained">
-              Create New Comment
+              Create New Course Schedule
             </Button>
             <Button type="cancle" color="secondary" variant="contained">
               Cancel

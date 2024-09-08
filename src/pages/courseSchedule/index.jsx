@@ -67,13 +67,13 @@ export default function CourseSchedule() {
     { id: 2, CourseID: 2, StartDate: "020224", EndDate: "020224" },
     { id: 3, CourseID: 3, StartDate: "030224", EndDate: "020224" },
   ];
-  //这里使用user做测试。
+  //根据当前页面和分页大小来确定请求的分页参数。
   const [pageData, setPageData] = useState({ items: [], total: 0 });
 
   useEffect(() => {
     let getCourseschedule = async () => {
       let result = await getRequest(
-        `/courseschedule/${pageSearch.page}/${pageSearch.pageSize}`
+        `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
       );
       if (result.status == 1) {
         setPageData(result.data);
@@ -91,7 +91,7 @@ export default function CourseSchedule() {
   function handleAddUser() {
     navigate("/courseSchedule/addcourseschedule");
   }
-  const [alertMessage, setAlartMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   const handledelete = () => {
@@ -105,7 +105,7 @@ export default function CourseSchedule() {
   };
 
   const handleEdit = (row) => {
-    navigate(`/comments/addcomment/${row.id}`);
+    navigate(`/courseSchedule/addcourseschedule/${row.id}`);
   };
 
   const handleWinClose = async (data) => {
@@ -175,7 +175,8 @@ export default function CourseSchedule() {
             </Stack>
           </Box>
           <CourseScheduleList
-            rows={pageData.items}
+            // rows={pageData.items}
+            rows={rows}
             columns={columns}
             pageData={pageData}
             //handleEdit={handleEdit}
