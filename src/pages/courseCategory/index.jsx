@@ -157,8 +157,8 @@ const CourseCategory = () => {
     setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
 
   }
-  function handleEdit() {
-    console.log("edit");
+  function handleEdit(id) {
+    navigate(`/courseCategory/updateCategory/${id}`);
 
   }
   const [alertMessage, setAlartMessage] = useState("");
