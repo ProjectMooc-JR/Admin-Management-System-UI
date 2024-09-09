@@ -7,9 +7,6 @@ import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
 import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
-import CourseSchedule from "./pages/courseSchedule/index";
-
-import AddCourseSchedule from "./pages/courseSchedule/addcourseschedule";
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
@@ -44,22 +41,6 @@ function App() {
             element={
               <NeedAuth>
                 <AddUser />
-              </NeedAuth>
-            }
-          />
-          <Route
-            path="/courseSchedule"
-            element={
-              <NeedAuth>
-                <CourseSchedule />
-              </NeedAuth>
-            }
-          />
-          <Route
-            path="/courseSchedule/addcourseschedule/:id?"
-            element={
-              <NeedAuth>
-                <AddCourseSchedule />
               </NeedAuth>
             }
           />

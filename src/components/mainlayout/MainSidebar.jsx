@@ -6,7 +6,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MenuOpen from "@mui/icons-material/MenuOpen";
 import colors from "../../theme";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import CategoryIcon from "@mui/icons-material/Category";
+
 import { Link } from "react-router-dom";
 export default function MainSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -78,14 +78,6 @@ export default function MainSidebar() {
               to="/teachers"
             >
               Teachers
-            </MenuItem>
-            <MenuItem
-              component={<Link />}
-              icon={<PeopleOutlinedIcon />}
-              to="/courseSchedule"
-            >
-              {" "}
-              CourseSchedule{" "}
             </MenuItem>
             <MenuItem icon={<PeopleOutlinedIcon />}> Line charts </MenuItem>
           </SubMenu>
