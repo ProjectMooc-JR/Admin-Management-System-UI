@@ -5,15 +5,21 @@ import React from "react";
 const CategoryList = (props) => {
   return (
     <DataGrid
-      getRowId={(row) => row.ID}
-      rows={props.rows}
+      paginationMode="server"
+      getRowId={(row) => row.id}
+      pageSizeOptions={[5, 10, 100, 150, 300]}
+      rowCount={props.pageData.total}
+      rows={props.pageData.items}
       columns={props.columns}
       initialState={{
         pagination: {
           paginationModel: { page: 0, pageSize: 10 },
         },
       }}
-      pageSizeOptions={[5, 10]}
+      onPaginationModelChange={props.setPaginationModel}
+      onRowSelectionModelChange={(newRowSelectionModel) => {
+        props.setRowSelectionModel(newRowSelectionModel);
+      }}
       checkboxSelection
       sx={{
         "& .MuiDataGrid-cell:focus": {

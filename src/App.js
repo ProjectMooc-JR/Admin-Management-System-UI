@@ -7,12 +7,18 @@ import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
 import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
-import CourseSchedule from "./pages/courseSchedule/index";
-import AddCourseSchedule from "./pages/courseSchedule/addcourseschedule";
+import Comment from "./pages/comments/index";
+import AddComment from "./pages/comments/addcomment";
+import CourseManagement from './pages/courseManagement/CourseManagement';
+import CourseDetails from './pages/courseManagement/CourseDetails';
+import CourseForm from './pages/courseManagement/CourseForm';
+import CourseCategory from './pages/courseCategory/index';
+import AddCourseCategory from './pages/courseCategory/addcoursecategory';
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
-import CourseScheduleList from "./pages/courseSchedule/courseschedulelist";
+import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
+
 
 function App() {
   return (
@@ -22,47 +28,21 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Mainlayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <NeedAuth>
-                {" "}
-                <Dashboard />
-              </NeedAuth>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <NeedAuth>
-                <User />
-              </NeedAuth>
-            }
-          />
-          <Route
-            path="/users/adduser/:id?"
-            element={
-              <NeedAuth>
-                <AddUser />
-              </NeedAuth>
-            }
-          />
-          <Route
-            path="/courseSchedule"
-            element={
-              <NeedAuth>
-                <CourseSchedule />
-              </NeedAuth>
-            }
-          />
-          <Route
-            path="/courseSchedule/addcourseschedule/:id?"
-            element={
-              <NeedAuth>
-                <AddCourseSchedule />
-              </NeedAuth>
-            }
-          />
+          <Route path="/dashboard" element={<NeedAuth> <Dashboard /></NeedAuth>} />
+          <Route path="/users" element={<NeedAuth><User /></NeedAuth>} />
+          <Route path="/users/adduser/:id?" element={<NeedAuth><AddUser /></NeedAuth>} />
+          <Route path="/teachers" element={<NeedAuth>< Teacher /></NeedAuth>} />
+          <Route path="/courseCategory" element={<NeedAuth>< CourseCategory /></NeedAuth>} />
+          <Route path="/courseCategory/addCategory" element={<NeedAuth>< AddCourseCategory /></NeedAuth>} />
+          <Route path="/courseCategory/updateCategory/:id" element={<NeedAuth>< UpdateCourseCategory /></NeedAuth>} />
+          <Route path="/comments" element={<NeedAuth>< Comment /></NeedAuth>} />
+          <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
+          <Route path="/comments/addcomment" element={<NeedAuth><AddComment /></NeedAuth>} />
+          {/* <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> */}
+          <Route path="/courses/new" element={<CourseForm />} />
+          <Route path="/courses/:courseId/edit" element={<CourseForm />} />
+          <Route path="/courses/:courseId" element={<CourseDetails />} />
+          <Route path="/course-management" element={<CourseManagement />} />
         </Route>
       </Routes>
     </ThemeProvider>
