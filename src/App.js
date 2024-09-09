@@ -14,6 +14,7 @@ import CourseDetails from './pages/courseManagement/CourseDetails';
 import CourseForm from './pages/courseManagement/CourseForm';
 import CourseCategory from './pages/courseCategory/index';
 import AddCourseCategory from './pages/courseCategory/addcoursecategory';
+import CreateCourse from './pages/courseManagement/CreateCourse'; 
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
@@ -38,11 +39,12 @@ function App() {
           <Route path="/comments" element={<NeedAuth>< Comment /></NeedAuth>} />
           <Route path="/comments/addcomment/:id?" element={<NeedAuth><AddComment /></NeedAuth>} />
           <Route path="/comments/addcomment" element={<NeedAuth><AddComment /></NeedAuth>} />
-          {/* <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> */}
+          <Route path="/courses/create" element={<CreateCourse />} />
+          <Route path="/course-management" element={<NeedAuth><CourseManagement /></NeedAuth>} /> 
           <Route path="/courses/new" element={<CourseForm />} />
-          <Route path="/courses/:courseId/edit" element={<CourseForm />} />
-          <Route path="/courses/:courseId" element={<CourseDetails />} />
-          <Route path="/course-management" element={<CourseManagement />} />
+          <Route path="/courses/:courseId/edit" element={<CourseForm />} /> 
+          <Route path="/courses/:courseId" element={<CourseDetails />} /> 
+          <Route path="/course-management" element={<CourseManagement />} />  
         </Route>
       </Routes>
     </ThemeProvider>
