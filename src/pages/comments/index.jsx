@@ -26,9 +26,9 @@ export default function Comment() {
         }));
     };
 
-    const setPaginationModel=()=>{
+    // const setPaginationModel=()=>{
 
-    }
+    // }
     
     const handleUpdate=(row)=>{
         
@@ -36,27 +36,43 @@ export default function Comment() {
     
     const columns = [
         { field: "id", headerName: "ID" },
+
         {
-        field: "CourseID",
-        headerName: "Course ID",
-        flex: 1,
-        
+            field: "CourseName",
+            headerName: "Course Name",
+            flex: 1,
         },
+
         {
-        field: "CommentContent",
-        headerName: "Comment Content",
-        flex: 1,
+            field:"username",
+            headerName:"User Name",
+            flex:1,
         },
+
         {
-        field: "CommentTime",
-        headerName: "Comment Time",
-        flex: 1,
+            field: "CommentContent",
+            headerName: "Comment Content",
+            flex: 1,
         },
+
         {
-        field:"UserID",
-        headerName:"User ID",
-        flex:1,
+            field: "CommentTime",
+            headerName: "Comment Time",
+            flex: 1,
         },
+
+        {
+            field: "operation",
+            headerName: "operation",
+            flex: 1,
+            renderCell: (row) => {
+              return (
+                <Box>
+                 <Button variant="text" onClick={handleUpdate(row)} >Update</Button>
+                </Box>
+              );
+            },
+          }
     ];
     
     const [open, setOpen] = useState(false);
@@ -79,8 +95,13 @@ export default function Comment() {
     //     toast.error("Error while deleting comment");
     //     }
     // };
+    const handleAddComment = ()=>{
+        navigate("/comments/addcomment");
+    }
 
     const [alertMessage, setAlertMessage] = useState("");
+
+
    
     function handleDelete() {
         if (rowSelectionModel.length == 0) {
@@ -119,47 +140,104 @@ export default function Comment() {
             let result = await getRequest(`/comments/${pageSearch.page}/${pageSearch.pageSize}`);
             if(result.status == 1){
                 setData(result.data);
-                
             }else{
                 setData({items:[],total:0});
-                
             }
         }
         getComment();
     }, [pageSearch]);
     
+    const handleWinClose = async (data) => {
+        console.log("handleWinClose", data);
+        setOpen(false);
+        if (!data.isOk || rowSelectionModel.length == 0) {
+          return;
+        }
+      
+        let ids = rowSelectionModel.join(",");
+        let result = await deleteRequest(`/comments/${ids}`);
+        if (result.status == 1) {
+          toast.success("delete success!");
+        } else {
+          toast.success("delete fail!");
+        }
+    
+        setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+      };
     return (
-        <Box>
-        <Header title="Comments" />
-        <Stack spacing={2} sx={{ padding: "0 20px" }}>
-            <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/comments/addcomment")}
-            >
-            Add Comment
-            </Button>
-            <Divider />
-            <CommentList
-            columns={columns}
-            data={data}
-            
-            loading={loading}
-            error={error}
-            handlePaginationModel={handlePaginationModel}
-            handleDeleteDialog={handleDeleteDialog}
-            handleEdit={handleEdit}
-            setPaginationModel={setPaginationModel}
-            setRowSelectionModel={setRowSelectionModel}
+        <>
+            <Box m="20px">
+                <Header title="Comments" />
+                <Box
+                m="40px 0 0 0"
+                height="75vh"
+                sx={{
+                    "& .MuiDataGrid-root": {
+                    border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                    borderBottom: "none",
+                    },
+                    "& .name-column--cell": {
+                    color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                    backgroundColor: colors.blueAccent[700],
+                    borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                    backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                    borderTop: "none",
+                    backgroundColor: colors.blueAccent[700],
+                    },
+                    "& .MuiCheckbox-root": {
+                    color: `${colors.greenAccent[200]} !important`,
+                    },
+                }}
+                >
+                    <Box sx={{ mb: "15px" }}>
+                        <Stack direction = "row" spacing={2} justifyContent="flex-end">
+                            <Button
+                            variant="contained"
+                            color="primary"
+                            //onClick={() => navigate("/comments/addcomment")}
+                            onClick = {handleAddComment}
+                            >
+                            Add Comment
+                            </Button>
+                            <Button color="secondary"
+                            variant="contained"
+                            //onClick={handledelete}
+                            >
+                                Delete Comment
+                            </Button>
+                        </Stack>
+                        <Divider />
+                    </Box>
+                    <CommentList
+                    columns={columns}
+                    data={data}
+                    
+                    loading={loading}
+                    error={error}
+                    handlePaginationModel={handlePaginationModel}
+                    handleDeleteDialog={handleDeleteDialog}
+                    handleEdit={handleEdit}
+                    // setPaginationModel={setPaginationModel}
+                    setRowSelectionModel={setRowSelectionModel}
+                    />
+                </Box>
+            </Box>
+            <AlterDialog
+                open={open}
+                setOpen={setOpen}
+                title="Delete Comment"
+                content="Are you sure you want to delete this comment?"
+                handleOk={handleWinClose}
             />
-        </Stack>
-        <AlterDialog
-            open={open}
-            setOpen={setOpen}
-            title="Delete Comment"
-            content="Are you sure you want to delete this comment?"
-            handleOk={handleDelete}
-        />
-        </Box>
+            
+        </>
     );
 }    

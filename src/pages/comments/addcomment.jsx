@@ -18,26 +18,30 @@ import Header from "../../components/Header";
 export default function AddComment () {
     const formik = useFormik({
       initialValues: {
-        CourseID: 2,
+        CourseName: "JavaWeb",
+        username: "admin",
         CommentContent: "This is sample comment",
         CommentTime: "",
-        UserID: 3,
       },
       validationSchema: Yup.object({
-        CourseID: Yup.number()
+        CourseName: Yup.string()
           .required("Required"),
+        
+        username: Yup.string()
+          .min(3, "Must be 3 characters or more")
+          .max(100, "Must be 100 characters or more")
+          .required("Required"), 
         CommentContent: Yup.string()
-          .max(100, "Must be 30 characters or less")
+          .max(100, "Must be 100 characters or less")
           .required("Required"),  
-        UserID: Yup.number()
-          .required("Required"),   
+          
       }),
       onSubmit: async (values) => {
         let result = await postRequest("/comments", {
-            UserID: values.UserID,
+            CourseName: values.CourseName,
+            username:values.username,
             CommentContent: values.CommentContent,
             CommentTime: values.CommentTime,
-            CourseID: values.CourseID,
         });
   
         if (result.status == 1) {
@@ -63,13 +67,27 @@ export default function AddComment () {
               fullWidth
               variant="filled"
               type="text"
-              label="User ID"
-              name="UserID"
+              label="Course Name"
+              name="CourseName"
+              autoComplete="CourseName"
+              onChange={formik.handleChange}
+              value={formik.values.CourseName}
+              error={formik.touched.CourseName && Boolean(formik.errors.CourseName)}
+              helperText={formik.touched.CourseName && formik.errors.CourseName}
+              autoFocus
+              sx={{ gridColumn: "span 4" }}
+            />
+            <TextField
+              fullWidth
+              variant="filled"
+              type="text"
+              label="User Name"
+              name="username"
               autoComplete="4"
               onChange={formik.handleChange}
-              value={formik.values.UserID}
-              error={formik.touched.UserID && Boolean(formik.errors.UserID)}
-              helperText={formik.touched.UserID && formik.errors.UserID}
+              value={formik.values.username}
+              error={formik.touched.username && Boolean(formik.errors.username)}
+              helperText={formik.touched.username && formik.errors.username}
               autoFocus
               sx={{ gridColumn: "span 4" }}
             />
@@ -79,6 +97,7 @@ export default function AddComment () {
               type="text"
               label="Comment Content"
               name="CommentContent"
+              multiline
               onChange={formik.handleChange}
               value={formik.values.CommentContent}
               error={formik.touched.CommentContent && Boolean(formik.errors.CommentContent)}
@@ -106,20 +125,7 @@ export default function AddComment () {
               autoFocus
               sx={{ gridColumn: "span 4" }}
             />
-            <TextField
-              fullWidth
-              variant="filled"
-              type="text"
-              label="Course ID"
-              name="CourseID"
-              autoComplete="5"
-              onChange={formik.handleChange}
-              value={formik.values.CourseID}
-              error={formik.touched.CourseID && Boolean(formik.errors.CourseID)}
-              helperText={formik.touched.CourseID && formik.errors.CourseID}
-              autoFocus
-              sx={{ gridColumn: "span 4" }}
-            />
+            
           </Box>
           <Box display="flex" justifyContent="end" mt="20px">
             <Stack direction="row" spacing={2}>
