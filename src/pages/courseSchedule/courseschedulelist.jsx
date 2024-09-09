@@ -6,7 +6,6 @@ export default function CourseScheduleList(props) {
   console.log(props.rows);
   return (
     <>
-      //diaoyong hou d端API，
       <DataGrid
         //getRowId={(row) => row.ID}
         getRowId={(row) => row.id}
