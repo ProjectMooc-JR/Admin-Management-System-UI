@@ -6,7 +6,7 @@ export default function NeedAuth(props) {
 
     const auth = useSelector(state => state.auth);
     const location = useLocation();
-    debugger
+    
     return (
         auth.IsAuth ? props.children : <Navigate to={'/login'} replace state={{ preLocation: location }} />
     )

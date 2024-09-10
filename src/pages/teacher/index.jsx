@@ -49,6 +49,11 @@ export default function Teacher() {
     {
       field: "HireDate",
       headerName: "Hire Date",
+      type: "dateTime",
+      valueGetter: (value) => {
+        let returnValue = value.row.HireDate && new Date(value.row.HireDate);
+        return returnValue;
+      },
       flex: 1,
     },
     {
@@ -58,8 +63,14 @@ export default function Teacher() {
     },
     {
       field: "HireStatus",
-      headerName: "Hire Status (1/0)",
+      headerName: "Hire Status",
       flex: 1,
+      valueGetter: (value) => {
+        if (value.row.HireStatus == 1) {
+          return "Yes";
+        }
+        return "No";
+      },
     },
     {
       field: "operation",
