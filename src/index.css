@@ -18,3 +18,10 @@ body,
 div{
   display: block;
 }
+
+
+.add-teacher-form{
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
