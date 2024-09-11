@@ -44,7 +44,6 @@ function App() {
           <Route path="/courses/new" element={<CourseForm />} />
           <Route path="/courses/:courseId/edit" element={<CourseForm />} /> 
           <Route path="/courses/:courseId" element={<CourseDetails />} /> 
-          <Route path="/course-management" element={<CourseManagement />} />  
         </Route>
       </Routes>
     </ThemeProvider>

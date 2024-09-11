@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 
 export default function User() {
   const [pageSearch, setpageSearch] = useState({
-    pageSize: 25,
+    pageSize: 5,
     page: 1,
   });
 

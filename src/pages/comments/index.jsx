@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 export default function Comment() {
     const [pageSearch, setpageSearch] = useState({
-        pageSize: 25,
+        pageSize: 10,
         page: 1,
     });
     
@@ -55,11 +55,22 @@ export default function Comment() {
             flex: 1,
         },
 
+        // {
+        //     field: "CommentTime",
+        //     headerName: "Comment Time",
+        //     flex: 1,
+        // },
+
         {
             field: "CommentTime",
             headerName: "Comment Time",
+            type: "dateTime",
+            valueGetter: (value) => {
+              let returnValue = value.row.CommentTime && new Date(value.row.CommentTime);
+              return returnValue;
+            },
             flex: 1,
-        },
+          },
 
         {
             field: "operation",

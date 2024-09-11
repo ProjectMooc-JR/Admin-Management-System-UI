@@ -94,6 +94,20 @@ export default function MainSidebar() {
               {" "}
               CourseSchedule{" "}
             </MenuItem>
+            <MenuItem
+              component={<Link />}
+              icon={<PeopleOutlinedIcon />}
+              to="/comments"
+            >
+              Comments
+            </MenuItem>
+            <MenuItem
+              component={<Link />}
+              icon={<PeopleOutlinedIcon />}
+              to="/course-management"
+            >
+              Course
+            </MenuItem>
             <MenuItem icon={<PeopleOutlinedIcon />}> Line charts </MenuItem>
           </SubMenu>
           <MenuItem icon={<PeopleOutlinedIcon />}> Documentation </MenuItem>

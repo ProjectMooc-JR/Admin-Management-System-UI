@@ -31,9 +31,18 @@ export default function CourseManagement() {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const result = await getRequest(`/courses/${pageSearch.page}/${pageSearch.pageSize}`);
-      if (result.status === 1) {
-        setCourses(result.data);
+     const result = await getRequest(`/courses/${pageSearch.page}/${pageSearch.pageSize}`);
+     // const result = await getRequest('courses/courselist');
+      if (result.status === 200) {
+        const rows = result.data.items.map((course) => ({
+          id: course.ID,
+          courseName: course.CourseName,
+          description: course.Description,
+          category: course.CategoryName,
+          teacher: course.username,
+          publishedAt: course.publishedAt,
+        }));
+        setCourses({ items: rows, total: result.data.length });
       } else {
         setCourses({ items: [], total: 0 });
       }
@@ -67,7 +76,7 @@ export default function CourseManagement() {
   };
 
   const handleAddCourse = () => {
-    navigate("/create-course");  // 这里添加课程的路由
+    navigate("/courses/new");  // 这里添加课程的路由
   };
 
   const columns = [
@@ -79,15 +88,15 @@ export default function CourseManagement() {
     { field: "publishedAt", headerName: "Published At", flex: 1 },
   ];
 
-  // 从 courses 数据中映射 rows
-  const rows = courses.items.map((course) => ({
-    id: course.id,
-    courseName: course.courseName,
-    description: course.description,
-    category: course.categoryId,
-    teacher: course.teacherId,
-    publishedAt: course.publishedAt,
-  }));
+  // // 从 courses 数据中映射 rows
+  // const rows = courses.items.map((course) => ({
+  //   id: course.id,
+  //   courseName: course.courseName,
+  //   description: course.description,
+  //   category: course.CategoryName,
+  //   teacher: course.teacherId,
+  //   publishedAt: course.publishedAt,
+  // }));
 
   return (
     <Box m="20px">
@@ -138,7 +147,8 @@ export default function CourseManagement() {
     }}
     >
     <DataGrid
-        rows={rows}  // 将映射后的rows传递给DataGrid
+        rows={courses.items}  // 将映射后的rows传递给DataGrid
+        total={courses.total}
         columns={columns}
         pageSize={25}
         checkboxSelection
