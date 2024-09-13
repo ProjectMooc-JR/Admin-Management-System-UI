@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 export default function Comment() {
     const [pageSearch, setpageSearch] = useState({
-        pageSize: 10,
+        pageSize: 5,
         page: 1,
     });
     
@@ -122,7 +122,7 @@ export default function Comment() {
         }
         setAlertMessage("Are you sure to delete these items?");
         setOpen(true);
-      }
+    }
     
     const handleEdit = (row) => {
         navigate(`/comments/addcomment/${row.id}`);
@@ -157,7 +157,17 @@ export default function Comment() {
         }
         getComment();
     }, [pageSearch]);
+
     
+    function handledelete() {
+        if (rowSelectionModel.length == 0) {
+          setAlertMessage("Please select items");
+          setOpen(true);
+          return;
+        }
+        setAlertMessage("Are you sure to delete these items?");
+        setOpen(true);
+      }
     const handleWinClose = async (data) => {
         console.log("handleWinClose", data);
         setOpen(false);
@@ -220,7 +230,7 @@ export default function Comment() {
                             </Button>
                             <Button color="secondary"
                             variant="contained"
-                            //onClick={handledelete}
+                            onClick={handledelete}
                             >
                                 Delete Comment
                             </Button>
@@ -229,25 +239,31 @@ export default function Comment() {
                     </Box>
                     <CommentList
                     columns={columns}
-                    data={data}
-                    
+                    data={data}   
                     loading={loading}
-                    error={error}
-                    handlePaginationModel={handlePaginationModel}
+                    error={error}     
                     handleDeleteDialog={handleDeleteDialog}
                     handleEdit={handleEdit}
-                    // setPaginationModel={setPaginationModel}
+                    setPaginationModel={handlePaginationModel}
                     setRowSelectionModel={setRowSelectionModel}
                     />
                 </Box>
             </Box>
             <AlterDialog
+                title="Warning"
+                alertType="warning"
+                open={open}
+                onClose={handleWinClose}
+            >
+                {alertMessage}
+            </AlterDialog>
+            {/* <AlterDialog
                 open={open}
                 setOpen={setOpen}
                 title="Delete Comment"
                 content="Are you sure you want to delete this comment?"
                 handleOk={handleWinClose}
-            />
+            /> */}
             
         </>
     );

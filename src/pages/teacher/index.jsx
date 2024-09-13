@@ -26,17 +26,70 @@ export default function Teacher() {
   // ？？？？？【定义操作teacher update的函数（先留空，之后再写）】
   const handleUpdate = (row) => {};
 
+  //=========================================================================================
+
   // ？？？？？【定义操作add teacher的函数（留空）】
   const navigate = useNavigate();
   function handleAddTeacher() {
     navigate("/teachers/addteacher");
   }
+  //=========================================================================================
+  // 批量删除逻辑：
+  // Step 1：用rowSelectionModel配置多选功能，将选中的teacher的id传进一个空数组；
 
-  // ？？？？？【定义操作delete teacher的函数（留空）】
-  const handleDeleteTeacher = () => {
-    alert('delete')
-  };
+  // Step 2：配置一个alert message状态，初始化是空string；同时配置一个setOpen状态来管理alert message打开/关闭状态；
+
+  // Step 3：配置一个handleDelete函数，用onClick挂在delete button上，点击检测是否有选中用户（没有选中弹出提示，有选中弹出二次确认）;
+
+  // Step 4：在return里导入老师构建的提示框component：alterDialog，提示框提示的文本内容由alertMessage来控制；
+
+  // Step 5：创建调用后端deleteTeacher API的函数，在index中作为props传递给alterDialog这个子组件；
+
+  // **设置多选：原本是空数组，用户多选/反选时，将选中的id加入该数组，或从该数组中移除
+  // **rowSelectionModel是MUI提供的方法，默认会选取colums配置中每行的唯一标识符——id
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
+
+  // **配置一个打开/关闭弹窗组件的状态
+  const [open, setOpen] = useState(false);
+
+  // **配置一个可以在弹窗中显示不同文本信息的状态
+  const [alertMessage, setAlertMessage] = useState("");
+
+  // **定义操作delete teacher的函数
+  const handleDeleteTeacher = () => {
+    if (rowSelectionModel.length === 0) {
+      setAlertMessage("Please select teachers you want to delete.");
+      setOpen(true);
+    } else {
+      setAlertMessage(
+        "Are you sure to remove " +
+          (rowSelectionModel.length === 1 ? "this teacher" : "these teachers") +
+          " from database?"
+      );
+      setOpen(true);
+    }
+  };
+
+  // **定义调用后端deleteTeacher API的函数，将其传递给alterDialog子组件
+  const handleWinClose = async (data) => {
+    setOpen(false);
+    // 如果用户点击【cancel】(isOk为false）, 取消操作，或者用户没有选取任何行，无事发生；
+    if (!data.isOk || rowSelectionModel.length === 0) {
+      return;
+    }
+    // 用户点击【ok】(isOk为true），调用deleteRequest访问后端delete teacher API：
+    let ids = rowSelectionModel.join(","); // 将获取的id拼接成用逗号分隔的字符串
+
+    console.log("ididididi", ids);
+    let result = await deleteRequest(`/teachers/${ids}`);
+    if (result.status === 200) {
+      toast.success("Teacher removed!");
+    } else {
+      toast.error("Failed to remove.");
+    }
+    // 重置分页状态，刷新数据
+    setPageSearch({ page: 1, pageSize: pageSearch.pageSize });
+  };
 
   //=========================================================================================
 
@@ -123,29 +176,41 @@ export default function Teacher() {
   }, [pageSearch]); // 依赖项为pageSearch是当用户翻页时，页码变动，触发useEffect来从后端获取数据
 
   return (
-    <Box m="20px">
-      {/* 这个header是之前定义的header组件，box是mui提供的替换div的容器 */}
-      <Header title="TEAM" subtitle="Managing Teachers" />
-      <Box sx={{ mb: "15px" }}>
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="contained" onClick={handleAddTeacher}>
-            Add Teacher
-          </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={handleDeleteTeacher}
-          >
-            Delete Teacher
-          </Button>
-        </Stack>
+    <>
+      <Box m="20px">
+        {/* 这个header是之前定义的header组件，box是mui提供的替换div的容器 */}
+        <Header title="TEAM" subtitle="Managing Teachers" />
+        <box>
+          <Box sx={{ mb: "15px" }}>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="contained" onClick={handleAddTeacher}>
+                Add Teacher
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={handleDeleteTeacher}
+              >
+                Delete Teacher
+              </Button>
+            </Stack>
+          </Box>
+          <TeacherList
+            columns={columns}
+            pageData={pagedTeachers}
+            setPaginationModel={handlePaginationModel}
+            setRowSelectionModel={setRowSelectionModel}
+          />
+        </box>
       </Box>
-      <TeacherList
-        columns={columns}
-        pageData={pagedTeachers}
-        setPaginationModel={handlePaginationModel}
-        setRowSelectionModel={setRowSelectionModel}
-      />
-    </Box>
+      <AlterDialog
+        title="Warning"
+        alertType="warning"
+        open={open}
+        onClose={handleWinClose}
+      >
+        {alertMessage}
+      </AlterDialog>
+    </>
   );
 }

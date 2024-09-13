@@ -16,6 +16,7 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
+import { CalendarMonth } from "@mui/icons-material";
 
 export default function AddComment() {
   const formik = useFormik({
@@ -80,6 +81,27 @@ export default function AddComment() {
     getList();
   }, []);
 
+  const [userList, setUserList] = useState([]);
+
+  useEffect(()=>{
+    const getUserList = async()=>{
+      let result = await getRequest("users/userlist")
+      if (result.status ==200){
+        let optionList =[];
+        for (let i = 0; i < result.data.length; i++) {
+          let option = {
+            label: result.data[i].CourseName,
+            id: result.data[i].ID,
+          };
+          optionList.push(option);
+        }
+        setCourseList(optionList);
+      }else{
+        setUserList([]);
+      }
+    }
+  })
+
   const optionEqualToValueChange = (option, value) => {
     return true;
   };
@@ -137,8 +159,22 @@ export default function AddComment() {
               />
             )}
           />
+          <Autocomplete
+            options = {userList}
+            fullWidth
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="username"
+                error={
+                  formik.touched.username && Boolean(formik.errors.username)
+                }
+                helperText={formik.touched.username && formik.errors.username}
+              />
+            )}
 
-          <TextField
+          />
+          {/* <TextField
             fullWidth
             variant="filled"
             type="text"
@@ -151,7 +187,7 @@ export default function AddComment() {
             helperText={formik.touched.username && formik.errors.username}
             autoFocus
             sx={{ gridColumn: "span 4" }}
-          />
+          /> */}
           <TextField
             fullWidth
             variant="filled"
@@ -172,7 +208,9 @@ export default function AddComment() {
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />
-          <TextField
+          {/* <CalendarMonth/> */}
+          {/* <DateCon/>
+          <CalendarMonth
             fullWidth
             variant="filled"
             type="datetime"
@@ -187,7 +225,7 @@ export default function AddComment() {
             autoComplete="Comment Time"
             autoFocus
             sx={{ gridColumn: "span 4" }}
-          />
+          /> */}
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Stack direction="row" spacing={2}>
