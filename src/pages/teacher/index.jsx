@@ -33,7 +33,9 @@ export default function Teacher() {
   }
 
   // ？？？？？【定义操作delete teacher的函数（留空）】
-  const handleDeleteTeacher = () => {};
+  const handleDeleteTeacher = () => {
+    alert('delete')
+  };
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   //=========================================================================================

@@ -44,12 +44,14 @@ export default function Addteacher() {
 
   const handleSelectedUser = (value) => {
     console.log("value", value);
+    formik.setFieldValue("User_id",value.id)
     setSelectedUser(value);
   };
 
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
+      User_id:"",
       HireDate: "",
       HireStatus: 1, // 默认在职
       Specialization: "",
@@ -58,6 +60,7 @@ export default function Addteacher() {
       LinkedInLink: "test.com",
     },
     validationSchema: Yup.object({
+      User_id: Yup.number().required("user is required"),
       HireDate: Yup.date().required("Hire Date is required"),
       HireStatus: Yup.number().required("Hire Status is required"),
       Specialization: Yup.string()
@@ -111,6 +114,10 @@ export default function Addteacher() {
             {...params}
             label="Selected User"
             variant="filled"
+            error={
+              formik.touched.User_id && Boolean(formik.errors.User_id)
+            }
+            helperText={formik.touched.User_id && formik.errors.User_id}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -125,7 +132,7 @@ export default function Addteacher() {
           />
         )}
       />
-      <form onSubmit={formik.handleSubmit} class="add-teacher-form">
+      <form onSubmit={formik.handleSubmit} className="add-teacher-form">
         <TextField
           fullWidth
           variant="filled"

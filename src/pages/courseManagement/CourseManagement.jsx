@@ -76,7 +76,7 @@ export default function CourseManagement() {
   };
 
   const handleAddCourse = () => {
-    navigate("/courses/new");  // 这里添加课程的路由
+    navigate("/courses/create");  // 这里添加课程的路由
   };
 
   const columns = [
