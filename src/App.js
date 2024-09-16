@@ -8,7 +8,6 @@ import User from "./pages/users/index";
 import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
 import Addteacher from "./pages/teacher/addteacher";
-import UpdateTeacher from "./pages/teacher/updateteacher";
 import Comment from "./pages/comments/index";
 import AddComment from "./pages/comments/addcomment";
 import CourseManagement from "./pages/courseManagement/CourseManagement";
@@ -70,15 +69,6 @@ function App() {
               </NeedAuth>
             }
           />
-          <Route
-            path="/teachers/updateteacher/:id"
-            element={
-              <NeedAuth>
-                <UpdateTeacher />
-              </NeedAuth>
-            }
-          />
-
           <Route
             path="/courseCategory"
             element={
