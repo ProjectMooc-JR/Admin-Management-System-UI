@@ -18,17 +18,17 @@ import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
 import { useNavigate } from "react-router-dom";
+
 // import Header from "../../components/Header";
 
-export default function Addteacher() {
-  const navigate = useNavigate();
-
+export default function UpdateTeacher() {
   // 存储从后端api获取的所有用户数据
   const [users, setUsers] = useState([]);
   // 控制加载的状态
   const [loading, setLoading] = useState(false);
   // 储存被选择转变成teacher的user
   const [selectedUser, setSelectedUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -47,14 +47,12 @@ export default function Addteacher() {
 
   const handleSelectedUser = (value) => {
     console.log("value", value);
-    formik.setFieldValue("User_id", value.id);
     setSelectedUser(value);
   };
 
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
-      User_id: "",
       HireDate: "",
       HireStatus: 1, // 默认在职
       Specialization: "",
@@ -63,7 +61,6 @@ export default function Addteacher() {
       LinkedInLink: "test.com",
     },
     validationSchema: Yup.object({
-      User_id: Yup.number().required("user is required"),
       HireDate: Yup.date().required("Hire Date is required"),
       HireStatus: Yup.number().required("Hire Status is required"),
       Specialization: Yup.string()
@@ -75,7 +72,7 @@ export default function Addteacher() {
         .required("Mobile number is required"),
       LinkedInLink: Yup.string(),
     }),
-    onSubmit: async (inputValues, { resetForm }) => {
+    onSubmit: async (inputValues) => {
       let result = await postRequest("/teachers", {
         User_id: selectedUser.id,
         Specialization: inputValues.Specialization,
@@ -88,8 +85,6 @@ export default function Addteacher() {
 
       if (result.status === 201) {
         alert("teacher shifted successfully.");
-        resetForm();
-        navigate("/teachers");
       } else {
         alert("failed to shift this user to teacher.");
       }
@@ -108,7 +103,8 @@ export default function Addteacher() {
         gap: "24px",
       }}
     >
-      <Autocomplete
+      <button onClick={() => navigate("/teachers")}>Back</button>
+      {/* <Autocomplete
         options={users}
         getOptionLabel={(option) => option.username}
         loading={loading}
@@ -119,8 +115,6 @@ export default function Addteacher() {
             {...params}
             label="Selected User"
             variant="filled"
-            error={formik.touched.User_id && Boolean(formik.errors.User_id)}
-            helperText={formik.touched.User_id && formik.errors.User_id}
             InputProps={{
               ...params.InputProps,
               endAdornment: (
@@ -134,8 +128,8 @@ export default function Addteacher() {
             }}
           />
         )}
-      />
-      <form onSubmit={formik.handleSubmit} className="add-teacher-form">
+      /> */}
+      <form onSubmit={formik.handleSubmit} class="add-teacher-form">
         <TextField
           fullWidth
           variant="filled"
@@ -221,7 +215,7 @@ export default function Addteacher() {
           color="primary"
           sx={{ width: "400px" }}
         >
-          Transform this user to teacher
+          Save updated information
         </Button>
       </form>
     </Box>
