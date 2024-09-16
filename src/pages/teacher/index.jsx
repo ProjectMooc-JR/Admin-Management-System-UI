@@ -50,7 +50,7 @@ export default function Teacher() {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   // **配置一个打开/关闭弹窗组件的状态
-  const [open, setOpen] = useState(false);
+  //const [open, setOpen] = useState(false);
 
   // **配置一个可以在弹窗中显示不同文本信息的状态
   const [alertMessage, setAlertMessage] = useState("");

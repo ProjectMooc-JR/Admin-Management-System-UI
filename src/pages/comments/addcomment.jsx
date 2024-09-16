@@ -8,6 +8,7 @@ import {
   FormControl,
   MenuItem,
   Stack,
+  CircularProgress
 } from "@mui/material";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
@@ -16,39 +17,89 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
-import { CalendarMonth } from "@mui/icons-material";
+
 
 export default function AddComment() {
+
+  const [users, setUsers] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedUser, setSelectedUser] =useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+
+  useEffect(()=>{
+    const fetchUserAsync = async ()=>{
+      setLoading(true);
+      const result = await getRequest("/users");
+      setUsers(Array.isArray(result.data) ? result.data : []);
+      console.log("Fetched users:", result.data);
+      setLoading(false);
+    };
+    fetchUserAsync();
+  }, []);
+
+  useEffect(()=>{
+    const fetchCourseAsync = async ()=>{
+      setLoading(true);
+      const result = await getRequest("/courses");
+      setCourses(Array.isArray(result.data) ? result.data : []);
+      console.log("Fetched courses:", result.data);
+      setLoading(false);
+    };
+    fetchCourseAsync();
+  }, []);
+
+  const handleSelectedUser = (value) => {
+    console.log("value", value);
+    formik.setFieldValue("User_id",value.id)
+    setSelectedUser(value);
+  };
+
+  const handleSelectedCourse = (value)=>{
+    console.log("value", value);
+    formik.setFieldValue("Course_id", value.id)
+    setSelectedCourse(value)
+  }
+
   const formik = useFormik({
     initialValues: {
-      CourseName: "",
-      username: "",
+      //CourseName: "",
+      Course_id: "",
+      User_id:"",
+      //username: "",
       CommentContent: "",
       CommentTime: "",
     },
     validationSchema: Yup.object({
-      CourseName: Yup.string().required("Required"),
-      username: Yup.string()
-        .min(3, "Must be 3 characters or more")
-        .max(100, "Must be 100 characters or more")
-        .required("Required"),
+      Course_id: Yup.number().required("course is required"),
+      User_id:Yup.number().required("user is required"),
+      //CourseName: Yup.string().required("Required"),
+      // username: Yup.string()
+      //   .min(3, "Must be 3 characters or more")
+      //   .max(100, "Must be 100 characters or more")
+      //   .required("Required"),
       CommentContent: Yup.string()
         .max(100, "Must be 100 characters or less")
         .required("Required"),
     }),
     onSubmit: async (values) => {
       debugger;
-      let courses = courseList.filter((x) => x.label == values.CourseName);
+      // let courses = courseList.filter((x) => x.label === values.CourseName);
+      // let users = userList.filter((x)=> x.label === values.username)
       let result = await postRequest("/comments", {
-        CourseID: courses[0].id,
-        UserID: 1,
+        Course_ID: selectedCourse.id,
+        User_ID: selectedUser.id,
+        //CourseID: courses[0].id,
+        //UserID: users[0].id,
+        //CourseID:1,
+        //UserID: 1,
         // CourseName: values.CourseName,
         // username: values.username,
         CommentContent: values.CommentContent,
         CommentTime: values.CommentTime,
       });
 
-      if (result.status == 201) {
+      if (result.status === 201) {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
@@ -59,52 +110,28 @@ export default function AddComment() {
     },
   });
 
-  const [courseList, setCourseList] = useState([]);
-
-  useEffect(() => {
-    const getList = async () => {
-      let result = await getRequest("courses/courselist");
-      if (result.status === 200) {
-        let optionList = [];
-        for (let i = 0; i < result.data.length; i++) {
-          let option = {
-            label: result.data[i].CourseName,
-            id: result.data[i].ID,
-          };
-          optionList.push(option);
-        }
-        setCourseList(optionList);
-      } else {
-        setCourseList([]);
-      }
-    };
-    getList();
-  }, []);
-
-  const [userList, setUserList] = useState([]);
-
-  useEffect(()=>{
-    const getUserList = async()=>{
-      let result = await getRequest("users/userlist")
-      if (result.status ==200){
-        let optionList =[];
-        for (let i = 0; i < result.data.length; i++) {
-          let option = {
-            label: result.data[i].CourseName,
-            id: result.data[i].ID,
-          };
-          optionList.push(option);
-        }
-        setCourseList(optionList);
-      }else{
-        setUserList([]);
-      }
-    }
-  })
+  
 
   const optionEqualToValueChange = (option, value) => {
     return true;
   };
+
+  const [formData, setFormData] = useState({  
+    Course_id: "", 
+    User_id:"",
+    CommentContent: "",
+    CommentTime: "",
+  });
+
+
+  const handleSubmit=()=>{
+    setFormData({
+      Course_id: "", 
+      User_id:"",
+      CommentContent: "",
+      CommentTime: "",
+    })
+  }
 
   return (
     <Box m="20px">
@@ -120,32 +147,17 @@ export default function AddComment() {
           gap="30px"
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
-          {/* <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="Course Name"
-            name="CourseName"
-            autoComplete="CourseName"
-            onChange={formik.handleChange}
-            value={formik.values.CourseName}
-            error={
-              formik.touched.CourseName && Boolean(formik.errors.CourseName)
-            }
-            helperText={formik.touched.CourseName && formik.errors.CourseName}
-            autoFocus
-            sx={{ gridColumn: "span 4" }}
-          /> */}
-
+          
           <Autocomplete
             disablePortal
-            options={courseList}
+            options={courses}
             fullWidth
             // sx={{ width: 300 }}
-            onChange={(event, value) => {
-             
-              formik.setFieldValue("CourseName", value.label);
-            }}
+            // onChange={(event, value) => {
+              
+            //   formik.setFieldValue("CourseName", value.label);
+            // }}
+            onChange={(event, value) => handleSelectedCourse(value)}
             // value={formik.values.CourseName}
             //isOptionEqualToValue={optionEqualToValueChange}
             renderInput={(params) => (
@@ -153,13 +165,28 @@ export default function AddComment() {
                 {...params}
                 label="CourseName"
                 error={
-                  formik.touched.CourseName && Boolean(formik.errors.CourseName)
+                  formik.touched.Course_id && Boolean(formik.errors.Course_id)
                 }
-                helperText={formik.touched.CourseName && formik.errors.CourseName}
+                helperText={formik.touched.Course_id && formik.errors.Course_id}
+                // error={
+                //   formik.touched.CourseName && Boolean(formik.errors.CourseName)
+                // }
+                // helperText={formik.touched.CourseName && formik.errors.CourseName}
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
               />
             )}
           />
-          <Autocomplete
+          {/* <Autocomplete
             options = {userList}
             fullWidth
             renderInput={(params) => (
@@ -172,22 +199,39 @@ export default function AddComment() {
                 helperText={formik.touched.username && formik.errors.username}
               />
             )}
+            onChange={(event, value) => handleSelectedUser(value)}
+            
 
-          />
-          {/* <TextField
-            fullWidth
-            variant="filled"
-            type="text"
-            label="User Name"
-            name="username"
-            autoComplete="4"
-            onChange={formik.handleChange}
-            value={formik.values.username}
-            error={formik.touched.username && Boolean(formik.errors.username)}
-            helperText={formik.touched.username && formik.errors.username}
-            autoFocus
-            sx={{ gridColumn: "span 4" }}
           /> */}
+          <Autocomplete
+          options={users}
+          getOptionLabel={(option) => option.username}
+          loading={loading}
+          // onChange={(event, value) => setSelectedUser(value)}
+          onChange={(event, value) => handleSelectedUser(value)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Selected User"
+              variant="filled"
+              error={
+                formik.touched.User_id && Boolean(formik.errors.User_id)
+              }
+              helperText={formik.touched.User_id && formik.errors.User_id}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </>
+                ),
+              }}
+          />
+        )}
+      />
           <TextField
             fullWidth
             variant="filled"
@@ -208,31 +252,26 @@ export default function AddComment() {
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />
-          {/* <CalendarMonth/> */}
-          {/* <DateCon/>
-          <CalendarMonth
-            fullWidth
-            variant="filled"
-            type="datetime"
-            label="Comment Time"
-            name="CommentTime"
-            onChange={formik.handleChange}
-            value={formik.values.CommentTime}
-            // error={
-            //   formik.touched.CommentTime && Boolean(formik.errors.CommentTime)
-            // }
-            // helperText={formik.touched.CommentTime && formik.errors.CommentTime}
-            autoComplete="Comment Time"
-            autoFocus
-            sx={{ gridColumn: "span 4" }}
-          /> */}
+          <TextField
+          fullWidth
+          variant="filled"
+          type="date"
+          label="Comment Date"
+          name="CommentDate"
+          value={formik.values.HireDate}
+          onChange={formik.handleChange}
+          error={formik.touched.HireDate && Boolean(formik.errors.HireDate)}
+          helperText={formik.touched.HireDate && formik.errors.HireDate}
+          InputLabelProps={{ shrink: true }}
+        />
+          
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Stack direction="row" spacing={2}>
-            <Button type="submit" color="secondary" variant="contained">
+            <Button type="submit" color="secondary" variant="contained" onClick={handleSubmit}>
               Create New Comment
             </Button>
-            <Button type="cancle" color="secondary" variant="contained">
+            <Button type="cancle" color="secondary" variant="contained" onClick={handleSubmit}>
               Cancel
             </Button>
           </Stack>
