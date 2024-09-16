@@ -17,12 +17,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
-import { useNavigate } from "react-router-dom";
 // import Header from "../../components/Header";
 
 export default function Addteacher() {
-  const navigate = useNavigate();
-
   // 存储从后端api获取的所有用户数据
   const [users, setUsers] = useState([]);
   // 控制加载的状态
@@ -47,14 +44,14 @@ export default function Addteacher() {
 
   const handleSelectedUser = (value) => {
     console.log("value", value);
-    formik.setFieldValue("User_id", value.id);
+    formik.setFieldValue("User_id",value.id)
     setSelectedUser(value);
   };
 
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
-      User_id: "",
+      User_id:"",
       HireDate: "",
       HireStatus: 1, // 默认在职
       Specialization: "",
@@ -75,7 +72,7 @@ export default function Addteacher() {
         .required("Mobile number is required"),
       LinkedInLink: Yup.string(),
     }),
-    onSubmit: async (inputValues, { resetForm }) => {
+    onSubmit: async (inputValues) => {
       let result = await postRequest("/teachers", {
         User_id: selectedUser.id,
         Specialization: inputValues.Specialization,
@@ -88,8 +85,6 @@ export default function Addteacher() {
 
       if (result.status === 201) {
         alert("teacher shifted successfully.");
-        resetForm();
-        navigate("/teachers");
       } else {
         alert("failed to shift this user to teacher.");
       }
@@ -119,7 +114,9 @@ export default function Addteacher() {
             {...params}
             label="Selected User"
             variant="filled"
-            error={formik.touched.User_id && Boolean(formik.errors.User_id)}
+            error={
+              formik.touched.User_id && Boolean(formik.errors.User_id)
+            }
             helperText={formik.touched.User_id && formik.errors.User_id}
             InputProps={{
               ...params.InputProps,

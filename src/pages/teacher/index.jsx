@@ -20,27 +20,20 @@ export default function Teacher() {
   // 用以存储获取到的（分页后的）用户数据信息
   const [pagedTeachers, setPagedTeachers] = useState({ items: [], total: 0 });
 
+  const [open, setOpen] = useState(false);
   //=========================================================================================
 
   // ？？？？？【定义操作teacher update的函数（先留空，之后再写）】
-  const handleUpdate = (row) => {
-    // 将教师ID添加到URL中
-    console.log("rowididi", row);
-    navigate(`/teachers/updateteacher/${row.id}`);
-  };
+  const handleUpdate = (row) => {};
 
   //=========================================================================================
 
-  //【定义操作add teacher的函数】
-
+  // ？？？？？【定义操作add teacher的函数（留空）】
   const navigate = useNavigate();
   function handleAddTeacher() {
     navigate("/teachers/addteacher");
   }
   //=========================================================================================
-
-  // 【操作delete teacher】
-
   // 批量删除逻辑：
   // Step 1：用rowSelectionModel配置多选功能，将选中的teacher的id传进一个空数组；
 
@@ -87,7 +80,7 @@ export default function Teacher() {
     // 用户点击【ok】(isOk为true），调用deleteRequest访问后端delete teacher API：
     let ids = rowSelectionModel.join(","); // 将获取的id拼接成用逗号分隔的字符串
 
-    // console.log("ididididi", ids);
+    console.log("ididididi", ids);
     let result = await deleteRequest(`/teachers/${ids}`);
     if (result.status === 200) {
       toast.success("Teacher removed!");
@@ -147,7 +140,7 @@ export default function Teacher() {
       renderCell: (row) => {
         return (
           <Box>
-            <Button variant="text" onClick={() => handleUpdate(row)}>
+            <Button variant="text" onClick={handleUpdate(row)}>
               Update
             </Button>
           </Box>
@@ -160,8 +153,8 @@ export default function Teacher() {
   const handlePaginationModel = (e) => {
     // e会从分页组件中（比如MUI的datagrid）pass进来
     // console.log("e.page", e, pagedTeachers);
-    // console.log("e.page", e.page);
-    // console.log("e.pageSize", e.pageSize);
+    console.log("e.page", e.page);
+    console.log("e.pageSize", e.pageSize);
     // console.log("currentPage", currentPage);
     setPageSearch((currentPage) => ({
       ...currentPage, // 用对象展开符将preState里的数据（键值对）复制过来，只更新需要变动的部分
@@ -205,7 +198,6 @@ export default function Teacher() {
           <TeacherList
             columns={columns}
             pageData={pagedTeachers}
-            pageSearch={pageSearch}
             setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
           />
