@@ -25,10 +25,6 @@ export default function Comment() {
         pageSize: e.pageSize,
         }));
     };
-
-    // const setPaginationModel=()=>{
-
-    // }
     
     const handleUpdate=(row)=>{
         
@@ -70,7 +66,7 @@ export default function Comment() {
               return returnValue;
             },
             flex: 1,
-          },
+        },
 
         {
             field: "operation",
@@ -111,18 +107,6 @@ export default function Comment() {
     }
 
     const [alertMessage, setAlertMessage] = useState("");
-
-
-   
-    function handleDelete() {
-        if (rowSelectionModel.length == 0) {
-          setAlertMessage("Please select items");
-          setOpen(true);
-          return;
-        }
-        setAlertMessage("Are you sure to delete these items?");
-        setOpen(true);
-    }
     
     const handleEdit = (row) => {
         navigate(`/comments/addcomment/${row.id}`);
@@ -149,7 +133,8 @@ export default function Comment() {
     useEffect(() => {
         let getComment = async()=>{
             let result = await getRequest(`/comments/${pageSearch.page}/${pageSearch.pageSize}`);
-            if(result.status == 1){
+            console.log(result.status);
+            if(result.status === 200){
                 setData(result.data);
             }else{
                 setData({items:[],total:0});
@@ -160,7 +145,7 @@ export default function Comment() {
 
     
     function handledelete() {
-        if (rowSelectionModel.length == 0) {
+        if (rowSelectionModel.length === 0) {
           setAlertMessage("Please select items");
           setOpen(true);
           return;
@@ -171,16 +156,16 @@ export default function Comment() {
     const handleWinClose = async (data) => {
         console.log("handleWinClose", data);
         setOpen(false);
-        if (!data.isOk || rowSelectionModel.length == 0) {
+        if (!data.isOk || rowSelectionModel.length === 0) {
           return;
         }
       
         let ids = rowSelectionModel.join(",");
         let result = await deleteRequest(`/comments/${ids}`);
-        if (result.status == 1) {
-          toast.success("delete success!");
+        if (result.status === 200) {
+          toast.success("comments removed!");
         } else {
-          toast.success("delete fail!");
+          toast.success("comments fail to remove!");
         }
     
         setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
