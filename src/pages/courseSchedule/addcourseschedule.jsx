@@ -19,21 +19,29 @@ export default function AddCourseSchedule() {
   const formik = useFormik({
     initialValues: {
       CourseID: 2,
-      StartTime: "",
-      EndTime: "",
+      StartDate: "",
+      EndDate: "",
+      IDIsPublished: "",
       CoursescheduleID: 3,
     },
     validationSchema: Yup.object({
       CourseID: Yup.number().required("Required"),
-      StartTime: Yup.number().required("Required"),
+      StartDate: Yup.date().required("Required"),
+      EndDate: Yup.date().required("Required"),
+      IDIsPublished: Yup.mixed()
+        .oneOf([0, 1], "Must be Yes (1) or No (0)") // 如果使用 tinyint 作为布尔值
+        .required("Publication status is required"),
+      // 如果你使用 ENUM('Yes', 'No') 来存储，修改如下：
+      // IDIsPublished: Yup.mixed().oneOf(['Yes', 'No'], "Must be Yes or No").required("Publication status is required"),
       CoursescheduleID: Yup.number().required("Required"),
     }),
     onSubmit: async (values) => {
       let result = await postRequest("/courseSchedule", {
         CoursescheduleID: values.CoursescheduleID,
-        StartTime: values.StartTime,
-        EndTime: values.EndTime,
+        StartDate: values.StartDate,
+        EndDate: values.EndDate,
         CourseID: values.CourseID,
+        IDIsPublished: values.IDIsPublished,
       });
 
       console.log(result);
@@ -85,28 +93,28 @@ export default function AddCourseSchedule() {
           <TextField
             fullWidth
             variant="filled"
-            type="datetime"
-            label="Start Time"
-            name="StartTime"
+            type="date"
+            label="Start Date"
+            name="StartDate"
             onChange={formik.handleChange}
-            value={formik.values.StartTime}
-            error={formik.touched.StartTime && Boolean(formik.errors.StartTime)}
-            helperText={formik.touched.StartTime && formik.errors.StartTime}
-            autoComplete="Start Time"
+            value={formik.values.StartDate}
+            error={formik.touched.StartDate && Boolean(formik.errors.StartDate)}
+            helperText={formik.touched.StartDate && formik.errors.StartDate}
+            autoComplete="Start Date"
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />
           <TextField
             fullWidth
             variant="filled"
-            type="datetime"
-            label="End Time"
-            name="EndTime"
+            type="date"
+            label="End Date"
+            name="EndTDate"
             onChange={formik.handleChange}
-            value={formik.values.EndTime}
-            error={formik.touched.EndTime && Boolean(formik.errors.EndTime)}
-            helperText={formik.touched.EndTime && formik.errors.EndTime}
-            autoComplete="End Time"
+            value={formik.values.EndDate}
+            error={formik.touched.EndDate && Boolean(formik.errors.EndDate)}
+            helperText={formik.touched.EndDate && formik.errors.EndDate}
+            autoComplete="End Date"
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />

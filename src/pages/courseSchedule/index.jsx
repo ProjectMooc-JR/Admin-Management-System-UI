@@ -7,7 +7,7 @@ import CourseScheduleList from "./courseschedulelist";
 import { useEffect } from "react";
 import getRequest from "../../request/getRequest";
 import deleteRequest from "../../request/delRequest";
-import AddCourseSchedule from "./addcourseschedule";
+//import AddCourseSchedule from "./addcourseschedule";
 
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -18,13 +18,26 @@ export default function CourseSchedule() {
     page: 1,
   });
 
-  const handlePaginationModel = (e) => {
-    setpageSearch((preState) => ({
-      ...preState,
-      page: e.page + 1,
-      pageSize: e.pageSize,
-    }));
-  };
+  // const handlePaginationModel = (e) => {
+  //   setpageSearch((preState) => ({
+  //     ...preState,
+  //     page: e.page + 1,
+  //     pageSize: e.pageSize,
+  //   }));
+  // };
+  // 实现分页处理的函数：在用户改变页数或者每页显示的条目数时被调用
+  // const handlePaginationModel = (e) => {
+  //   // e会从分页组件中（比如MUI的datagrid）pass进来
+  //   // console.log("e.page", e, pagedTeachers);
+  //   console.log("e.page", e.page);
+  //   console.log("e.pageSize", e.pageSize);
+  //   // console.log("currentPage", currentPage);
+  //   setpageSearch((currentPage) => ({
+  //     ...currentPage, // 用对象展开符将preState里的数据（键值对）复制过来，只更新需要变动的部分
+  //     page: e.page + 1,
+  //     pageSize: e.pageSize,
+  //   }));
+  // };
 
   const handleUpdate = (row) => {};
 
@@ -39,11 +52,13 @@ export default function CourseSchedule() {
     {
       field: "StartDate",
       headerName: "Start Date",
+      type: "dateTime",
       flex: 1,
     },
     {
       field: "EndDate",
       headerName: "End Date",
+      type: "dateTime",
       flex: 1,
     },
     {
@@ -62,11 +77,11 @@ export default function CourseSchedule() {
     },
   ];
 
-  const rows = [
-    { id: 1, CourseID: 1, StartDate: "010224", EndDate: "020224" },
-    { id: 2, CourseID: 2, StartDate: "020224", EndDate: "020224" },
-    { id: 3, CourseID: 3, StartDate: "030224", EndDate: "020224" },
-  ];
+  // const rows = [
+  //   { id: 1, CourseID: 1, StartDate: "010224", EndDate: "020224" },
+  //   { id: 2, CourseID: 2, StartDate: "020224", EndDate: "020224" },
+  //   { id: 3, CourseID: 3, StartDate: "030224", EndDate: "020224" },
+  // ];
   //根据当前页面和分页大小来确定请求的分页参数。
   const [pageData, setPageData] = useState({ items: [], total: 0 });
 
@@ -88,11 +103,12 @@ export default function CourseSchedule() {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
-  function handleAddUser() {
+  const handleAddcourseschedule = () => {
     navigate("/courseSchedule/addcourseschedule");
-  }
+  };
   const [alertMessage, setAlertMessage] = useState("");
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  //const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   const handledelete = () => {
     //   if (rowSelectionModel.length == 0) {
@@ -109,19 +125,19 @@ export default function CourseSchedule() {
   };
 
   const handleWinClose = async (data) => {
-    //   console.log("handleWinClose", data);
-    //   setOpen(false);
-    //   if (!data.isOk || rowSelectionModel.length == 0) {
-    //     return;
-    //   }
-    //   let ids = rowSelectionModel.join(",");
-    //   let result = await deleteRequest(`/users/${ids}`);
-    //   if (result.status == 1) {
-    //     toast.success("delete success!");
-    //   } else {
-    //     toast.success("delete fail!");
-    //   }
-    //   setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+    console.log("handleWinClose", data);
+    setOpen(false);
+    if (!data.isOk || rowSelectionModel.length == 0) {
+      return;
+    }
+    let ids = rowSelectionModel.join(",");
+    let result = await deleteRequest(`/courseSchedule/${ids}`);
+    if (result.status == 200) {
+      toast.success("delete success!");
+    } else {
+      toast.success("delete fail!");
+    }
+    setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
   };
 
   return (
@@ -162,7 +178,7 @@ export default function CourseSchedule() {
         >
           <Box sx={{ mb: "15px" }}>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button variant="contained" onClick={handleAddUser}>
+              <Button variant="contained" onClick={handleAddcourseschedule}>
                 Add Course Schedule
               </Button>
               <Button
@@ -175,14 +191,14 @@ export default function CourseSchedule() {
             </Stack>
           </Box>
           <CourseScheduleList
-            // rows={pageData.items}
-            rows={rows}
+            //rows={pageData.items}改过的
+            //rows={rows}
             columns={columns}
             pageData={pageData}
-            //handleEdit={handleEdit}
-            setPaginationModel={handlePaginationModel}
+            handleEdit={handleEdit}
+            //setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
-          ></CourseScheduleList>
+          />
         </Box>
       </Box>
       <AlterDialog
