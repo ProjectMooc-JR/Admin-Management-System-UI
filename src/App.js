@@ -16,6 +16,8 @@ import CourseCategory from "./pages/courseCategory/index";
 import AddCourseCategory from "./pages/courseCategory/addcoursecategory";
 import CreateCourse from "./pages/courseManagement/CreateCourse";
 import CourseSchedule from './pages/courseSchedule/index'
+import ChapterManagement from './pages/chapterManagement/ChapterManagement';
+
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
@@ -133,6 +135,14 @@ function App() {
             element={
               <NeedAuth>
                 <CourseManagement />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/chapterManagement"
+            element={
+              <NeedAuth>
+                <ChapterManagement />
               </NeedAuth>
             }
           />
