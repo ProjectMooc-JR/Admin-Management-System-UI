@@ -57,19 +57,18 @@ export default function AddComment() {
 
   const handleSelectedCourse = (value) => {
     console.log("value", value);
-    formik.setFieldValue("Course_id", value.id);
+    formik.setFieldValue("Course_id", value.ID);
     setSelectedCourse(value);
   };
 
   const formik = useFormik({
     initialValues: {
       //CourseName: "",
-      Course_id: "",
-      User_id: "",
+      Course_id: -1,
+      User_id: -1,
       //username: "",
       CommentContent: "",
       CommentTime: "",
-
     },
     validationSchema: Yup.object({
       Course_id: Yup.number().required("course is required"),
@@ -84,9 +83,7 @@ export default function AddComment() {
         .required("Required"),
     }),
 
-    
     onSubmit: async (values) => {
-      debugger;
       // let courses = courseList.filter((x) => x.label === values.CourseName);
       // let users = userList.filter((x)=> x.label === values.username)
       let result = await postRequest("/comments", {
@@ -249,21 +246,19 @@ export default function AddComment() {
             variant="filled"
             type="date"
             label="Comment Date"
-            name="CommentDate"
+            name="CommentTime"
             value={formik.values.CommentTime}
             onChange={formik.handleChange}
-            error={formik.touched.CommentTime && Boolean(formik.errors.CommentTime)}
+            error={
+              formik.touched.CommentTime && Boolean(formik.errors.CommentTime)
+            }
             helperText={formik.touched.CommentTime && formik.errors.CommentTime}
             InputLabelProps={{ shrink: true }}
           />
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Stack direction="row" spacing={2}>
-            <Button
-              type="submit"
-              color="secondary"
-              variant="contained"
-            >
+            <Button type="submit" color="secondary" variant="contained">
               Create New Comment
             </Button>
             {/* <Button
