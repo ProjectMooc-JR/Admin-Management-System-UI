@@ -15,8 +15,8 @@ import CourseManagement from "./pages/courseManagement/CourseManagement";
 import CourseCategory from "./pages/courseCategory/index";
 import AddCourseCategory from "./pages/courseCategory/addcoursecategory";
 import CreateCourse from "./pages/courseManagement/CreateCourse";
-import CourseSchedule from './pages/courseSchedule/index'
-
+import CourseSchedule from './pages/courseSchedule/index';
+import AddCourseSchedule from './pages/courseSchedule/addcourseschedule';
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
 import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
@@ -141,6 +141,14 @@ function App() {
             element={
               <NeedAuth>
                 <CourseSchedule />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/addcourseSchedule"
+            element={
+              <NeedAuth>
+                <AddCourseSchedule />
               </NeedAuth>
             }
           />

@@ -43,6 +43,7 @@ export default function AddUser() {
         .oneOf([Yup.ref("password"), null], "Passwords must match"),
     }),
     onSubmit: async (values) => {
+      debugger;
       let result = await postRequest("/users", {
         username: values.username,
         password: values.password,

@@ -13,11 +13,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useFormik } from "formik";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
-import { useNavigate } from "react-router-dom";
+import putRequest from "../../request/putRequest";
+import { useNavigate,useParams } from "react-router-dom";
 // import Header from "../../components/Header";
 
 export default function Addteacher() {
@@ -29,6 +30,13 @@ export default function Addteacher() {
   const [loading, setLoading] = useState(false);
   // 储存被选择转变成teacher的user
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  let { id } = useParams();
+
+    // check the id. If it has one, then update
+    const isUpdateMode = id !== undefined;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -75,6 +83,10 @@ export default function Addteacher() {
         .required("Mobile number is required"),
       LinkedInLink: Yup.string(),
     }),
+
+  //   onSubmit: async (values) => {
+  //     await handleFormSubmission(values);
+  // },
     onSubmit: async (inputValues, { resetForm }) => {
       let result = await postRequest("/teachers", {
         User_id: selectedUser.id,
@@ -95,6 +107,38 @@ export default function Addteacher() {
       }
     },
   });
+
+  const handleFormSubmission = async (values) => {
+    setIsLoading(true);
+    const dataToSubmit = {
+      User_id: selectedUser.value.id,
+      HireDate: values.HireDate,
+      HireStatus: values.HireStatus,
+      Specialization: values.Specialization,
+      Description: values.Description,
+      MobileNum: values.MobileNum,
+      LinkedInLink: values.LinkedInLink
+    }
+    try {
+        // const endpoint = id ? `/courses/${id}` : "/courses";
+        const result = isUpdateMode
+            ? await putRequest(`/teachers/${id}`, dataToSubmit)
+            : await postRequest("/teachers", dataToSubmit);
+        if (result.status === 1) {
+            toast.success(`${id ? "Update" : "Add"} success!`);
+            navigate(`/teachers`);
+        } else {
+            toast.error(result.message);
+        }
+    } catch (error) {
+        console.error(`Error ${id ? "updating" : "adding"} item:`, error);
+        toast.error(`Failed to ${id ? "update" : "add"} item.`);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+  
   return (
     <Box
       sx={{

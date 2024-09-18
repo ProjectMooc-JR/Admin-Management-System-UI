@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -16,9 +16,11 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 
 export default function AddCourseSchedule() {
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
-      CourseID: 2,
+      CourseID: 0,
       StartDate: "",
       EndDate: "",
       IDIsPublished: "",
@@ -56,6 +58,26 @@ export default function AddCourseSchedule() {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchCourseAsync = async () => {
+      setLoading(true);
+      const result = await getRequest("/courses");
+      console.log("Fetched courses:", result.data);
+      if (result.status == 200) {
+        setCourses(Array.isArray(result.data) ? result.data : []);
+      }
+      setLoading(false);
+    };
+    fetchCourseAsync();
+  }, []);
+
+  const handleSelectedCourse = (value) => {
+    console.log("value", value);
+    formik.setFieldValue("CourseID", value.id);
+  
+  };
+
   return (
     <Box m="20px">
       <Header
@@ -70,7 +92,7 @@ export default function AddCourseSchedule() {
           gap="30px"
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
-          <TextField
+          {/* <TextField
             fullWidth
             variant="filled"
             type="text"
@@ -88,7 +110,38 @@ export default function AddCourseSchedule() {
             }
             autoFocus
             sx={{ gridColumn: "span 4" }}
+          /> */}
+
+          <Autocomplete
+            disablePortal
+            getOptionLabel={(option) => option.CourseName}
+            options={courses}
+            fullWidth
+            onChange={(event, value) => handleSelectedCourse(value)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="CourseName"
+                error={
+                  formik.touched.CourseID && Boolean(formik.errors.CourseID)
+                }
+                helperText={formik.touched.CourseID && formik.errors.CourseID}
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
           />
+
+          <Autocomplete />
 
           <TextField
             fullWidth
