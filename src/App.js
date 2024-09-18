@@ -137,6 +137,14 @@ function App() {
             }
           />
           <Route
+            path="/chapterManagement"
+            element={
+              <NeedAuth>
+                <ChapterManagement />
+              </NeedAuth>
+            }
+          />
+          <Route
             path="/courseSchedule"
             element={
               <NeedAuth>

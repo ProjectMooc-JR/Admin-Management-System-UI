@@ -150,7 +150,8 @@ export default function CourseManagement() {
         rows={courses.items}  // 将映射后的rows传递给DataGrid
         total={courses.total}
         columns={columns}
-        pageSize={25}
+        pageSize={10}
+        pageSizeOptions={[10, 25, 50, 100]}  // Provide available options
         checkboxSelection
         disableSelectionOnClick
         onRowSelectionModelChange={(newRowSelectionModel) => {
