@@ -15,13 +15,13 @@ import CourseManagement from "./pages/courseManagement/CourseManagement";
 import CourseCategory from "./pages/courseCategory/index";
 import AddCourseCategory from "./pages/courseCategory/addcoursecategory";
 import CreateCourse from "./pages/courseManagement/CreateCourse";
-import CourseSchedule from './pages/courseSchedule/index'
-import ChapterManagement from './pages/chapterManagement/ChapterManagement';
-
+import CourseSchedule from "./pages/courseSchedule/index";
+import ChapterManagement from "./pages/chapterManagement/ChapterManagement";
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
 import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
+import AddCourseSchedule from "./pages/courseSchedule/addcourseschedule";
 
 function App() {
   return (
@@ -129,7 +129,14 @@ function App() {
               </NeedAuth>
             }
           />
-          <Route path="/courses/create" element={<NeedAuth><CreateCourse/></NeedAuth>}  />
+          <Route
+            path="/courses/create"
+            element={
+              <NeedAuth>
+                <CreateCourse />
+              </NeedAuth>
+            }
+          />
           <Route
             path="/course-management"
             element={
@@ -151,6 +158,14 @@ function App() {
             element={
               <NeedAuth>
                 <CourseSchedule />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/courseSchedule/addcourseschedule"
+            element={
+              <NeedAuth>
+                <AddCourseSchedule />
               </NeedAuth>
             }
           />

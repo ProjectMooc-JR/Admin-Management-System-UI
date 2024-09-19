@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   InputLabel,
   FormControl,
   MenuItem,
+  CircularProgress,
   Stack,
 } from "@mui/material";
 import { useFormik } from "formik";
@@ -14,18 +15,41 @@ import toast from "react-hot-toast";
 import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
+import Autocomplete from "@mui/material/Autocomplete";
+import getRequest from "../../request/getRequest";
 
 export default function AddCourseSchedule() {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+
+  useEffect(() => {
+    const fetchCourseAsync = async () => {
+      setLoading(true);
+      const result = await getRequest("/courses");
+      setCourses(Array.isArray(result.data) ? result.data : []);
+      console.log("Fetched courses:", result.data);
+      setLoading(false);
+    };
+    fetchCourseAsync();
+  }, []);
+
+  const handleSelectedCourse = (value) => {
+    console.log("value", value);
+    formik.setFieldValue("Course_id", value.id);
+    setSelectedCourse(value);
+  };
+
   const formik = useFormik({
     initialValues: {
-      CourseID: 2,
+      Course_id: "",
       StartDate: "",
       EndDate: "",
       IDIsPublished: "",
-      CoursescheduleID: 3,
+      //CoursescheduleID: 3,
     },
     validationSchema: Yup.object({
-      CourseID: Yup.number().required("Required"),
+      Course_id: Yup.number().required("Course is required"),
       StartDate: Yup.date().required("Required"),
       EndDate: Yup.date().required("Required"),
       IDIsPublished: Yup.mixed()
@@ -33,20 +57,20 @@ export default function AddCourseSchedule() {
         .required("Publication status is required"),
       // 如果你使用 ENUM('Yes', 'No') 来存储，修改如下：
       // IDIsPublished: Yup.mixed().oneOf(['Yes', 'No'], "Must be Yes or No").required("Publication status is required"),
-      CoursescheduleID: Yup.number().required("Required"),
+      //CoursescheduleID: Yup.number().required("Required"),
     }),
     onSubmit: async (values) => {
       let result = await postRequest("/courseSchedule", {
-        CoursescheduleID: values.CoursescheduleID,
+        //CoursescheduleID: values.CoursescheduleID,
         StartDate: values.StartDate,
         EndDate: values.EndDate,
-        CourseID: values.CourseID,
+        Course_ID: selectedCourse.id,
         IDIsPublished: values.IDIsPublished,
       });
 
       console.log(result);
 
-      if (result.status == 1) {
+      if (result.status == 201) {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
@@ -70,7 +94,46 @@ export default function AddCourseSchedule() {
           gap="30px"
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
-          <TextField
+          <Autocomplete
+            disablePortal
+            options={courses}
+            fullWidth
+            // sx={{ width: 300 }}
+            // onChange={(event, value) => {
+
+            //   formik.setFieldValue("CourseName", value.label);
+            // }}
+            onChange={(event, value) => handleSelectedCourse(value)}
+            // value={formik.values.CourseName}
+            //isOptionEqualToValue={optionEqualToValueChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="CourseName"
+                error={
+                  formik.touched.Course_id && Boolean(formik.errors.Course_id)
+                }
+                helperText={formik.touched.Course_id && formik.errors.Course_id}
+                // error={
+                //   formik.touched.CourseName && Boolean(formik.errors.CourseName)
+                // }
+                // helperText={formik.touched.CourseName && formik.errors.CourseName}
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </>
+                  ),
+                }}
+              />
+            )}
+          />
+
+          {/* <TextField
             fullWidth
             variant="filled"
             type="text"
@@ -88,7 +151,7 @@ export default function AddCourseSchedule() {
             }
             autoFocus
             sx={{ gridColumn: "span 4" }}
-          />
+          /> */}
 
           <TextField
             fullWidth
@@ -109,7 +172,7 @@ export default function AddCourseSchedule() {
             variant="filled"
             type="date"
             label="End Date"
-            name="EndTDate"
+            name="EndDate"
             onChange={formik.handleChange}
             value={formik.values.EndDate}
             error={formik.touched.EndDate && Boolean(formik.errors.EndDate)}
