@@ -35,9 +35,13 @@ export default function AddCourseSchedule() {
   }, []);
 
   const handleSelectedCourse = (value) => {
-    console.log("value", value);
-    formik.setFieldValue("Course_id", value.id);
-    setSelectedCourse(value);
+    if (value) {
+      formik.setFieldValue("Course_id", value.id);
+      setSelectedCourse(value);
+    } else {
+      formik.setFieldValue("Course_id", "");
+      setSelectedCourse(null);
+    }
   };
 
   const formik = useFormik({
@@ -45,14 +49,14 @@ export default function AddCourseSchedule() {
       Course_id: "",
       StartDate: "",
       EndDate: "",
-      IDIsPublished: "",
+      IsPublished: "",
       //CoursescheduleID: 3,
     },
     validationSchema: Yup.object({
       Course_id: Yup.number().required("Course is required"),
       StartDate: Yup.date().required("Required"),
       EndDate: Yup.date().required("Required"),
-      IDIsPublished: Yup.mixed()
+      IsPublished: Yup.mixed()
         .oneOf([0, 1], "Must be Yes (1) or No (0)") // 如果使用 tinyint 作为布尔值
         .required("Publication status is required"),
       // 如果你使用 ENUM('Yes', 'No') 来存储，修改如下：
@@ -65,10 +69,10 @@ export default function AddCourseSchedule() {
         StartDate: values.StartDate,
         EndDate: values.EndDate,
         Course_ID: selectedCourse.id,
-        IDIsPublished: values.IDIsPublished,
+        IsPublished: values.IsPublished,
       });
 
-      console.log(result);
+      // console.log(result);
 
       if (result.status == 201) {
         console.log(result.status);
@@ -80,6 +84,7 @@ export default function AddCourseSchedule() {
       }
     },
   });
+
   return (
     <Box m="20px">
       <Header
@@ -98,26 +103,20 @@ export default function AddCourseSchedule() {
             disablePortal
             options={courses}
             fullWidth
-            // sx={{ width: 300 }}
-            // onChange={(event, value) => {
-
-            //   formik.setFieldValue("CourseName", value.label);
-            // }}
+            // 指定要显示的标签
+            getOptionLabel={(option) => option.CourseName || ""}
             onChange={(event, value) => handleSelectedCourse(value)}
             // value={formik.values.CourseName}
             //isOptionEqualToValue={optionEqualToValueChange}
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="CourseName"
+                label="Course Name"
                 error={
                   formik.touched.Course_id && Boolean(formik.errors.Course_id)
                 }
                 helperText={formik.touched.Course_id && formik.errors.Course_id}
-                // error={
-                //   formik.touched.CourseName && Boolean(formik.errors.CourseName)
-                // }
-                // helperText={formik.touched.CourseName && formik.errors.CourseName}
+                // params.InputProps 是 Autocomplete 提供的输入框配置属性，用来控制 TextField 的各种行为（如自动完成的显示、清除按钮等）
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
@@ -181,7 +180,7 @@ export default function AddCourseSchedule() {
             autoFocus
             sx={{ gridColumn: "span 4" }}
           />
-          <TextField
+          {/* <TextField
             fullWidth
             variant="filled"
             type="text"
@@ -194,14 +193,39 @@ export default function AddCourseSchedule() {
             helperText={formik.touched.CourseID && formik.errors.CourseID}
             autoFocus
             sx={{ gridColumn: "span 4" }}
-          />
+          /> */}
+          <FormControl fullWidth sx={{ gridColumn: "span 4" }}>
+            <InputLabel id="demo-simple-select-label">Published?</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              name="IsPublished"
+              value={formik.values.IsPublished}
+              label="IsPublished"
+              error={
+                formik.touched.IsPublished && Boolean(formik.errors.IsPublished)
+              }
+              helperText={
+                formik.touched.IsPublished && formik.errors.IsPublished
+              }
+              onChange={formik.handleChange}
+            >
+              <MenuItem value={0}>Yes</MenuItem>
+              <MenuItem value={1}>No</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Stack direction="row" spacing={2}>
             <Button type="submit" color="secondary" variant="contained">
               Create New Course Schedule
             </Button>
-            <Button type="cancle" color="secondary" variant="contained">
+            <Button
+              type="cancel"
+              color="secondary"
+              variant="contained"
+              onClick={() => formik.resetForm()}
+            >
               Cancel
             </Button>
           </Stack>

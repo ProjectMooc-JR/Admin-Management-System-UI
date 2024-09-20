@@ -18,13 +18,13 @@ export default function CourseSchedule() {
     page: 1,
   });
 
-  // const handlePaginationModel = (e) => {
-  //   setpageSearch((preState) => ({
-  //     ...preState,
-  //     page: e.page + 1,
-  //     pageSize: e.pageSize,
-  //   }));
-  // };
+  const handlePaginationModel = (e) => {
+    setpageSearch((preState) => ({
+      ...preState,
+      page: e.page + 1,
+      pageSize: e.pageSize,
+    }));
+  };
   // 实现分页处理的函数：在用户改变页数或者每页显示的条目数时被调用
   // const handlePaginationModel = (e) => {
   //   // e会从分页组件中（比如MUI的datagrid）pass进来
@@ -39,7 +39,13 @@ export default function CourseSchedule() {
   //   }));
   // };
 
-  const handleUpdate = (row) => {};
+  //const handleUpdate = (row) => {};
+
+  const handleUpdate = (row) => {
+    // 将开课ID添加到URL中
+    console.log("rowid", row);
+    navigate(`/courseSchedule/updatecourseschedule/${row.id}`);
+  };
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -68,7 +74,7 @@ export default function CourseSchedule() {
       renderCell: (row) => {
         return (
           <Box>
-            <Button variant="text" onClick={handleUpdate(row)}>
+            <Button variant="text" onClick={() => handleUpdate(row)}>
               Update
             </Button>
           </Box>
@@ -91,7 +97,8 @@ export default function CourseSchedule() {
         `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
       );
       if (result.status == 1) {
-        setPageData(result.data);
+        //setPageData(result.data);
+        setPageData(result.pageData);
       } else {
         setPageData({ items: [], total: 0 });
       }
@@ -106,18 +113,19 @@ export default function CourseSchedule() {
   const handleAddcourseschedule = () => {
     navigate("/courseSchedule/addcourseschedule");
   };
+
   const [alertMessage, setAlertMessage] = useState("");
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   //const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   const handledelete = () => {
-    //   if (rowSelectionModel.length == 0) {
-    //     setAlartMessage("Please select items");
-    //     setOpen(true);
-    //     return;
-    //   }
-    //   setAlartMessage("Are you sure to delete these items?");
-    //   setOpen(true);
+    if (rowSelectionModel.length == 0) {
+      setAlertMessage("Please select items to delete");
+      setOpen(true);
+      return;
+    }
+    setAlertMessage("Are you sure to delete these items?");
+    setOpen(true);
   };
 
   const handleEdit = (row) => {
@@ -196,7 +204,9 @@ export default function CourseSchedule() {
             columns={columns}
             pageData={pageData}
             handleEdit={handleEdit}
-            //setPaginationModel={handlePaginationModel}
+            pageSearch={pageSearch}
+            //handlePaginationModel={handlePaginationModel}
+            setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
           />
         </Box>
@@ -209,10 +219,6 @@ export default function CourseSchedule() {
       >
         {alertMessage}
       </AlterDialog>
-      {/* <WinDialog title="test dialog" open={open} onClose={handleWinClose}>
-            
-            <Adduser />
-          </WinDialog> */}
     </>
   );
 }
