@@ -131,9 +131,9 @@ const UpdateCourseSchedule = () => {
                 fullWidth
                 required
                 type="date"
-                label="Notes"
+                label="enddate"
                 multiline
-                name="notes"
+                name="EndDate"
                 onChange={formik.handleChange}
                 value={formik.values.EndDate}
                 id="standard-required-99"
