@@ -17,6 +17,7 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
+import { Navigate, useParams } from "react-router-dom";
 
 export default function AddComment() {
   const [users, setUsers] = useState([]);
@@ -24,6 +25,11 @@ export default function AddComment() {
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState(null);
+
+  let { id } = useParams();
+
+    // check the id. If it has one, then update
+  const isUpdateMode = id !== undefined;
 
   useEffect(() => {
     const fetchUserAsync = async () => {
@@ -41,7 +47,7 @@ export default function AddComment() {
       setLoading(true);
       const result = await getRequest("/courses");
       console.log("Fetched courses:", result.data);
-      if (result.status == 200) {
+      if (result.status === 200) {
         setCourses(Array.isArray(result.data) ? result.data : []);
       }
       setLoading(false);
@@ -83,7 +89,7 @@ export default function AddComment() {
         .required("Required"),
     }),
 
-    onSubmit: async (values) => {
+    onSubmit: async (values, {resetForm}) => {
       // let courses = courseList.filter((x) => x.label === values.CourseName);
       // let users = userList.filter((x)=> x.label === values.username)
       let result = await postRequest("/comments", {
@@ -97,6 +103,7 @@ export default function AddComment() {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
+        Navigate("/comments");
         //navigate("/", { replace: true });
       } else {
         toast.error("add failed!");
@@ -139,6 +146,8 @@ export default function AddComment() {
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
           <Autocomplete
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            // getOptionSelected={(option, value) => option.id === value.id}
             disablePortal
             getOptionLabel={(option) => option.CourseName}
             options={courses}
@@ -154,7 +163,8 @@ export default function AddComment() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="CourseName"
+                label="Selected Course"
+                variant="filled"
                 error={
                   formik.touched.Course_id && Boolean(formik.errors.Course_id)
                 }
@@ -195,10 +205,11 @@ export default function AddComment() {
 
           /> */}
           <Autocomplete
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            // getOptionSelected={(option, value) => option.id === value.id}
             options={users}
             getOptionLabel={(option) => option.username}
             loading={loading}
-            // onChange={(event, value) => setSelectedUser(value)}
             onChange={(event, value) => handleSelectedUser(value)}
             renderInput={(params) => (
               <TextField
