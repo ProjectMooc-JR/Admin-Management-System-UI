@@ -58,6 +58,9 @@ instance.interceptors.response.use(
         toast.error("request error!");
         return { status: 500, data: {}, message: "request error!" };
       }
+    } else {
+      toast.error("request error!");
+      return { status: 500, data: {}, message: "request error!" };
     }
   }
 );

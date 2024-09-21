@@ -7,12 +7,21 @@ import { Toaster } from "react-hot-toast";
 import User from "./pages/users/index";
 import Teacher from "./pages/teacher/index";
 import AddUser from "./pages/users/adduser";
+import Addteacher from "./pages/teacher/addteacher";
+import UpdateTeacher from "./pages/teacher/updateteacher";
+import Comment from "./pages/comments/index";
+import AddComment from "./pages/comments/addcomment";
+import CourseManagement from "./pages/courseManagement/CourseManagement";
+import CourseCategory from "./pages/courseCategory/index";
+import AddCourseCategory from "./pages/courseCategory/addcoursecategory";
+import CreateCourse from "./pages/courseManagement/CreateCourse";
 import CourseSchedule from "./pages/courseSchedule/index";
-import AddCourseSchedule from "./pages/courseSchedule/addcourseschedule";
+import ChapterManagement from "./pages/chapterManagement/ChapterManagement";
 
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
-import CourseScheduleList from "./pages/courseSchedule/courseschedulelist";
+import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
+import AddCourseSchedule from "./pages/courseSchedule/addcourseschedule";
 
 function App() {
   return (
@@ -48,6 +57,103 @@ function App() {
             }
           />
           <Route
+            path="/teachers"
+            element={
+              <NeedAuth>
+                <Teacher />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/teachers/addteacher"
+            element={
+              <NeedAuth>
+                <Addteacher />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/teachers/updateteacher/:id"
+            element={
+              <NeedAuth>
+                <UpdateTeacher />
+              </NeedAuth>
+            }
+          />
+
+          <Route
+            path="/courseCategory"
+            element={
+              <NeedAuth>
+                <CourseCategory />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/courseCategory/addCategory"
+            element={
+              <NeedAuth>
+                <AddCourseCategory />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/courseCategory/updateCategory/:id"
+            element={
+              <NeedAuth>
+                <UpdateCourseCategory />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments"
+            element={
+              <NeedAuth>
+                <Comment />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments/addcomment/:id?"
+            element={
+              <NeedAuth>
+                <AddComment />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/comments/addcomment"
+            element={
+              <NeedAuth>
+                <AddComment />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/courses/create"
+            element={
+              <NeedAuth>
+                <CreateCourse />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/course-management"
+            element={
+              <NeedAuth>
+                <CourseManagement />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/chapterManagement"
+            element={
+              <NeedAuth>
+                <ChapterManagement />
+              </NeedAuth>
+            }
+          />
+          <Route
             path="/courseSchedule"
             element={
               <NeedAuth>
@@ -56,7 +162,7 @@ function App() {
             }
           />
           <Route
-            path="/courseSchedule/addcourseschedule/:id?"
+            path="/courseSchedule/addcourseschedule"
             element={
               <NeedAuth>
                 <AddCourseSchedule />

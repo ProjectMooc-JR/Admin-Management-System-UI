@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 
 export default function User() {
   const [pageSearch, setpageSearch] = useState({
-    pageSize: 25,
+    pageSize: 5,
     page: 1,
   });
 
@@ -25,10 +25,8 @@ export default function User() {
     }));
   };
 
-  const handleUpdate=(row)=>{
-    
-  }
-  
+  const handleUpdate = (row) => {};
+
   const columns = [
     { field: "id", headerName: "ID" },
     {
@@ -58,17 +56,19 @@ export default function User() {
       flex: 1,
     },
     {
-        field: "operation",
-        headerName: "opertation",
-        flex: 1,
-        renderCell: (row) => {
-          return (
-            <Box>
-             <Button variant="text" onClick={handleUpdate(row)} >Update</Button>
-            </Box>
-          );
-        },
-      }
+      field: "operation",
+      headerName: "opertation",
+      flex: 1,
+      renderCell: (row) => {
+        return (
+          <Box>
+            <Button variant="text" onClick={handleUpdate(row)}>
+              Update
+            </Button>
+          </Box>
+        );
+      },
+    },
   ];
 
   const [pageData, setPageData] = useState({ items: [], total: 0 });
@@ -78,7 +78,7 @@ export default function User() {
       let result = await getRequest(
         `/users/${pageSearch.page}/${pageSearch.pageSize}`
       );
-      if (result.status == 1) {
+      if (result.status === 1) {
         setPageData(result.data);
       } else {
         setPageData({ items: [], total: 0 });
@@ -89,11 +89,14 @@ export default function User() {
   }, [pageSearch]);
 
   const [open, setOpen] = useState(false);
- 
+
   const navigate = useNavigate();
   function handleAddUser() {
     navigate("/users/adduser");
   }
+
+  //===============================================================================================
+
   const [alertMessage, setAlartMessage] = useState("");
 
   function handledelete() {
@@ -112,7 +115,7 @@ export default function User() {
     if (!data.isOk || rowSelectionModel.length == 0) {
       return;
     }
-  
+
     let ids = rowSelectionModel.join(",");
     let result = await deleteRequest(`/users/${ids}`);
     if (result.status == 1) {
@@ -124,9 +127,8 @@ export default function User() {
     setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
   };
 
-  
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  
+
   return (
     <>
       <Box m="20px">
@@ -170,7 +172,7 @@ export default function User() {
                 variant="contained"
                 onClick={handledelete}
               >
-                Delte
+                Delete
               </Button>
             </Stack>
           </Box>

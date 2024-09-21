@@ -4,9 +4,9 @@ export default function CommentList(props) {
   return (
     <>
       <DataGrid
-        getRowId={(row) => row.ID}
+        //getRowId={(row) => row.id}
         checkboxSelection
-        pageSizeOptions={[25, 50, 100, 150, 300]}
+        pageSizeOptions={[5, 10, 20, 50, 100]}
         paginationMode="server"
         rowCount={props.data.total}
         columns={props.columns}

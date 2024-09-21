@@ -27,6 +27,7 @@ import { DataGrid } from "@mui/x-data-grid";
 export default function TeacherList({
   columns,
   pageData,
+  pageSearch,
   setPaginationModel,
   setRowSelectionModel,
 }) {
@@ -34,15 +35,20 @@ export default function TeacherList({
     <DataGrid
       checkboxSelection
       paginationMode="server"
-      pageSize={pageData.pageSize}
-      rowCount={pageData.total}
+      pageSize={pageSearch.pageSize || 10}
+      rowCount={pageData.total || 0}
       columns={columns}
       rows={pageData.items}
       onPaginationModelChange={(model) => setPaginationModel(model)}
       onRowSelectionModelChange={(newSelection) =>
         setRowSelectionModel(newSelection)
       }
-      pageSizeOptions={[25, 50, 100, 150, 300]}
+      pageSizeOptions={[10, 50, 100]}
+      initialState={{
+        pagination: {
+          paginationModel: { pageSize: pageSearch.pageSize || 10, page: 0 },
+        },
+      }}
     />
   );
 }

@@ -7,7 +7,7 @@ export default function UserList(props) {
     <>
       <DataGrid
         checkboxSelection
-        pageSizeOptions={[25, 50, 100, 150, 300]}
+        pageSizeOptions={[5, 10, 20, 50, 100]}
         paginationMode="server"
         rowCount={props.pageData.total}
         columns={props.columns}

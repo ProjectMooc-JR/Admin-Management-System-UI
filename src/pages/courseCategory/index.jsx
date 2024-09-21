@@ -7,27 +7,21 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import getRequest from "../../request/getRequest";
+import deleteRequest from "../../request/delRequest";
+import postRequest from "../../request/postRequest";
+import toast from "react-hot-toast";
 
 const CourseCategory = () => {
   const columns = [
     {
-      field: "id",
-      headerName: "ID",
-      Hidden: true,
-      headerAlign: "center",
-      align: "center",
-      flex: 1,
-      renderCell: (params) => params.row.ID,
-    },
-    {
-      field: "CatogryName",
+      field: "categoryName",
       headerName: "Category Name",
       headerAlign: "center",
       flex: 1,
       align: "center",
     },
     {
-      field: "Level",
+      field: "level",
       headerName: "Level",
       type: "number",
       headerAlign: "center",
@@ -35,7 +29,7 @@ const CourseCategory = () => {
       align: "center",
     },
     {
-      field: "ParentId",
+      field: "parentID",
       headerName: "ParentID",
       type: "number",
       headerAlign: "center",
@@ -43,7 +37,7 @@ const CourseCategory = () => {
       align: "center",
     },
     {
-      field: "Notes",
+      field: "notes",
       headerName: "Notes",
       headerAlign: "center",
       flex: 1,
@@ -98,46 +92,101 @@ const CourseCategory = () => {
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
-    { id: 2, lastName: "Lannister", firstName: "Cersei", age: 42 },
-    { id: 3, lastName: "Lannister", firstName: "Jaime", age: 45 },
-    { id: 4, lastName: "Stark", firstName: "Arya", age: 16 },
-    { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
-    { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
-    { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
-    { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
-    { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
-  ];
+  const [pageSearch, setpageSearch] = useState({
+    pageSize: 10,
+    page: 1,
+  });
 
+  const handlePaginationModel = (e) => {
+    setpageSearch((preState) => ({
+      ...preState,
+      page: e.page + 1,
+      pageSize: e.pageSize,
+    }));
+  };
   const [pageData, setPageData] = useState({ items: [], total: 0 });
 
   useEffect(() => {
     let getUser = async () => {
-      let result = await getRequest(`/courseCategory`);
-      if (result.status == 200) {
-        setPageData(result.data);
+      let result = await getRequest(
+        `/courseCategory/${pageSearch.page}/${pageSearch.pageSize}`
+      );
+      if (result.status === 200) {
+        setPageData(result.data)
+        console.log("pageData:::::", pageData)
       } else {
-        setPageData({ items: [], total: 0 });
+        setPageData({ items: [], total: 0 })
       }
-      console.log("=========", result);
+      console.log(result.data)
     };
     getUser();
-  }, []);
+  }, [pageSearch]);
+  const [open, setOpen] = useState(false);
 
+  // const handleWinClose = async (data) => {
+  //   console.log("handleWinClose", data);
+  //   setOpen(false);
+  //   if (!data.isOk || rowSelectionModel.length == 0) {
+  //     return;
+  //   }
+
+  //   let ids = rowSelectionModel.join(",");
+  //   let result = await deleteRequest(`/users/${ids}`);
+  //   if (result.status == 1) {
+  //     toast.success("delete success!");
+  //   } else {
+  //     toast.success("delete fail!");
+  //   }
+
+  //   setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+  // };
   const navigate = useNavigate();
-  function handleAddUser() {
-    console.log(11111);
+  function handleAddCategory() {
     navigate("/courseCategory/addCategory");
   }
 
-  function handleDelete() {
-    console.log("delete");
+  async function handleDelete(courseId) {
+    let result = await deleteRequest(`/courseCategory/${courseId}`);
+    if (result.status === 200) {
+      setAlartMessage("Are you sure to delete these items?");
+
+      toast.success("delete success!");
+    } else {
+      toast.success("delete fail!");
+    }
+    setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+
   }
-  function handleEdit() {}
-  function handleMutiDelete() {
-    console.log("Mult-delete");
+  function handleEdit(id) {
+    navigate(`/courseCategory/updateCategory/${id}`);
+
   }
+  const [alertMessage, setAlartMessage] = useState("");
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  console.log("rowSelectionModel:;", rowSelectionModel)
+
+  async function handleMutiDelete() {
+
+    if (rowSelectionModel.length == 0) {
+      setAlartMessage("Please select items");
+      setOpen(true);
+      return;
+    }
+    setAlartMessage("Are you sure to delete these items?");
+    setOpen(true);
+    //批量删除
+    let result = await postRequest(`/courseCategory/mult-delete`, {ids:rowSelectionModel});
+    if (result.status === 200) {
+      toast.success("delete success!");
+    } else {
+      toast.success("delete fail!");
+    }
+    setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+    setRowSelectionModel([]);
+
+  }
+
+
 
   return (
     <>
@@ -148,8 +197,8 @@ const CourseCategory = () => {
         />
         <Box sx={{ mb: "15px" }}>
           <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant="contained" onClick={handleAddUser}>
-              Add User
+            <Button variant="contained" onClick={handleAddCategory}>
+              Add Category
             </Button>
             <Button
               color="secondary"
@@ -161,7 +210,10 @@ const CourseCategory = () => {
           </Stack>
         </Box>
         <div style={{ width: "100%", overflow: Hidden }}>
-          <CategoryList columns={columns} rows={pageData.items} />
+          <CategoryList columns={columns} pageData={pageData}
+            setPaginationModel={handlePaginationModel}
+            setRowSelectionModel={setRowSelectionModel}
+          />
         </div>
       </Box>
     </>

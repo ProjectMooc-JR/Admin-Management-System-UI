@@ -1,189 +1,186 @@
-import React, { useEffect, useState } from 'react'
-import { useFormik } from "formik";
-import { Box, TextField, Stack, Button } from '@mui/material';
-import Header from '../../components/Header';
+import React, { useEffect, useState } from "react";
+import { replace, useFormik } from "formik";
+import { Box, TextField, Stack, Button } from "@mui/material";
+import Header from "../../components/Header";
 import * as Yup from "yup";
-import Grid from '@mui/material/Grid';
-import { TextareaAutosize as BaseTextareaAutosize } from '@mui/base/TextareaAutosize';
-import { styled } from '@mui/system';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import getRequest from "../../request/getRequest";
 import postRequest from "../../request/postRequest";
 import toast from "react-hot-toast";
-
-function MinHeightTextarea() {
-  const Textarea = styled(BaseTextareaAutosize)(
-    ({ theme }) => `
-  box-sizing: border-box;
-  width: 320px;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.5;
-  padding: 8px 12px;
-  border-radius: 8px;
-  color:  #1C2025;
-  background: #fff';
-  border: 1px solid #DAE2ED;
-  box-shadow: 0px 2px 2px #F3F6F9;
-  resize: both; /* 允许用户拉伸 */
-
-
-  &:hover {
-    border-color: #3399FF;
-  }
-
-  &:focus {
-    border-color: #3399FF;
-  }
-
-  // firefox
-  &:focus-visible {
-    outline: 0;
-  }
-`,
-  );
-
-  return (
-    <Textarea style={{ resize: 'both' }} // 允许用户调整大小
-      aria-label="minimum height" minRows={3} placeholder="Add some notes" />
-  );
-}
-
+import { useNavigate } from "react-router-dom";
 
 const AddCourseCategory = () => {
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
-      CategoryName: '',
-      Level: 0,
-      ParentID: 0,
-      Notes: ""
+      categoryName: "",
+      level: 0,
+      parentID: 0,
+      notes: "",
     },
     validationSchema: Yup.object({
-      CategoryName: Yup.string()
+      categoryName: Yup.string()
         .min(3, "Must be 1 characters or more")
         .max(30, "Must be 20 characters or less")
         .required("Required"),
-      Level: Yup.number()
-        .min(0, "Min value is 0")
-        .required("Required"),
-      ParentID: Yup.number()
-        .min(0, "Default value is 0")
-        .required("Required"),
-      Notes: Yup.string()
+      level: Yup.number().min(0, "Min value is 0").required("Required"),
+      parentID: Yup.number().min(0, "Default value is 0").required("Required"),
+      notes: Yup.string(),
     }),
     onSubmit: async (values) => {
-      // 这里formik 已经默认帮我们阻止了默认执行
-      let result = await postRequest("/course-category", {
-        username: values.username,
-        password: values.password,
-        email: values.email,
-        address: values.address,
-      });
+      console.log(values);
 
-      if (result.status == 200) {
+      // 这里formik 已经默认帮我们阻止了默认执行
+      let result = await postRequest("/courseCategory", {
+        CategoryName: values.categoryName,
+        Level: values.level,
+        ParentID: values.parentID,
+        Notes: values.notes,
+      });
+      console.log(result);
+
+      if (result.status == 201) {
         toast.success("add success!");
         formik.resetForm();
-        //navigate("/", { replace: true });
       } else {
         toast.error("add failed!");
       }
     },
-
-  })
+  });
   const [categoryList, setCategoryList] = useState([]);
-  // useEffect(() => {
-  //   //请求获取所有的category
-  //   let getCategoryList = async () => {
-  //     let result = await getRequest(
-  //       `/course-category`
-  //     );
-  //     if (result.status === 200) {
-  //       setCategoryList(result.data);
-  //     } else {
-  //       setCategoryList([]);
-  //     }
-  //     console.log("=========", result);
-  //   };
-  //   getCategoryList();
-  // }, [])
+  const backToList = () => {
+    navigate("/courseCategory", { replace: true });
+  };
+  useEffect(() => {}, []);
+
+  async function handleSelectLevel(e) {
+    formik.handleChange(e);
+    let result = await getRequest(`courseCategory/courseCategoryLevel/${e.target.value}`);
+    if (result.status === 200) {
+      setCategoryList(result.data);
+    } else {
+      setCategoryList([]);
+    }
+    console.log(result.data);
+  }
   return (
     <Box m={"20px"}>
-      <Header title={"CREATE CATEGORY"} subtitle="Create a New Course Category" />
+      <Header
+        title={"CREATE CATEGORY"}
+        subtitle="Create a New Course Category"
+      />
       <form onSubmit={formik.handleSubmit} autoComplete="off">
-        <Box display={"flex"}
+        <Box
+          display={"flex"}
           justifyContent="center"
           alignItems="center"
           m="20px"
           sx={{
-            border: '2px solid #000',
-            borderRadius: '5px',
-            padding: '16px', // 可选：添加内边距
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // 可选：添加阴影
-            maxWidth:900
+            border: "2px solid #000",
+            borderRadius: "5px",
+            padding: "16px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            maxWidth: 900,
           }}
         >
-          <Grid container spacing={2} sx={{ width: '100%'}}>
+          <Grid container spacing={2} sx={{ width: "100%" }}>
             <Grid item xs={12}>
-              <TextField fullWidth required type='text' label="Category Name"
-                name='categoryName' onChange={formik.handleChange}
-                value={formik.values.CategoryName} id="standard-required-1"
-                defaultValue="Hello World" />
+              <TextField
+                fullWidth
+                required
+                type="text"
+                label="Category Name"
+                multiline
+                name="categoryName"
+                onChange={formik.handleChange}
+                value={formik.values.categoryName}
+                id="standard-required-1"
+                defaultValue="Hello World"
+              />
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-helper-label">Level</InputLabel>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Level
+                </InputLabel>
                 <Select
+                  name="level"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  value={formik.values.Level}
+                  value={formik.values.level ?? ""}
                   label="Level"
-                  onChange={formik.handleChange}
+                  onChange={handleSelectLevel}
+                  // onChange={formik.handleChange}
                 >
-
-                  <MenuItem value={0}>Zero</MenuItem>
                   <MenuItem value={1}>One</MenuItem>
                   <MenuItem value={2}>Two</MenuItem>
-                  <MenuItem value={3}>Three</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-helper-label">Parent</InputLabel>
+                <InputLabel id="demo-simple-select-helper-label">
+                  Parent
+                </InputLabel>
                 <Select
+                  name="parentID"
                   labelId="demo-simple-select-helper-label"
                   id="demo-simple-select-helper"
-                  value={formik.values.ParentID}
+                  value={formik.values.parentID ?? ""}
                   label="Parent"
                   onChange={formik.handleChange}
                 >
-                  {categoryList.length > 0 ? categoryList.map((item, index) => {
-                    return (
-                      <MenuItem value={item.ID}>{item.CategoryName}</MenuItem>
-                    )
-                  }) : <MenuItem value={0}>Zero</MenuItem>}
+                  {categoryList.length > 0 ? (
+                    categoryList.map((item, index) => {
+                      return (
+                        <MenuItem value={item.ID}>{item.CategoryName}</MenuItem>
+                      );
+                    })
+                  ) : (
+                    <MenuItem value={0}>Zero</MenuItem>
+                  )}
                 </Select>
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-            <TextField fullWidth required type='text' label="Notes" multiline
-                name='Notes' onChange={formik.handleChange}
-                value={formik.values.Address} id="standard-required-99"
-                defaultValue="" />
-         
+              <TextField
+                fullWidth
+                required
+                type="text"
+                label="Notes"
+                multiline
+                name="notes"
+                onChange={formik.handleChange}
+                value={formik.values.notes}
+                id="standard-required-99"
+                defaultValue=""
+              />
             </Grid>
             <Grid item xs={10}>
               <Box display="flex" gap={2}>
-                <Button type="submit" color="secondary" variant="contained">
+                <Button type="submit" color="primary" variant="contained">
                   Create New Category
                 </Button>
-
-                <Button type="cancle" color="secondary" variant="contained">
-                  Cancel
+                <Button
+                  type="cancel"
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => formik.resetForm()}
+                >
+                  Reset
+                </Button>
+                <Button
+                  type="button"
+                  color="grey"
+                  variant="contained"
+                  onClick={backToList}
+                >
+                  Back to list
                 </Button>
               </Box>
             </Grid>
@@ -201,7 +198,7 @@ const AddCourseCategory = () => {
         </Box>
       </form>
     </Box>
-  )
-}
+  );
+};
 
-export default AddCourseCategory
+export default AddCourseCategory;
