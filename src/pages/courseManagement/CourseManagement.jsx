@@ -30,6 +30,40 @@ export default function CourseManagement() {
     }));
   };
 
+
+// // 获取课程和教师数据
+//   useEffect(() => {
+//     const fetchCoursesAndTeachers = async () => {
+//       // 获取教师数据
+//       const teacherResult = await getRequest(`/api/teachers/${pageSearch.page}/${pageSearch.pageSize}`);
+//       if (teacherResult.status === 200) {
+//         setTeachers(teacherResult.data.items);  // 将教师数据存入状态
+//       }
+
+//       // 获取课程数据
+//       const courseResult = await getRequest(`/courses/${pageSearch.page}/${pageSearch.pageSize}`);
+//       if (courseResult.status === 200) {
+//         // 映射教师ID到教师姓名
+//         const rows = courseResult.data.items.map((course) => {
+//           const teacher = teachers.find(t => t.ID === course.TeacherID);  // 通过ID找到教师
+//           return {
+//             id: course.ID,
+//             courseName: course.CourseName,
+//             description: course.Description,
+//             category: course.CategoryName,
+//             teacher: teacher ? teacher.name : 'Unknown',  // 映射到教师姓名
+//             publishedAt: course.publishedAt,
+//           };
+//         });
+//         setCourses({ items: rows, total: courseResult.data.total });
+//       } else {
+//         setCourses({ items: [], total: 0 });
+//       }
+//     };
+
+//     fetchCoursesAndTeachers();
+//   }, [pageSearch]);
+
 useEffect(() => {
     const fetchCourses = async () => {
         const url = `/courses/${pageSearch.page}/${pageSearch.pageSize}`;
@@ -44,6 +78,7 @@ useEffect(() => {
     };
     fetchCourses();
 }, [pageSearch]);
+
 
 
 
