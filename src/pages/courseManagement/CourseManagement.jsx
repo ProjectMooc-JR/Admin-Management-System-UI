@@ -8,10 +8,11 @@ import deleteRequest from "../../request/delRequest";
 import toast from 'react-hot-toast';
 import Header from "../../components/Header";  
 import colors from '../../theme';
+// import CourseList from "./CourseList"; // 引入CourseList组件
 
 export default function CourseManagement() {
   const [pageSearch, setPageSearch] = useState({
-    pageSize: 25,
+    pageSize: 10,
     page: 1,
   });
   
@@ -21,34 +22,30 @@ export default function CourseManagement() {
   const [alertMessage, setAlertMessage] = useState("");
   const navigate = useNavigate();
 
-  const handlePaginationModel = (e) => {
-    setPageSearch({
-      ...pageSearch,
-      page: e.page + 1,
-      pageSize: e.pageSize,
-    });
+  const handlePaginationModel = (params) => {
+    setPageSearch((preState) => ({
+      ...preState,
+      page: params.page + 1,
+      pageSize: params.pageSize || preState.pageSize,
+    }));
   };
 
-  useEffect(() => {
+useEffect(() => {
     const fetchCourses = async () => {
-     const result = await getRequest(`/courses/${pageSearch.page}/${pageSearch.pageSize}`);
-     // const result = await getRequest('courses/courselist');
-      if (result.status === 200) {
-        const rows = result.data.items.map((course) => ({
-          id: course.ID,
-          courseName: course.CourseName,
-          description: course.Description,
-          category: course.CategoryName,
-          teacher: course.username,
-          publishedAt: course.publishedAt,
-        }));
-        setCourses({ items: rows, total: result.data.length });
-      } else {
-        setCourses({ items: [], total: 0 });
-      }
+        const url = `/courses/${pageSearch.page}/${pageSearch.pageSize}`;
+        console.log("Requesting URL: ", url);
+        let result = await getRequest(url);
+        console.log(result);
+        if (result.status === 1) {
+            setCourses(result.data);
+        } else {
+            setCourses({ items: [], total: 0 });
+        }
     };
     fetchCourses();
-  }, [pageSearch]);
+}, [pageSearch]);
+
+
 
   const handleDelete = () => {
     if (rowSelectionModel.length === 0) {
@@ -79,14 +76,15 @@ export default function CourseManagement() {
     navigate("/courses/create");  // 这里添加课程的路由
   };
 
-  const columns = [
-    { field: "id", headerName: "ID" },
-    { field: "courseName", headerName: "Course Name", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1 },
-    { field: "category", headerName: "Category", flex: 1 },
-    { field: "teacher", headerName: "Teacher", flex: 1 },
-    { field: "publishedAt", headerName: "Published At", flex: 1 },
-  ];
+const columns = [
+    { field: 'id', headerName: 'ID', flex: 1 },
+    { field: 'CourseName', headerName: 'Course Name', flex: 1 },
+    { field: 'Description', headerName: 'Description', flex: 1 },
+    { field: 'CategoryID', headerName: 'Category', flex: 1 },
+    { field: 'TeacherID', headerName: 'Teacher', flex: 1 },
+    { field: 'PublishedAt', headerName: 'Published At', flex: 1 },
+];
+
 
   // // 从 courses 数据中映射 rows
   // const rows = courses.items.map((course) => ({
@@ -148,7 +146,7 @@ export default function CourseManagement() {
     >
     <DataGrid
         rows={courses.items}  // 将映射后的rows传递给DataGrid
-        total={courses.total}
+        // total={courses.total}
         columns={columns}
         pageSize={10}
         pageSizeOptions={[10, 25, 50, 100]}  // Provide available options

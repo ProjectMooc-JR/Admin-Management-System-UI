@@ -14,7 +14,7 @@ import colors from '../../theme';
 
 export default function ChapterManagement() {
   const [pageSearch, setPageSearch] = useState({
-    pageSize: 25,
+    pageSize: 10,
     page: 1,
   });
   
