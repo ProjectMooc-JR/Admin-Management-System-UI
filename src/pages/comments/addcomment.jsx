@@ -92,9 +92,10 @@ export default function AddComment() {
     onSubmit: async (values, {resetForm}) => {
       // let courses = courseList.filter((x) => x.label === values.CourseName);
       // let users = userList.filter((x)=> x.label === values.username)
+
       let result = await postRequest("/comments", {
-        Course_ID: selectedCourse.id,
-        User_ID: selectedUser.id,
+        Course_id: selectedCourse.ID,
+        User_id: selectedUser.id,
         CommentContent: values.CommentContent,
         CommentTime: values.CommentTime,
       });

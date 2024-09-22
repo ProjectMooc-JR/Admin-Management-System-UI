@@ -254,7 +254,7 @@ function Chapter(props) {
     <Box sx={{ width: "98%", height: 400 }}>
       <DataGridPro
         density="compact"
-        getRowId={(row) => row.ChapterNumber}
+        getRowId={(row) => row.ChapterTitle}
         columns={[
           { field: "ChapterTitle", headerName: "ChapterTitle", flex: 1 },
           {
@@ -265,8 +265,8 @@ function Chapter(props) {
             flex: 1,
           },
           {
-            field: "ChapterNumber",
-            headerName: "ChapterNumber",
+            field: "ChapterOrder",
+            headerName: "ChapterOrder",
             type: "number",
             flex: 1,
           },
