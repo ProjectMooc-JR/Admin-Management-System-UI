@@ -22,7 +22,6 @@ import MoocDropzone from "../../components/moocDropzone";
 import VideoUploadZone from "../../pages/courseManagement/VideoUploadZone";
 
 export default function CreateCourse() {
-
   // 控制加载的状态
   const [loading, setLoading] = useState(false);
 
@@ -48,25 +47,35 @@ export default function CreateCourse() {
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
-    CourseName: '',
-    Description: '',
-    CategoryID: '',
-    Cover: '',
-    TeacherID: '',
-    PublishedAt: '',
+      CourseName: "",
+      Description: "",
+      CategoryID: "",
+      Cover: "",
+      TeacherID: "",
+      PublishedAt: "",
     },
 
     validationSchema: Yup.object({
       CourseName: Yup.string().required("CourseName is required"),
     }),
     onSubmit: async (inputValues) => {
-      let result = await postRequest("/courses", {
-        CourseName: inputValues.CourseName,
-        Description: inputValues.Description,
-        Cover:avatarData,
-        CategoryID: 1,
-        TeacherID: 1
-      });
+      const formData = new FormData();
+      formData.append("file", videoFile);
+      formData.append('CourseName',inputValues.CourseName);
+      formData.append('Description',inputValues.Description);
+      formData.append('Cover',avatarData);
+      formData.append('CategoryID',1);
+      formData.append('Cover',1);
+
+      let result = await postRequest("/courses", formData);
+
+      // let result = await postRequest("/courses", {
+      //   CourseName: inputValues.CourseName,
+      //   Description: inputValues.Description,
+      //   Cover: avatarData,
+      //   CategoryID: 1,
+      //   TeacherID: 1,
+      // });
 
       if (result.status === 201) {
         alert("Add course successfully");
@@ -89,12 +98,12 @@ export default function CreateCourse() {
       }}
     >
       <form onSubmit={handleSubmit}>
-      {/* Other form fields */}
-      <VideoUploadZone onVideoUpload={handleVideoUpload} />
-      <button type="submit">Create Course</button>
+        {/* Other form fields */}
+        <VideoUploadZone onVideoUpload={handleVideoUpload} />
+        <button type="submit">Create Course</button>
       </form>
       <form onSubmit={formik.handleSubmit} className="add-teacher-form">
-      <TextField
+        <TextField
           fullWidth
           variant="filled"
           type="text"
@@ -102,15 +111,13 @@ export default function CreateCourse() {
           name="CourseName"
           value={formik.values.CourseName}
           onChange={formik.handleChange}
-          error={
-            formik.touched.CourseName &&
-            Boolean(formik.errors.CourseName)
-          }
-          helperText={
-            formik.touched.CourseName && formik.errors.CourseName
-          }
+          error={formik.touched.CourseName && Boolean(formik.errors.CourseName)}
+          helperText={formik.touched.CourseName && formik.errors.CourseName}
         />
-        <MoocDropzone avatarResult={handleAvatarResult} notes='select a course cover' />
+        <MoocDropzone
+          avatarResult={handleAvatarResult}
+          notes="select a course cover"
+        />
 
         <Button
           type="submit"
