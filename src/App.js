@@ -21,6 +21,7 @@ import AddCourseSchedule from './pages/courseSchedule/addcourseschedule';
 import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
 import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
+import CreateChapter from "./pages/chapterManagement/CreateChapter";
 
 function App() {
   return (
@@ -137,6 +138,15 @@ function App() {
               </NeedAuth>
             }
           />
+           <Route
+            path="/createChapter/:courseid"
+            element={
+              <NeedAuth>
+                <CreateChapter />
+              </NeedAuth>
+            }
+          />
+          
           <Route
             path="/chapterManagement"
             element={

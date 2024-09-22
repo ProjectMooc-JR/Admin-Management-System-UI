@@ -133,6 +133,16 @@ export default function CourseManagement() {
     }));
   };
 
+  const handleAddChapter = () => {
+    // if (rowSelectionModel.length === 0) {
+    //   toast.error("Please select course to add a chapter.");
+    //   return;
+    // }
+    //navigate("/createChapter/" + rowSelectionModel.id); // Add chapter route
+
+    navigate("/createChapter/" + 2); // Add chapter route
+  };
+
   return (
     <Box m="20px">
       <Header
@@ -144,6 +154,13 @@ export default function CourseManagement() {
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button variant="contained" onClick={handleAddCourse}>
             Add Course
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleAddChapter}
+          >
+            Add Chapter
           </Button>
           <Button color="secondary" variant="contained" onClick={handleDelete}>
             Delete
@@ -202,13 +219,16 @@ export default function CourseManagement() {
           pageSize={pageSearch.pageSize}
           pagination
           paginationMode="server"
+          rowSelection
           checkboxSelection
-          disableSelectionOnClick
+          //disableSelectionOnClick
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           onPageChange={(newPage) => setPage(newPage)}
           // onPaginationModelChange={handlePaginationModel}
-          onRowSelectionModelChange={(newRowSelectionModel) => {
-            setRowSelectionModel(newRowSelectionModel);
+
+          onRowSelectionModelChange={(newSelection,a) => {
+           
+            setRowSelectionModel(newSelection);
           }}
           rowThreshold={0}
           getDetailPanelHeight={getDetailPanelHeight}
