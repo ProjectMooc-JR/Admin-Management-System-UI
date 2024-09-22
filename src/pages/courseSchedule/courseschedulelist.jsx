@@ -28,6 +28,7 @@ import { DataGrid } from "@mui/x-data-grid";
 export default function CourseScheduleList({
   columns,
   pageData,
+  pageSearch,
   setPaginationModel,
   setRowSelectionModel,
 }) {
@@ -44,6 +45,11 @@ export default function CourseScheduleList({
         setRowSelectionModel(newSelection)
       }
       pageSizeOptions={[10, 50, 100, 150]}
+      initialState={{
+        pagination: {
+          paginationModel: { pageSize: pageSearch.pageSize || 10, page: 0 },
+        },
+      }}
     />
   );
 }
