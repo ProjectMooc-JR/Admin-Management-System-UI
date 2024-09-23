@@ -20,11 +20,13 @@ import getRequest from "../../request/getRequest";
 // import Header from "../../components/Header";
 import MoocDropzone from "../../components/moocDropzone";
 import VideoUploadZone from "../../pages/courseManagement/VideoUploadZone";
+import { useParams } from "react-router-dom";
 
-export default function CreateCourse() {
+export default function CreateChapter() {
   // 控制加载的状态
   const [loading, setLoading] = useState(false);
-
+  let { courseid } = useParams();
+  console.log("CreateChapter", courseid);
   const [avatarData, setAvatarData] = useState("");
   const handleAvatarResult = (result) => {
     setAvatarData(result);
@@ -47,35 +49,23 @@ export default function CreateCourse() {
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
-      CourseName: "",
-      Description: "",
-      CategoryID: "",
-      Cover: "",
-      TeacherID: "",
-      PublishedAt: "",
+     ChapterTitle: "",
+     ChapterDescription: "",
+     ChapterOrder: "",
     },
 
     validationSchema: Yup.object({
-      CourseName: Yup.string().required("CourseName is required"),
+        ChapterTitle: Yup.string().required("ChapterTitle is required"),
     }),
     onSubmit: async (inputValues) => {
       const formData = new FormData();
       formData.append("file", videoFile);
-      formData.append('CourseName',inputValues.CourseName);
-      formData.append('Description',inputValues.Description);
-      formData.append('Cover',avatarData);
-      formData.append('CategoryID',1);
-      formData.append('Cover',1);
-
-      let result = await postRequest("/courses", formData);
-
-      // let result = await postRequest("/courses", {
-      //   CourseName: inputValues.CourseName,
-      //   Description: inputValues.Description,
-      //   Cover: avatarData,
-      //   CategoryID: 1,
-      //   TeacherID: 1,
-      // });
+      formData.append("ChapterTitle", inputValues.ChapterTitle);
+      formData.append("ChapterDescription", inputValues.ChapterDescription);
+      formData.append("ChapterOrder", inputValues.ChapterOrder);
+      formData.append("CourseID", courseid);
+      
+      let result = await postRequest("/chapters", formData);
 
       if (result.status === 201) {
         alert("Add course successfully");
@@ -97,35 +87,49 @@ export default function CreateCourse() {
         gap: "24px",
       }}
     >
-      <form onSubmit={handleSubmit}>
-        {/* Other form fields */}
-        <VideoUploadZone onVideoUpload={handleVideoUpload} />
-        <button type="submit">Create Course</button>
-      </form>
+
       <form onSubmit={formik.handleSubmit} className="add-teacher-form">
         <TextField
           fullWidth
           variant="filled"
           type="text"
-          label="Course Name"
-          name="CourseName"
-          value={formik.values.CourseName}
+          label="Chapter title"
+          name="ChapterTitle"
+          value={formik.values.ChapterTitle}
           onChange={formik.handleChange}
-          error={formik.touched.CourseName && Boolean(formik.errors.CourseName)}
-          helperText={formik.touched.CourseName && formik.errors.CourseName}
+          error={formik.touched.ChapterTitle && Boolean(formik.errors.ChapterTitle)}
+          helperText={formik.touched.ChapterTitle && formik.errors.ChapterTitle}
         />
-        <MoocDropzone
-          avatarResult={handleAvatarResult}
-          notes="select a course cover"
+         <TextField
+          fullWidth
+          variant="filled"
+          type="text"
+          label="Course Description"
+          name="ChapterDescription"
+          value={formik.values.ChapterDescription}
+          onChange={formik.handleChange}
+          error={formik.touched.ChapterDescription && Boolean(formik.errors.ChapterDescription)}
+          helperText={formik.touched.ChapterDescription && formik.errors.ChapterDescription}
         />
-
+        <TextField
+          fullWidth
+          variant="filled"
+          type="number"
+          label="Course Order"
+          name="ChapterOrder"
+          value={formik.values.ChapterOrder}
+          onChange={formik.handleChange}
+          error={formik.touched.ChapterOrder && Boolean(formik.errors.ChapterOrder)}
+          helperText={formik.touched.ChapterOrder && formik.errors.ChapterOrder}
+        />
+         <VideoUploadZone onVideoUpload={handleVideoUpload} />        
         <Button
           type="submit"
           variant="contained"
           color="primary"
           sx={{ width: "400px" }}
         >
-          Transform this user to teacher
+          Add Chapter
         </Button>
       </form>
     </Box>

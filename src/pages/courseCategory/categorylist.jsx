@@ -6,7 +6,7 @@ const CategoryList = (props) => {
   return (
     <DataGrid
       paginationMode="server"
-      getRowId={(row) => row.id}
+      getRowId={(row) => row.ID}
       pageSizeOptions={[5, 10, 100, 150, 300]}
       rowCount={props.pageData.total}
       rows={props.pageData.items}

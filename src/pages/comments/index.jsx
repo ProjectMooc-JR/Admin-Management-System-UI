@@ -31,12 +31,13 @@ export default function Comment() {
   const handleUpdate = (row) => {};
 
   const columns = [
-    { field: "id", headerName: "ID" },
-    {
-      field: "CourseID",
-      headerName: "Course ID",
-      flex: 1,
-    },
+    { field: "id", headerName: "id" },
+    { field: "CourseName", headerName: "Course Name", flex: 1 },
+    // {
+    //   field: "CourseID",
+    //   headerName: "Course ID",
+    //   flex: 1,
+    // },
     {
       field: "CommentContent",
       headerName: "Comment Content",
@@ -48,10 +49,30 @@ export default function Comment() {
       flex: 1,
     },
     {
-      field: "UserID",
-      headerName: "User ID",
-      flex: 1,
+      field: "username",
+      headerName: "User Name",
+      flex:1
     },
+
+    {
+      field: "operation",
+      headerName: "opertation",
+      flex: 1,
+      renderCell: (row) => {
+        return (
+          <Box>
+            <Button variant="text" onClick={handleUpdate(row)}>
+              Update
+            </Button>
+          </Box>
+        );
+      },
+    },
+    // {
+    //   field: "UserID",
+    //   headerName: "User ID",
+    //   flex: 1,
+    // },
   ];
 
   const [open, setOpen] = useState(false);
@@ -78,7 +99,7 @@ export default function Comment() {
   const [alertMessage, setAlertMessage] = useState("");
 
   function handleDelete() {
-    if (rowSelectionModel.length == 0) {
+    if (rowSelectionModel.length === 0) {
       setAlertMessage("Please select items");
       setOpen(true);
       return;
@@ -95,6 +116,28 @@ export default function Comment() {
     setDeleteId(id);
     setOpen(true);
   };
+
+  const handleWinClose = async (data) => {
+    console.log("handleWinClose", data);
+    setOpen(false);
+    if (!data.isOk || rowSelectionModel.length === 0) {
+      return;
+    }
+
+    let ids = rowSelectionModel.join(",");
+    let result = await deleteRequest(`/comments/${ids}`);
+    if (result.status === 200) {
+      toast.success("delete success!");
+    } else {
+      toast.success("delete fail!");
+    }
+
+    setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
+  };
+
+  function handleAddComment() {
+    navigate("/comments/addcomment");
+  }
 
   // const fetchComments = async () => {
   //     setLoading(true);
@@ -114,7 +157,7 @@ export default function Comment() {
       let result = await getRequest(
         `/comments/${pageSearch.page}/${pageSearch.pageSize}`
       );
-      if (result.status == 1) {
+      if (result.status === 200) {
         setData(result.data);
       } else {
         setData({ items: [], total: 0 });
@@ -124,36 +167,78 @@ export default function Comment() {
   }, [pageSearch]);
 
   return (
-    <Box>
-      <Header title="Comments" />
-      <Stack spacing={2} sx={{ padding: "0 20px" }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/comments/addcomment")}
+    <>
+      <Box m="20px">
+        <Header title="TEAM" subtitle="Managing the Team Members" />
+        <Box
+          m="40px 0 0 0"
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
         >
-          Add Comment
-        </Button>
-        <Divider />
-        <CommentList
-          columns={columns}
-          data={data}
-          loading={loading}
-          error={error}
-          handlePaginationModel={handlePaginationModel}
-          handleDeleteDialog={handleDeleteDialog}
-          handleEdit={handleEdit}
-          setPaginationModel={setPaginationModel}
-          setRowSelectionModel={setRowSelectionModel}
-        />
-      </Stack>
+          <Box sx={{ mb: "15px" }}>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="contained" onClick={handleAddComment}>
+                Add Comment
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                onClick={handleDelete}
+              >
+                Delete Comment
+              </Button>
+            </Stack>
+          </Box>
+          <CommentList
+           columns={columns}
+           data={data}
+           loading={loading}
+           error={error}
+           handlePaginationModel={handlePaginationModel}
+           handleDeleteDialog={handleDeleteDialog}
+           handleEdit={handleEdit}
+           setPaginationModel={handlePaginationModel}
+          //  setPaginationModel={setPaginationModel}
+           setRowSelectionModel={setRowSelectionModel}
+          ></CommentList>
+        </Box>
+      </Box>
       <AlterDialog
+        title="Warning"
+        alertType="warning"
         open={open}
-        setOpen={setOpen}
-        title="Delete Comment"
-        content="Are you sure you want to delete this comment?"
-        handleOk={handleDelete}
-      />
-    </Box>
+        onClose={handleWinClose}
+      >
+        {alertMessage}
+      </AlterDialog>
+      {/* <WinDialog title="test dialog" open={open} onClose={handleWinClose}>
+        
+        <Adduser />
+      </WinDialog> */}
+    </>
   );
 }
