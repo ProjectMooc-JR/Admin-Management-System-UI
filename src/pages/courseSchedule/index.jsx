@@ -50,8 +50,8 @@ export default function CourseSchedule() {
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "CourseID",
-      headerName: "Course ID",
+      field: "CourseName",
+      headerName: "Course Name",
       flex: 1,
       cellClassName: "name-column--cell",
     },
@@ -110,8 +110,9 @@ export default function CourseSchedule() {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+  //revised the path and fixed the bug
   const handleAddcourseschedule = () => {
-    navigate("/addcourseSchedule");
+    navigate("/courseSchedule/addcourseschedule");
   };
 
   const [alertMessage, setAlertMessage] = useState("");

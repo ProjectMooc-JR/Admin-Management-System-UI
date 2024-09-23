@@ -17,6 +17,7 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
+import { Navigate, useParams } from "react-router-dom";
 
 export default function AddCourseSchedule() {
   const [courses, setCourses] = useState([]);
@@ -46,7 +47,7 @@ export default function AddCourseSchedule() {
 
   const formik = useFormik({
     initialValues: {
-      Course_id: "",
+      Course_id: -1,
       StartDate: "",
       EndDate: "",
       IsPublished: "",
@@ -63,12 +64,12 @@ export default function AddCourseSchedule() {
       // IDIsPublished: Yup.mixed().oneOf(['Yes', 'No'], "Must be Yes or No").required("Publication status is required"),
       //CoursescheduleID: Yup.number().required("Required"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       let result = await postRequest("/courseSchedule", {
         //CoursescheduleID: values.CoursescheduleID,
         StartDate: values.StartDate,
         EndDate: values.EndDate,
-        Course_ID: selectedCourse.id,
+        Course_id: selectedCourse.ID,
         IsPublished: values.IsPublished,
       });
 
@@ -78,6 +79,7 @@ export default function AddCourseSchedule() {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
+        Navigate("/courseSchedule");
         //navigate("/", { replace: true });
       } else {
         toast.error("add failed!");
@@ -100,6 +102,9 @@ export default function AddCourseSchedule() {
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
           <Autocomplete
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
             disablePortal
             options={courses}
             fullWidth
@@ -111,7 +116,8 @@ export default function AddCourseSchedule() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Course Name"
+                label="Selected Course Name"
+                variant="filled"
                 error={
                   formik.touched.Course_id && Boolean(formik.errors.Course_id)
                 }
