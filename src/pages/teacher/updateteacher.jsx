@@ -13,11 +13,11 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useFormik } from "formik";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
-import postRequest from "../../request/postRequest";
+import putRequest from "../../request/putRequest";
 import getRequest from "../../request/getRequest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // import Header from "../../components/Header";
 
@@ -29,15 +29,25 @@ export default function UpdateTeacher() {
   // 储存被选择转变成teacher的user
   const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
+  let { id } = useParams();
 
   useEffect(() => {
     const fetchUsers = async () => {
       // 先设置加载状态：打开加载状态
       setLoading(true);
-      const result = await getRequest("/users");
-      // 将返回的user数据通过setUsers存储到users中
-      setUsers(Array.isArray(result.data) ? result.data : []);
-      console.log("Fetched users:", result.data);
+      const result = await getRequest(`/teachers/${id}`);
+
+      console.log("teachers:", result.data);
+      if (result.status == 200) {
+        formik.setValues({
+          HireDate: formatDateToYYYYMMDD(new Date(result.data.HireDate)),
+          HireStatus: result.data.HireStatus,
+          Specialization: result.data.Specialization,
+          Description: result.data.Description,
+          MobileNum: result.data.MobileNum,
+          LinkedInLink: result.data.LinkedInLink,
+        });
+      }
       // console.log("Fetched users:", JSON.stringify(result.data));
       // 加载完成，关闭加载状态
       setLoading(false);
@@ -50,6 +60,16 @@ export default function UpdateTeacher() {
     setSelectedUser(value);
   };
 
+  function formatDateToYYYYMMDD(date) {
+    let year = date.getFullYear();
+    let month =String((date.getMonth() + 1)).padStart(2, "0");
+    let day = String(date.getDate()).padStart(2, "0");
+    let timeFormat = `${year}-${month}-${day}`;
+    console.log("formatDateToYYYYMMDD", timeFormat);
+    return timeFormat;
+  }
+
+
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
@@ -58,7 +78,7 @@ export default function UpdateTeacher() {
       Specialization: "",
       Description: "",
       MobileNum: "",
-      LinkedInLink: "test.com",
+      LinkedInLink: "",
     },
     validationSchema: Yup.object({
       HireDate: Yup.date().required("Hire Date is required"),
@@ -72,8 +92,9 @@ export default function UpdateTeacher() {
         .required("Mobile number is required"),
       LinkedInLink: Yup.string(),
     }),
+    
     onSubmit: async (inputValues) => {
-      let result = await postRequest("/teachers", {
+      let result = await putRequest(`/teachers/${id}`, {
         User_id: selectedUser.id,
         Specialization: inputValues.Specialization,
         Description: inputValues.Description,
@@ -84,9 +105,9 @@ export default function UpdateTeacher() {
       });
 
       if (result.status === 201) {
-        alert("teacher shifted successfully.");
+        toast.success("teacher update successfully.");
       } else {
-        alert("failed to shift this user to teacher.");
+        toast.error("failed to update teacher.");
       }
     },
   });
@@ -103,7 +124,7 @@ export default function UpdateTeacher() {
         gap: "24px",
       }}
     >
-      <button onClick={() => navigate("/teachers")}>Back</button>
+      {/* <button onClick={() => navigate("/teachers")}>Back</button> */}
       {/* <Autocomplete
         options={users}
         getOptionLabel={(option) => option.username}

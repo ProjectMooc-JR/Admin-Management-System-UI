@@ -57,7 +57,7 @@ export default function Teacher() {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   // **配置一个打开/关闭弹窗组件的状态
-  //const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // **配置一个可以在弹窗中显示不同文本信息的状态
   const [alertMessage, setAlertMessage] = useState("");
@@ -187,7 +187,7 @@ export default function Teacher() {
       <Box m="20px">
         {/* 这个header是之前定义的header组件，box是mui提供的替换div的容器 */}
         <Header title="TEAM" subtitle="Managing Teachers" />
-        <box>
+        <Box>
           <Box sx={{ mb: "15px" }}>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <Button variant="contained" onClick={handleAddTeacher}>
@@ -209,7 +209,7 @@ export default function Teacher() {
             setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
           />
-        </box>
+        </Box>
       </Box>
       <AlterDialog
         title="Warning"

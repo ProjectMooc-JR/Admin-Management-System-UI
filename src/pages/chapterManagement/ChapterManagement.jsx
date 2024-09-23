@@ -2,22 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import AlterDialog from "../../components/alterDialog"; 
-import getRequest from "../../request/getRequest";      
-import deleteRequest from "../../request/delRequest";  
-import toast from 'react-hot-toast';
-import Header from "../../components/Header";         
-import colors from '../../theme';
-
-
-
+import AlterDialog from "../../components/alterDialog";
+import getRequest from "../../request/getRequest";
+import deleteRequest from "../../request/delRequest";
+import toast from "react-hot-toast";
+import Header from "../../components/Header";
+import colors from "../../theme";
 
 export default function ChapterManagement() {
   const [pageSearch, setPageSearch] = useState({
-    pageSize: 25,
+    pageSize: 10,
     page: 1,
   });
-  
+
   const [chapters, setChapters] = useState({ items: [], total: 0 });
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [open, setOpen] = useState(false);
@@ -34,7 +31,9 @@ export default function ChapterManagement() {
 
   useEffect(() => {
     const fetchChapters = async () => {
-      const result = await getRequest(`/chapters/${pageSearch.page}/${pageSearch.pageSize}`);
+      const result = await getRequest(
+        `/chapters/${pageSearch.page}/${pageSearch.pageSize}`
+      );
       if (result.status === 200) {
         const rows = result.data.items.map((chapter) => ({
           id: chapter.ID,
@@ -62,6 +61,14 @@ export default function ChapterManagement() {
     setOpen(true);
   };
 
+  const handleAddChapter = () => {
+    if (rowSelectionModel.length === 0) {
+      setAlertMessage("Please select course to add a chapter.");
+      return;
+    }
+    navigate("/createChapter/" + rowSelectionModel.id); // Add chapter route
+  };
+
   const handleDialogClose = async (data) => {
     setOpen(false);
     if (!data.isOk || rowSelectionModel.length === 0) return;
@@ -77,9 +84,9 @@ export default function ChapterManagement() {
     setPageSearch({ page: 1, pageSize: pageSearch.pageSize });
   };
 
-  const handleAddChapter = () => {
-    navigate("/chapters/create");  // Add chapter route
-  };
+  // const handleAddChapter = () => {
+  //   navigate("/chapters/create");  // Add chapter route
+  // };
 
   const columns = [
     { field: "id", headerName: "ID" },
@@ -90,21 +97,32 @@ export default function ChapterManagement() {
     { field: "publishedAt", headerName: "Published At", flex: 1 },
   ];
 
+
   return (
     <Box m="20px">
-      <Header title="Chapter Management" subtitle="Manage all chapters, edit, delete, or add new chapters" />
+      <Header
+        title="Chapter Management"
+        subtitle="Manage all chapters, edit, delete, or add new chapters"
+      />
 
       <Box sx={{ mb: "15px" }}>
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button variant="contained" onClick={handleAddChapter}>
-              Add Chapter
+            Add Chapter
           </Button>
           <Button
-              color="secondary"
-              variant="contained"
-              onClick={handleDeleteChapter}
+            color="secondary"
+            variant="contained"
+            onClick={handleDeleteChapter}
           >
-              Delete
+            Add Chapter
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleDeleteChapter}
+          >
+            Delete
           </Button>
         </Stack>
       </Box>
@@ -146,6 +164,7 @@ export default function ChapterManagement() {
           pageSizeOptions={[10, 25, 50, 100]}
           checkboxSelection
           disableSelectionOnClick
+          
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setRowSelectionModel(newRowSelectionModel);
           }}

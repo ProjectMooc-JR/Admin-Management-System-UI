@@ -17,6 +17,7 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
+import { Navigate, useParams } from "react-router-dom";
 
 export default function AddComment() {
   const [users, setUsers] = useState([]);
@@ -24,6 +25,11 @@ export default function AddComment() {
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState(null);
+
+  let { id } = useParams();
+
+    // check the id. If it has one, then update
+  const isUpdateMode = id !== undefined;
 
   useEffect(() => {
     const fetchUserAsync = async () => {
@@ -40,8 +46,10 @@ export default function AddComment() {
     const fetchCourseAsync = async () => {
       setLoading(true);
       const result = await getRequest("/courses");
-      setCourses(Array.isArray(result.data) ? result.data : []);
       console.log("Fetched courses:", result.data);
+      if (result.status === 200) {
+        setCourses(Array.isArray(result.data) ? result.data : []);
+      }
       setLoading(false);
     };
     fetchCourseAsync();
@@ -55,15 +63,15 @@ export default function AddComment() {
 
   const handleSelectedCourse = (value) => {
     console.log("value", value);
-    formik.setFieldValue("Course_id", value.id);
+    formik.setFieldValue("Course_id", value.ID);
     setSelectedCourse(value);
   };
 
   const formik = useFormik({
     initialValues: {
       //CourseName: "",
-      Course_id: "",
-      User_id: "",
+      Course_id: -1,
+      User_id: -1,
       //username: "",
       CommentContent: "",
       CommentTime: "",
@@ -80,19 +88,14 @@ export default function AddComment() {
         .max(100, "Must be 100 characters or less")
         .required("Required"),
     }),
-    onSubmit: async (values) => {
-      debugger;
+
+    onSubmit: async (values, {resetForm}) => {
       // let courses = courseList.filter((x) => x.label === values.CourseName);
       // let users = userList.filter((x)=> x.label === values.username)
+
       let result = await postRequest("/comments", {
-        Course_ID: selectedCourse.id,
-        User_ID: selectedUser.id,
-        //CourseID: courses[0].id,
-        //UserID: users[0].id,
-        //CourseID:1,
-        //UserID: 1,
-        // CourseName: values.CourseName,
-        // username: values.username,
+        Course_id: selectedCourse.ID,
+        User_id: selectedUser.id,
         CommentContent: values.CommentContent,
         CommentTime: values.CommentTime,
       });
@@ -101,6 +104,7 @@ export default function AddComment() {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
+        Navigate("/comments");
         //navigate("/", { replace: true });
       } else {
         toast.error("add failed!");
@@ -119,7 +123,7 @@ export default function AddComment() {
     CommentTime: "",
   });
 
-  const handleSubmit = () => {
+  const handleCancel = () => {
     setFormData({
       Course_id: "",
       User_id: "",
@@ -143,7 +147,10 @@ export default function AddComment() {
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
           <Autocomplete
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            // getOptionSelected={(option, value) => option.id === value.id}
             disablePortal
+            getOptionLabel={(option) => option.CourseName}
             options={courses}
             fullWidth
             // sx={{ width: 300 }}
@@ -157,7 +164,8 @@ export default function AddComment() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="CourseName"
+                label="Selected Course"
+                variant="filled"
                 error={
                   formik.touched.Course_id && Boolean(formik.errors.Course_id)
                 }
@@ -198,10 +206,11 @@ export default function AddComment() {
 
           /> */}
           <Autocomplete
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            // getOptionSelected={(option, value) => option.id === value.id}
             options={users}
             getOptionLabel={(option) => option.username}
             loading={loading}
-            // onChange={(event, value) => setSelectedUser(value)}
             onChange={(event, value) => handleSelectedUser(value)}
             renderInput={(params) => (
               <TextField
@@ -249,32 +258,29 @@ export default function AddComment() {
             variant="filled"
             type="date"
             label="Comment Date"
-            name="CommentDate"
-            value={formik.values.HireDate}
+            name="CommentTime"
+            value={formik.values.CommentTime}
             onChange={formik.handleChange}
-            error={formik.touched.HireDate && Boolean(formik.errors.HireDate)}
-            helperText={formik.touched.HireDate && formik.errors.HireDate}
+            error={
+              formik.touched.CommentTime && Boolean(formik.errors.CommentTime)
+            }
+            helperText={formik.touched.CommentTime && formik.errors.CommentTime}
             InputLabelProps={{ shrink: true }}
           />
         </Box>
         <Box display="flex" justifyContent="end" mt="20px">
           <Stack direction="row" spacing={2}>
-            <Button
-              type="submit"
-              color="secondary"
-              variant="contained"
-              onClick={handleSubmit}
-            >
+            <Button type="submit" color="secondary" variant="contained">
               Create New Comment
             </Button>
-            <Button
+            {/* <Button
               type="cancle"
               color="secondary"
               variant="contained"
-              onClick={handleSubmit}
+              onClick={handleCancel}
             >
               Cancel
-            </Button>
+            </Button> */}
           </Stack>
         </Box>
       </form>

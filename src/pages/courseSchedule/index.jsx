@@ -111,7 +111,7 @@ export default function CourseSchedule() {
 
   const navigate = useNavigate();
   const handleAddcourseschedule = () => {
-    navigate("/courseSchedule/addcourseschedule");
+    navigate("/addcourseSchedule");
   };
 
   const [alertMessage, setAlertMessage] = useState("");
