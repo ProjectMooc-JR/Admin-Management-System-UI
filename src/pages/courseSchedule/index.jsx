@@ -111,7 +111,7 @@ export default function CourseSchedule() {
 
   const navigate = useNavigate();
   const handleAddcourseschedule = () => {
-    navigate("/addcourseSchedule");
+    navigate("/courseSchedule/addcourseSchedule");
   };
 
   const [alertMessage, setAlertMessage] = useState("");
@@ -199,7 +199,7 @@ export default function CourseSchedule() {
             </Stack>
           </Box>
           <CourseScheduleList
-            //rows={pageData.items}改过的
+            rows={pageData.items}
             //rows={rows}
             columns={columns}
             pageData={pageData}
