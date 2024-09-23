@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,124 +7,139 @@ import {
   InputLabel,
   FormControl,
   MenuItem,
-  // Stack,
-  Autocomplete,
   CircularProgress,
 } from "@mui/material";
 import { useFormik } from "formik";
-// import toast from "react-hot-toast";
 import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
-// import Header from "../../components/Header";
 import MoocDropzone from "../../components/moocDropzone";
 import VideoUploadZone from "../../pages/courseManagement/VideoUploadZone";
 
 export default function CreateCourse() {
-  // 控制加载的状态
+  // 控制加载状态
   const [loading, setLoading] = useState(false);
 
-  const [avatarData, setAvatarData] = useState("");
-  const handleAvatarResult = (result) => {
-    setAvatarData(result);
-  };
+  // 状态管理
+  const [teachers, setTeachers] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [coverFile, setCoverFile] = useState(null);
+  const [introVideoFile, setIntroVideoFile] = useState(null);
 
-  const [videoFile, setVideoFile] = useState(null);
+  useEffect(() => {
+    // Fetch teachers and categories from backend
+    const fetchTeachers = async () => {
+      try {
+        const result = await getRequest("/api/all-teachers");
+        setTeachers(result.data || []);  // 确保teachers为数组
+      } catch (error) {
+        console.error("Error fetching teachers:", error);
+      }
+    };
 
-  const handleVideoUpload = (file) => {
-    setVideoFile(file); // Store the uploaded video file in state
-  };
+    fetchTeachers();
+    
+    const fetchCategories = async () => {
+      const result = await getRequest("/categories");
+      setCategories(result.data || []);
+    };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData();
-    formData.append("courseVideo", videoFile); // Add the video file to FormData for submission
-    // Add other form fields as necessary
+    
+    fetchCategories();
+  }, []);
 
-    // Submit the form data, e.g., via fetch or axios
-  };
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
       CourseName: "",
       Description: "",
       CategoryID: "",
-      Cover: "",
       TeacherID: "",
-      PublishedAt: "",
     },
-
     validationSchema: Yup.object({
-      CourseName: Yup.string().required("CourseName is required"),
+      CourseName: Yup.string().required("Course name is required"),
+      TeacherID: Yup.string().required("Teacher is required"),
+      CategoryID: Yup.string().required("Category is required"),
     }),
     onSubmit: async (inputValues) => {
       const formData = new FormData();
-      formData.append("file", videoFile);
-      formData.append('CourseName',inputValues.CourseName);
-      formData.append('Description',inputValues.Description);
-      formData.append('Cover',avatarData);
-      formData.append('CategoryID',1);
-      formData.append('Cover',1);
+      formData.append("CourseName", inputValues.CourseName);
+      formData.append("Description", inputValues.Description);
+      formData.append("CategoryID", inputValues.CategoryID);
+      formData.append("TeacherID", inputValues.TeacherID);
+      formData.append("Cover", coverFile);
+      formData.append("IntroductionVideo", introVideoFile);
 
-      let result = await postRequest("/courses", formData);
-
-      // let result = await postRequest("/courses", {
-      //   CourseName: inputValues.CourseName,
-      //   Description: inputValues.Description,
-      //   Cover: avatarData,
-      //   CategoryID: 1,
-      //   TeacherID: 1,
-      // });
-
-      if (result.status === 201) {
-        alert("Add course successfully");
-      } else {
-        alert("Add course failed");
-      }
+      // 提交数据到后端
+      await postRequest("/courses", formData);
     },
   });
+
   return (
-    <Box
-      sx={{
-        bgcolor: "background.paper",
-        boxShadow: 1,
-        borderRadius: 2,
-        p: 2,
-        minWidth: 300,
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-      }}
-    >
-      <form onSubmit={handleSubmit}>
-        {/* Other form fields */}
-        <VideoUploadZone onVideoUpload={handleVideoUpload} />
-        <button type="submit">Create Course</button>
-      </form>
-      <form onSubmit={formik.handleSubmit} className="add-teacher-form">
+    <Box>
+      <form onSubmit={formik.handleSubmit}>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Select Teacher</InputLabel>
+          <Select
+            label="Teacher"
+            name="TeacherID"
+            value={formik.values.TeacherID}
+            onChange={formik.handleChange}
+            error={formik.touched.TeacherID && Boolean(formik.errors.TeacherID)}
+          >
+            {/* 使用 teachers.map 来遍历教师数据 */}
+            {teachers.map((teacher) => (
+              <MenuItem key={teacher.ID} value={teacher.ID}>
+                {teacher.username}  {/* 显示教师的名字 */}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Category</InputLabel>
+          <Select
+            label="Category"
+            value={formik.values.CategoryID}
+            onChange={formik.handleChange}
+            name="CategoryID"
+            error={formik.touched.CategoryID && Boolean(formik.errors.CategoryID)}
+          >
+            {categories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <TextField
           fullWidth
-          variant="filled"
-          type="text"
-          label="Course Name"
-          name="CourseName"
-          value={formik.values.CourseName}
+          margin="normal"
+          label="Course Description"
+          name="Description"
+          value={formik.values.Description}
           onChange={formik.handleChange}
-          error={formik.touched.CourseName && Boolean(formik.errors.CourseName)}
-          helperText={formik.touched.CourseName && formik.errors.CourseName}
+          error={formik.touched.Description && Boolean(formik.errors.Description)}
         />
+
         <MoocDropzone
-          avatarResult={handleAvatarResult}
-          notes="select a course cover"
+          onFileSelect={(file) => setCoverFile(file)}
+          label="Upload Course Cover"
+        />
+
+        <VideoUploadZone
+          onFileSelect={(file) => setIntroVideoFile(file)}
+          label="Upload Introduction Video"
         />
 
         <Button
           type="submit"
           variant="contained"
           color="primary"
-          sx={{ width: "400px" }}
+          disabled={loading}
         >
-          Transform this user to teacher
+          {loading ? <CircularProgress size={24} /> : "Create Course"}
         </Button>
       </form>
     </Box>

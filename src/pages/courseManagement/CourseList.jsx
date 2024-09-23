@@ -1,30 +1,23 @@
-import React from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
+import { DataGridPro } from '@mui/x-data-grid-pro';
 
-const CourseList = ({ columns, pageData, setPaginationModel, setRowSelectionModel }) => {
-  const handlePageChange = (params) => {
-    setPaginationModel(params);
-  };
-
+export default function CourseList(props) {
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
-      <DataGrid
-        rows={pageData.items} // 课程数据
-        columns={columns} // 列定义
-        paginationMode="server" // 分页模式设置为服务器端
-        rowCount={pageData.total} // 总行数，用于分页计算
-        pagination // 启用分页
-        pageSize={10} // 默认每页显示5条数据
-        onPageChange={(newPage) => handlePageChange({ page: newPage })}
-        onPageSizeChange={(newPageSize) => handlePageChange({ pageSize: newPageSize })}
-        checkboxSelection // 启用复选框选择
-        onSelectionModelChange={(newSelection) => {
-          setRowSelectionModel(newSelection);
-        }}
-      />
-    </Box>
+    <DataGridPro
+      columns={props.columns}
+      rows={props.courses.items}
+      rowCount={props.courses.total}
+      rowsPerPageOptions={[1, 20, 50, 100]}
+      paginationMode="server"
+      pageSize={props.pageSearch.pageSize}
+      page={props.pageSearch.page - 1} // 页码从 0 开始
+      onPageSizeChange={(newPageSize) => props.setPageSize(newPageSize)}
+      onPageChange={(newPage) => props.setPage(newPage)}
+      rowSelection
+      checkboxSelection
+      onRowSelectionModelChange={(newSelection) => props.setRowSelectionModel(newSelection)}
+      rowThreshold={0}
+      getDetailPanelHeight={props.getDetailPanelHeight}
+      getDetailPanelContent={props.getDetailPanelContent}
+    />
   );
-};
-
-export default CourseList;
+}
