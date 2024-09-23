@@ -68,7 +68,7 @@ export default function AddCourseSchedule() {
         //CoursescheduleID: values.CoursescheduleID,
         StartDate: values.StartDate,
         EndDate: values.EndDate,
-        Course_ID: selectedCourse.id,
+        Course_id: selectedCourse.id,
         IsPublished: values.IsPublished,
       });
 
