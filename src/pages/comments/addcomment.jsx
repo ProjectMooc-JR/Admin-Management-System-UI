@@ -17,9 +17,11 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
-import { Navigate, useParams } from "react-router-dom";
+import putRequest from "../../request/putRequest";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 
 export default function AddComment() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -103,7 +105,7 @@ export default function AddComment() {
       if (result.status === 201) {
         console.log(result.status);
         toast.success("add success!");
-        formik.resetForm();
+        resetForm();
         Navigate("/comments");
         //navigate("/", { replace: true });
       } else {
@@ -131,6 +133,35 @@ export default function AddComment() {
       CommentTime: "",
     });
   };
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFormSubmission = async (values) => {
+    setIsLoading(true);
+    const dataToSubmit = {
+      Course_id: selectedCourse.ID,
+      User_id: selectedUser.id,
+      CommentContent: values.CommentContent,
+      CommentTime: values.CommentTime,
+    }
+    try {
+        // const endpoint = id ? `/courses/${id}` : "/courses";
+        const result = isUpdateMode
+            ? await putRequest(`/comments/${id}`, dataToSubmit)
+            : await postRequest("/comments", dataToSubmit);
+        if (result.status === 200) {
+            toast.success(`${id ? "Update" : "Add"} success!`);
+            navigate(`/comments`);
+        } else {
+            toast.error(result.message);
+        }
+    } catch (error) {
+        console.error(`Error ${id ? "updating" : "adding"} item:`, error);
+        toast.error(`Failed to ${id ? "update" : "add"} item.`);
+    } finally {
+        setIsLoading(false);
+    }
+};
 
   return (
     <Box m="20px">
