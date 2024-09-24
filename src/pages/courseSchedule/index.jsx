@@ -89,23 +89,7 @@ export default function CourseSchedule() {
   //   { id: 3, CourseID: 3, StartDate: "030224", EndDate: "020224" },
   // ];
   //根据当前页面和分页大小来确定请求的分页参数。
-  const [pageData, setPageData] = useState({ items: [], total: 0 });
-
-  useEffect(() => {
-    let getCourseschedule = async () => {
-      let result = await getRequest(
-        `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
-      );
-      if (result.status == 200) {
-        //setPageData(result.data);
-        setData(result.data);
-      } else {
-        setData({ items: [], total: 0 });
-      }
-      console.log("=========", result);
-    };
-    getCourseschedule();
-  }, [pageSearch]);
+  //const [pageData, setPageData] = useState({ items: [], total: 0 });
 
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
@@ -157,6 +141,22 @@ export default function CourseSchedule() {
     }
     setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
   };
+
+  useEffect(() => {
+    let getCourseschedule = async () => {
+      let result = await getRequest(
+        `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
+      );
+      if (result.status === 200) {
+        //setPageData(result.data);
+        setData(result.data);
+      } else {
+        setData({ items: [], total: 0 });
+      }
+      console.log("=========", result);
+    };
+    getCourseschedule();
+  }, [pageSearch]);
 
   return (
     <>
@@ -214,7 +214,7 @@ export default function CourseSchedule() {
             columns={columns}
             data={data}
             handleEdit={handleEdit}
-            pageSearch={pageSearch}
+            //pageSearch={pageSearch}
             //handlePaginationModel={handlePaginationModel}
             handleDeleteDialog={handleDeleteDialog}
             setPaginationModel={handlePaginationModel}

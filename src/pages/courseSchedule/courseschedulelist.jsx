@@ -11,7 +11,7 @@ export default function CourseScheduleList(props) {
         //getRowId={(row) => row.id}
         //rows={props.rows}
         checkboxSelection
-        pageSizeOptions={[25, 50, 100, 150, 300]}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         paginationMode="server"
         rowCount={props.data.total}
         columns={props.columns}

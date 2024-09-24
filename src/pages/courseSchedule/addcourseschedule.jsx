@@ -97,6 +97,7 @@ export default function AddCourseSchedule() {
     return true;
   };
 
+  debugger;
   const [formData, setFormData] = useState({
     Course_id: "",
     StartDate: "",
