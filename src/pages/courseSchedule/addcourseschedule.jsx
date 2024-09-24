@@ -24,6 +24,10 @@ export default function AddCourseSchedule() {
   const [loading, setLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
+  let { id } = useParams();
+  // check the id. If it has one, then update
+  const isUpdateMode = id !== undefined;
+
   useEffect(() => {
     const fetchCourseAsync = async () => {
       setLoading(true);
@@ -36,8 +40,10 @@ export default function AddCourseSchedule() {
   }, []);
 
   const handleSelectedCourse = (value) => {
+    console.log("value", value);
+    //这里把小写id改成大写的ID
     if (value) {
-      formik.setFieldValue("Course_id", value.id);
+      formik.setFieldValue("Course_id", value.ID);
       setSelectedCourse(value);
     } else {
       formik.setFieldValue("Course_id", "");
@@ -87,6 +93,26 @@ export default function AddCourseSchedule() {
     },
   });
 
+  const optionEqualToValueChange = (option, value) => {
+    return true;
+  };
+
+  const [formData, setFormData] = useState({
+    Course_id: "",
+    StartDate: "",
+    EndDate: "",
+    IsPublished: "",
+  });
+
+  const handleCancel = () => {
+    setFormData({
+      Course_id: "",
+      StartDate: "",
+      EndDate: "",
+      IsPublished: "",
+    });
+  };
+
   return (
     <Box m="20px">
       <Header
@@ -109,6 +135,7 @@ export default function AddCourseSchedule() {
             options={courses}
             fullWidth
             // 指定要显示的标签
+            loading={loading}
             getOptionLabel={(option) => option.CourseName || ""}
             onChange={(event, value) => handleSelectedCourse(value)}
             // value={formik.values.CourseName}
@@ -226,14 +253,14 @@ export default function AddCourseSchedule() {
             <Button type="submit" color="secondary" variant="contained">
               Create New Course Schedule
             </Button>
-            <Button
+            {/* <Button
               type="cancel"
               color="secondary"
               variant="contained"
               onClick={() => formik.resetForm()}
             >
               Cancel
-            </Button>
+            </Button> */}
           </Stack>
         </Box>
       </form>

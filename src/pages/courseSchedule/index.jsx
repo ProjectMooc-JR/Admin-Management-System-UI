@@ -96,11 +96,11 @@ export default function CourseSchedule() {
       let result = await getRequest(
         `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
       );
-      if (result.status == 1) {
+      if (result.status == 200) {
         //setPageData(result.data);
-        setPageData(result.pageData);
+        setData(result.data);
       } else {
-        setPageData({ items: [], total: 0 });
+        setData({ items: [], total: 0 });
       }
       console.log("=========", result);
     };
@@ -108,6 +108,10 @@ export default function CourseSchedule() {
   }, [pageSearch]);
 
   const [open, setOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [data, setData] = useState({ items: [], total: 0 });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
   //revised the path and fixed the bug
@@ -116,11 +120,11 @@ export default function CourseSchedule() {
   };
 
   const [alertMessage, setAlertMessage] = useState("");
-  const [rowSelectionModel, setRowSelectionModel] = useState([]);
-  //const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  //const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
-  const handledelete = () => {
-    if (rowSelectionModel.length == 0) {
+  const handleDelete = () => {
+    if (rowSelectionModel.length === 0) {
       setAlertMessage("Please select items to delete");
       setOpen(true);
       return;
@@ -133,10 +137,15 @@ export default function CourseSchedule() {
     navigate(`/courseSchedule/addcourseschedule/${row.id}`);
   };
 
+  const handleDeleteDialog = (id) => {
+    setDeleteId(id);
+    setOpen(true);
+  };
+
   const handleWinClose = async (data) => {
     console.log("handleWinClose", data);
     setOpen(false);
-    if (!data.isOk || rowSelectionModel.length == 0) {
+    if (!data.isOk || rowSelectionModel.length === 0) {
       return;
     }
     let ids = rowSelectionModel.join(",");
@@ -193,7 +202,7 @@ export default function CourseSchedule() {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={handledelete}
+                onClick={handleDelete}
               >
                 Delete
               </Button>
@@ -203,10 +212,11 @@ export default function CourseSchedule() {
             //rows={pageData.items}改过的
             //rows={rows}
             columns={columns}
-            pageData={pageData}
+            data={data}
             handleEdit={handleEdit}
             pageSearch={pageSearch}
             //handlePaginationModel={handlePaginationModel}
+            handleDeleteDialog={handleDeleteDialog}
             setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
           />
