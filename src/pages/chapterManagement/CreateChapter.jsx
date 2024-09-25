@@ -21,6 +21,7 @@ import getRequest from "../../request/getRequest";
 import MoocDropzone from "../../components/moocDropzone";
 import VideoUploadZone from "../../pages/courseManagement/VideoUploadZone";
 import { useParams } from "react-router-dom";
+import axios from 'axios';
 
 export default function CreateChapter() {
   // 控制加载的状态
@@ -32,7 +33,30 @@ export default function CreateChapter() {
     setAvatarData(result);
   };
 
+  // 管理课程列表和选中课程
+  const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState([]);
+
   const [videoFile, setVideoFile] = useState(null);
+
+  useEffect(() => {
+    // Fetch courses from backend
+    const fetchCourses = async () => {
+        try {
+            const result = await getRequest("/courses/names");
+            if (result.status === 200) {
+                setCourses(result.data.items || []); // 确保courses为数组
+            } else {
+                setCourses([]); // 确保courses为数组
+            }
+        } catch (error) {
+            console.error("Error fetching courses:", error);
+        }
+    };
+
+    fetchCourses();
+}, []);
+
 
   const handleVideoUpload = (file) => {
     setVideoFile(file); // Store the uploaded video file in state
@@ -49,9 +73,9 @@ export default function CreateChapter() {
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
     initialValues: {
-     ChapterTitle: "",
-     ChapterDescription: "",
-     ChapterOrder: "",
+    ChapterTitle: "",
+    ChapterDescription: "",
+    ChapterOrder: "",
     },
 
     validationSchema: Yup.object({
@@ -68,9 +92,9 @@ export default function CreateChapter() {
       let result = await postRequest("/chapters", formData);
 
       if (result.status === 201) {
-        alert("Add course successfully");
+        alert("Add chapter successfully");
       } else {
-        alert("Add course failed");
+        alert("Add chapter failed");
       }
     },
   });
@@ -89,6 +113,26 @@ export default function CreateChapter() {
     >
 
       <form onSubmit={formik.handleSubmit} className="add-teacher-form">
+      
+        <TextField
+            select
+            fullWidth
+            variant="filled"
+            label="Select Course"
+            name="CourseID"
+            value={formik.values.CourseID}
+            onChange={formik.handleChange}
+            error={formik.touched.CourseID && Boolean(formik.errors.CourseID)}
+            
+        >
+            
+            {courses.map((course) => (
+                <MenuItem key={course.ID} value={course.ID}>
+                    {course.CourseName}
+                </MenuItem>
+            ))}
+        </TextField>
+        
         <TextField
           fullWidth
           variant="filled"
@@ -100,7 +144,8 @@ export default function CreateChapter() {
           error={formik.touched.ChapterTitle && Boolean(formik.errors.ChapterTitle)}
           helperText={formik.touched.ChapterTitle && formik.errors.ChapterTitle}
         />
-         <TextField
+        
+        <TextField
           fullWidth
           variant="filled"
           type="text"
@@ -111,6 +156,7 @@ export default function CreateChapter() {
           error={formik.touched.ChapterDescription && Boolean(formik.errors.ChapterDescription)}
           helperText={formik.touched.ChapterDescription && formik.errors.ChapterDescription}
         />
+        
         <TextField
           fullWidth
           variant="filled"
@@ -122,7 +168,8 @@ export default function CreateChapter() {
           error={formik.touched.ChapterOrder && Boolean(formik.errors.ChapterOrder)}
           helperText={formik.touched.ChapterOrder && formik.errors.ChapterOrder}
         />
-         <VideoUploadZone onVideoUpload={handleVideoUpload} />        
+        
+        <VideoUploadZone onVideoUpload={handleVideoUpload} />        
         <Button
           type="submit"
           variant="contained"

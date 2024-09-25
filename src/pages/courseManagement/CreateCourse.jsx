@@ -14,7 +14,7 @@ import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
 import MoocDropzone from "../../components/moocDropzone";
-import VideoUploadZone from "../../pages/courseManagement/VideoUploadZone";
+
 
 export default function CreateCourse() {
   // 控制加载状态
@@ -24,7 +24,7 @@ export default function CreateCourse() {
   const [teachers, setTeachers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [coverFile, setCoverFile] = useState(null);
-  const [introVideoFile, setIntroVideoFile] = useState(null);
+
 
   useEffect(() => {
     // Fetch teachers and categories from backend
@@ -75,7 +75,7 @@ export default function CreateCourse() {
       formData.append("CategoryID", inputValues.CategoryID);
       formData.append("TeacherID", inputValues.TeacherID);
       formData.append("Cover", coverFile);
-      formData.append("IntroductionVideo", introVideoFile);
+      
 
       // 提交数据到后端
       await postRequest("/courses", formData);
@@ -83,10 +83,23 @@ export default function CreateCourse() {
   });
 
   return (
-    <Box>
+    <Box
+      sx={{
+        bgcolor: "background.paper",
+        boxShadow: 1,
+        borderRadius: 2,
+        p: 2,
+        minWidth: 300,
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px",
+      }}
+    >
+
       <form onSubmit={formik.handleSubmit}>
       <TextField
           fullWidth
+          variant="filled"
           margin="normal"
           label="Course Name"
           name="CourseName"
@@ -99,6 +112,7 @@ export default function CreateCourse() {
         <FormControl fullWidth margin="normal">
           <InputLabel>Select Teacher</InputLabel>
           <Select
+            variant="filled"
             label="Teacher"
             name="TeacherID"
             value={formik.values.TeacherID}
@@ -117,6 +131,7 @@ export default function CreateCourse() {
         <FormControl fullWidth margin="normal">
           <InputLabel>Category</InputLabel>
           <Select
+            variant="filled"
             label="Category"
             value={formik.values.CategoryID}
             onChange={formik.handleChange}
@@ -135,6 +150,7 @@ export default function CreateCourse() {
 
         <TextField
           fullWidth
+          variant="filled"
           margin="normal"
           label="Course Description"
           name="Description"
@@ -151,10 +167,7 @@ export default function CreateCourse() {
           label="Upload Course Cover"
         />
 
-        <VideoUploadZone
-          onFileSelect={(file) => setIntroVideoFile(file)}
-          label="Upload Introduction Video"
-        />
+
 
         <Button
           type="submit"
