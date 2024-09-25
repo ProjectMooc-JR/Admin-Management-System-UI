@@ -30,21 +30,28 @@ export default function CreateCourse() {
     // Fetch teachers and categories from backend
     const fetchTeachers = async () => {
       try {
-        const result = await getRequest("/api/all-teachers");
-        setTeachers(result.data || []);  // 确保teachers为数组
+        const result = await getRequest("/courses/all-teachers");
+        if (result.status == 200) {
+          setTeachers(result.data.items || []); // 确保teachers为数组
+        } else {
+          setTeachers([]); // 确保teachers为数组
+        }
       } catch (error) {
         console.error("Error fetching teachers:", error);
       }
     };
 
     fetchTeachers();
-    
+
     const fetchCategories = async () => {
-      const result = await getRequest("/categories");
-      setCategories(result.data || []);
+      const result = await getRequest("/courseCategory/1/500000");
+      if (result.status == 200) {
+        setCategories(result.data.items);
+      } else {
+        setCategories([]);
+      }
     };
 
-    
     fetchCategories();
   }, []);
 
@@ -78,6 +85,17 @@ export default function CreateCourse() {
   return (
     <Box>
       <form onSubmit={formik.handleSubmit}>
+      <TextField
+          fullWidth
+          margin="normal"
+          label="Course Name"
+          name="CourseName"
+          value={formik.values.CourseName}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.CourseName && Boolean(formik.errors.CourseName)
+          }
+        />
         <FormControl fullWidth margin="normal">
           <InputLabel>Select Teacher</InputLabel>
           <Select
@@ -90,7 +108,7 @@ export default function CreateCourse() {
             {/* 使用 teachers.map 来遍历教师数据 */}
             {teachers.map((teacher) => (
               <MenuItem key={teacher.ID} value={teacher.ID}>
-                {teacher.username}  {/* 显示教师的名字 */}
+                {teacher.username} {/* 显示教师的名字 */}
               </MenuItem>
             ))}
           </Select>
@@ -103,11 +121,13 @@ export default function CreateCourse() {
             value={formik.values.CategoryID}
             onChange={formik.handleChange}
             name="CategoryID"
-            error={formik.touched.CategoryID && Boolean(formik.errors.CategoryID)}
+            error={
+              formik.touched.CategoryID && Boolean(formik.errors.CategoryID)
+            }
           >
             {categories.map((category) => (
-              <MenuItem key={category.id} value={category.id}>
-                {category.name}
+              <MenuItem key={category.ID} value={category.ID}>
+                {category.CategoryName}
               </MenuItem>
             ))}
           </Select>
@@ -118,9 +138,12 @@ export default function CreateCourse() {
           margin="normal"
           label="Course Description"
           name="Description"
+          multiline
           value={formik.values.Description}
           onChange={formik.handleChange}
-          error={formik.touched.Description && Boolean(formik.errors.Description)}
+          error={
+            formik.touched.Description && Boolean(formik.errors.Description)
+          }
         />
 
         <MoocDropzone
