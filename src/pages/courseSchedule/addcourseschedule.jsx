@@ -17,11 +17,16 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
+import { Navigate, useParams } from "react-router-dom";
 
 export default function AddCourseSchedule() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+
+  let { id } = useParams();
+  // check the id. If it has one, then update
+  const isUpdateMode = id !== undefined;
 
   useEffect(() => {
     const fetchCourseAsync = async () => {
@@ -35,8 +40,10 @@ export default function AddCourseSchedule() {
   }, []);
 
   const handleSelectedCourse = (value) => {
+    console.log("value", value);
+    //这里把小写id改成大写的ID
     if (value) {
-      formik.setFieldValue("Course_id", value.id);
+      formik.setFieldValue("Course_id", value.ID);
       setSelectedCourse(value);
     } else {
       formik.setFieldValue("Course_id", "");
@@ -46,7 +53,7 @@ export default function AddCourseSchedule() {
 
   const formik = useFormik({
     initialValues: {
-      Course_id: "",
+      Course_id: -1,
       StartDate: "",
       EndDate: "",
       IsPublished: "",
@@ -63,13 +70,13 @@ export default function AddCourseSchedule() {
       // IDIsPublished: Yup.mixed().oneOf(['Yes', 'No'], "Must be Yes or No").required("Publication status is required"),
       //CoursescheduleID: Yup.number().required("Required"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       let result = await postRequest("/courseSchedule", {
         //CoursescheduleID: values.CoursescheduleID,
-        StartDate: values.StartDate,
-        EndDate: values.EndDate,
-        Course_ID: selectedCourse.id,
-        IsPublished: values.IsPublished,
+        startDate: values.StartDate,
+        endDate: values.EndDate,
+        CourseId: selectedCourse.ID,
+        isPublished: values.IsPublished == 1 ? true : false,
       });
 
       // console.log(result);
@@ -78,12 +85,34 @@ export default function AddCourseSchedule() {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
+        Navigate("/courseSchedule");
         //navigate("/", { replace: true });
       } else {
         toast.error("add failed!");
       }
     },
   });
+
+  const optionEqualToValueChange = (option, value) => {
+    return true;
+  };
+
+
+  const [formData, setFormData] = useState({
+    Course_id: "",
+    StartDate: "",
+    EndDate: "",
+    IsPublished: "",
+  });
+
+  const handleCancel = () => {
+    setFormData({
+      Course_id: "",
+      StartDate: "",
+      EndDate: "",
+      IsPublished: "",
+    });
+  };
 
   return (
     <Box m="20px">
@@ -100,10 +129,14 @@ export default function AddCourseSchedule() {
           gridTemplateColumns="repeat(4, minmax(0, 1fr))"
         >
           <Autocomplete
+            isOptionEqualToValue={(option, value) =>
+              option.value === value.value
+            }
             disablePortal
             options={courses}
             fullWidth
             // 指定要显示的标签
+            loading={loading}
             getOptionLabel={(option) => option.CourseName || ""}
             onChange={(event, value) => handleSelectedCourse(value)}
             // value={formik.values.CourseName}
@@ -111,7 +144,8 @@ export default function AddCourseSchedule() {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Course Name"
+                label="Selected Course Name"
+                variant="filled"
                 error={
                   formik.touched.Course_id && Boolean(formik.errors.Course_id)
                 }
@@ -220,14 +254,14 @@ export default function AddCourseSchedule() {
             <Button type="submit" color="secondary" variant="contained">
               Create New Course Schedule
             </Button>
-            <Button
+            {/* <Button
               type="cancel"
               color="secondary"
               variant="contained"
               onClick={() => formik.resetForm()}
             >
               Cancel
-            </Button>
+            </Button> */}
           </Stack>
         </Box>
       </form>

@@ -50,21 +50,36 @@ export default function CourseSchedule() {
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "CourseID",
-      headerName: "Course ID",
+      field: "CourseName",
+      headerName: "Course Name",
       flex: 1,
       cellClassName: "name-column--cell",
     },
+    // {
+    //   field: "StartDate",
+    //   headerName: "Start Date",
+    //   type: "dateTime",
+    //   flex: 1,
+    // },
     {
       field: "StartDate",
       headerName: "Start Date",
       type: "dateTime",
+      valueGetter: (value) => {
+        let returnValue = value.row.StartDate && new Date(value.row.StartDate);
+        return returnValue;
+      },
       flex: 1,
     },
+
     {
       field: "EndDate",
       headerName: "End Date",
       type: "dateTime",
+      valueGetter: (value) => {
+        let returnValue = value.row.EndDate && new Date(value.row.EndDate);
+        return returnValue;
+      },
       flex: 1,
     },
     {
@@ -89,37 +104,26 @@ export default function CourseSchedule() {
   //   { id: 3, CourseID: 3, StartDate: "030224", EndDate: "020224" },
   // ];
   //根据当前页面和分页大小来确定请求的分页参数。
-  const [pageData, setPageData] = useState({ items: [], total: 0 });
-
-  useEffect(() => {
-    let getCourseschedule = async () => {
-      let result = await getRequest(
-        `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
-      );
-      if (result.status == 1) {
-        //setPageData(result.data);
-        setPageData(result.pageData);
-      } else {
-        setPageData({ items: [], total: 0 });
-      }
-      console.log("=========", result);
-    };
-    getCourseschedule();
-  }, [pageSearch]);
+  //const [pageData, setPageData] = useState({ items: [], total: 0 });
 
   const [open, setOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [data, setData] = useState({ items: [], total: 0 });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+  //revised the path and fixed the bug
   const handleAddcourseschedule = () => {
-    navigate("/addcourseSchedule");
+    navigate("/courseSchedule/addcourseschedule");
   };
 
   const [alertMessage, setAlertMessage] = useState("");
-  const [rowSelectionModel, setRowSelectionModel] = useState([]);
-  //const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  //const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
-  const handledelete = () => {
-    if (rowSelectionModel.length == 0) {
+  const handleDelete = () => {
+    if (rowSelectionModel.length === 0) {
       setAlertMessage("Please select items to delete");
       setOpen(true);
       return;
@@ -132,10 +136,15 @@ export default function CourseSchedule() {
     navigate(`/courseSchedule/addcourseschedule/${row.id}`);
   };
 
+  const handleDeleteDialog = (id) => {
+    setDeleteId(id);
+    setOpen(true);
+  };
+
   const handleWinClose = async (data) => {
     console.log("handleWinClose", data);
     setOpen(false);
-    if (!data.isOk || rowSelectionModel.length == 0) {
+    if (!data.isOk || rowSelectionModel.length === 0) {
       return;
     }
     let ids = rowSelectionModel.join(",");
@@ -147,6 +156,22 @@ export default function CourseSchedule() {
     }
     setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
   };
+
+  useEffect(() => {
+    let getCourseschedule = async () => {
+      let result = await getRequest(
+        `/courseSchedule/${pageSearch.page}/${pageSearch.pageSize}`
+      );
+      if (result.status === 200) {
+        //setPageData(result.data);
+        setData(result.data);
+      } else {
+        setData({ items: [], total: 0 });
+      }
+      console.log("=========", result);
+    };
+    getCourseschedule();
+  }, [pageSearch]);
 
   return (
     <>
@@ -192,7 +217,7 @@ export default function CourseSchedule() {
               <Button
                 color="secondary"
                 variant="contained"
-                onClick={handledelete}
+                onClick={handleDelete}
               >
                 Delete
               </Button>
@@ -202,10 +227,11 @@ export default function CourseSchedule() {
             //rows={pageData.items}改过的
             //rows={rows}
             columns={columns}
-            pageData={pageData}
+            data={data}
             handleEdit={handleEdit}
-            pageSearch={pageSearch}
+            //pageSearch={pageSearch}
             //handlePaginationModel={handlePaginationModel}
+            handleDeleteDialog={handleDeleteDialog}
             setPaginationModel={handlePaginationModel}
             setRowSelectionModel={setRowSelectionModel}
           />

@@ -104,7 +104,7 @@ const UpdateCourseSchedule = () => {
                 onChange={formik.handleChange}
                 value={formik.values.Course_id}
                 id="standard-required-1"
-                defaultValue="Hello World"
+                defaultValue="Hello Course"
               />
             </Grid>
             <Grid item xs={12}>
