@@ -55,16 +55,31 @@ export default function CourseSchedule() {
       flex: 1,
       cellClassName: "name-column--cell",
     },
+    // {
+    //   field: "StartDate",
+    //   headerName: "Start Date",
+    //   type: "dateTime",
+    //   flex: 1,
+    // },
     {
       field: "StartDate",
       headerName: "Start Date",
       type: "dateTime",
+      valueGetter: (value) => {
+        let returnValue = value.row.StartDate && new Date(value.row.StartDate);
+        return returnValue;
+      },
       flex: 1,
     },
+
     {
       field: "EndDate",
       headerName: "End Date",
       type: "dateTime",
+      valueGetter: (value) => {
+        let returnValue = value.row.EndDate && new Date(value.row.EndDate);
+        return returnValue;
+      },
       flex: 1,
     },
     {

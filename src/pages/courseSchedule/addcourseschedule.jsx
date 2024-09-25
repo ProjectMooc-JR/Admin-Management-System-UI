@@ -73,10 +73,10 @@ export default function AddCourseSchedule() {
     onSubmit: async (values, { resetForm }) => {
       let result = await postRequest("/courseSchedule", {
         //CoursescheduleID: values.CoursescheduleID,
-        StartDate: values.StartDate,
-        EndDate: values.EndDate,
-        Course_id: selectedCourse.ID,
-        IsPublished: values.IsPublished,
+        startDate: values.StartDate,
+        endDate: values.EndDate,
+        CourseId: selectedCourse.ID,
+        isPublished: values.IsPublished == 1 ? true : false,
       });
 
       // console.log(result);
@@ -97,7 +97,7 @@ export default function AddCourseSchedule() {
     return true;
   };
 
-  debugger;
+
   const [formData, setFormData] = useState({
     Course_id: "",
     StartDate: "",
