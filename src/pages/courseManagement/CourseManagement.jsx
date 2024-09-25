@@ -226,8 +226,7 @@ export default function CourseManagement() {
           onPageChange={(newPage) => setPage(newPage)}
           // onPaginationModelChange={handlePaginationModel}
 
-          onRowSelectionModelChange={(newSelection,a) => {
-           
+          onRowSelectionModelChange={(newSelection, a) => {
             setRowSelectionModel(newSelection);
           }}
           rowThreshold={0}
