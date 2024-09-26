@@ -62,13 +62,12 @@ export default function UpdateTeacher() {
 
   function formatDateToYYYYMMDD(date) {
     let year = date.getFullYear();
-    let month =String((date.getMonth() + 1)).padStart(2, "0");
+    let month = String(date.getMonth() + 1).padStart(2, "0");
     let day = String(date.getDate()).padStart(2, "0");
     let timeFormat = `${year}-${month}-${day}`;
     console.log("formatDateToYYYYMMDD", timeFormat);
     return timeFormat;
   }
-
 
   // 使用 Formik 管理表单状态和验证
   const formik = useFormik({
@@ -92,7 +91,7 @@ export default function UpdateTeacher() {
         .required("Mobile number is required"),
       LinkedInLink: Yup.string(),
     }),
-    
+
     onSubmit: async (inputValues) => {
       let result = await putRequest(`/teachers/${id}`, {
         User_id: selectedUser.id,
@@ -111,6 +110,12 @@ export default function UpdateTeacher() {
       }
     },
   });
+
+  const handleCancel = () => {
+    formik.resetForm();
+    navigate("/teachers");
+  };
+
   return (
     <Box
       sx={{
@@ -230,14 +235,25 @@ export default function UpdateTeacher() {
           }
           helperText={formik.touched.LinkedInLink && formik.errors.LinkedInLink}
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ width: "400px" }}
-        >
-          Save updated information
-        </Button>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ width: "400px", flex: 1 }}
+          >
+            Save updated information
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            sx={{ width: "400px", flex: 1 }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </Box>
       </form>
     </Box>
   );
