@@ -18,7 +18,7 @@ import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
 import putRequest from "../../request/putRequest";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 // import Header from "../../components/Header";
 
 export default function Addteacher() {
@@ -35,16 +35,32 @@ export default function Addteacher() {
 
   let { id } = useParams();
 
-    // check the id. If it has one, then update
-    const isUpdateMode = id !== undefined;
+  // check the id. If it has one, then update
+  const isUpdateMode = id !== undefined;
 
   useEffect(() => {
     const fetchUsers = async () => {
       // 先设置加载状态：打开加载状态
       setLoading(true);
       const result = await getRequest("/users");
-      // 将返回的user数据通过setUsers存储到users中
-      setUsers(Array.isArray(result.data) ? result.data : []);
+      console.log("usersuerserusuiw", result);
+
+      // 从后端获取所有teachers的数据信息，包括user_id，specialization，hire date等等
+      const teacherResult = await getRequest("/teachers");
+      console.log("teacherResultteacherResult", teacherResult);
+
+      // 将已经教师的用户id提取出来
+      const alreadyTeacherIds = Array.isArray(teacherResult.data)
+        ? teacherResult.data.map((teacher) => teacher.User_id)
+        : [];
+
+      // 过滤掉已经是教师的用户
+      const filteredUsers = Array.isArray(result.data)
+        ? result.data.filter((user) => !alreadyTeacherIds.includes(user.id))
+        : [];
+
+      // 将返回的已被过滤的user数据通过setUsers存储到users中
+      setUsers(filteredUsers);
       console.log("Fetched users:", result.data);
       // console.log("Fetched users:", JSON.stringify(result.data));
       // 加载完成，关闭加载状态
@@ -68,7 +84,7 @@ export default function Addteacher() {
       Specialization: "",
       Description: "",
       MobileNum: "",
-      LinkedInLink: "test.com",
+      LinkedInLink: "",
     },
     validationSchema: Yup.object({
       User_id: Yup.number().required("user is required"),
@@ -77,16 +93,18 @@ export default function Addteacher() {
       Specialization: Yup.string()
         .max(200, "Max 200 characters")
         .required("Specialization is required"),
-      Description: Yup.string().max(250, "Max 250 characters"),
+      Description: Yup.string()
+        .max(250, "Max 250 characters")
+        .required("Description is required"),
       MobileNum: Yup.string()
         .max(15, "Max 15 characters")
         .required("Mobile number is required"),
-      LinkedInLink: Yup.string(),
+      LinkedInLink: Yup.string().required("LinkedIn link is required"),
     }),
 
-  //   onSubmit: async (values) => {
-  //     await handleFormSubmission(values);
-  // },
+    //   onSubmit: async (values) => {
+    //     await handleFormSubmission(values);
+    // },
     onSubmit: async (inputValues, { resetForm }) => {
       let result = await postRequest("/teachers", {
         User_id: selectedUser.id,
@@ -117,28 +135,32 @@ export default function Addteacher() {
       Specialization: values.Specialization,
       Description: values.Description,
       MobileNum: values.MobileNum,
-      LinkedInLink: values.LinkedInLink
-    }
+      LinkedInLink: values.LinkedInLink,
+    };
     try {
-        // const endpoint = id ? `/courses/${id}` : "/courses";
-        const result = isUpdateMode
-            ? await putRequest(`/teachers/${id}`, dataToSubmit)
-            : await postRequest("/teachers", dataToSubmit);
-        if (result.status === 1) {
-            toast.success(`${id ? "Update" : "Add"} success!`);
-            navigate(`/teachers`);
-        } else {
-            toast.error(result.message);
-        }
+      // const endpoint = id ? `/courses/${id}` : "/courses";
+      const result = isUpdateMode
+        ? await putRequest(`/teachers/${id}`, dataToSubmit)
+        : await postRequest("/teachers", dataToSubmit);
+      if (result.status === 1) {
+        toast.success(`${id ? "Update" : "Add"} success!`);
+        navigate(`/teachers`);
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
-        console.error(`Error ${id ? "updating" : "adding"} item:`, error);
-        toast.error(`Failed to ${id ? "update" : "add"} item.`);
+      console.error(`Error ${id ? "updating" : "adding"} item:`, error);
+      toast.error(`Failed to ${id ? "update" : "add"} item.`);
     } finally {
-        setIsLoading(false);
+      setIsLoading(false);
     }
-};
+  };
 
-  
+  const handleCancel = () => {
+    formik.resetForm();
+    navigate("/teachers");
+  };
+
   return (
     <Box
       sx={{
@@ -259,14 +281,25 @@ export default function Addteacher() {
           }
           helperText={formik.touched.LinkedInLink && formik.errors.LinkedInLink}
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ width: "400px" }}
-        >
-          Transform this user to teacher
-        </Button>
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ width: "400px", flex: 1 }}
+          >
+            Add Teacher
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            sx={{ width: "400px", flex: 1 }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </Box>
       </form>
     </Box>
   );
