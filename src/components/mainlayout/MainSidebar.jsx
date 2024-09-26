@@ -108,13 +108,13 @@ export default function MainSidebar() {
             >
               Course
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               component={<Link />}
               icon={<PeopleOutlinedIcon />}
               to="/chapterManagement"
             >
               Chapter
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem icon={<PeopleOutlinedIcon />}> Line charts </MenuItem>
           </SubMenu>
           <MenuItem icon={<PeopleOutlinedIcon />}> Documentation </MenuItem>

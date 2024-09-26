@@ -26,13 +26,21 @@ export default function Comment() {
     }));
   };
 
-  const setPaginationModel = () => {};
-
-  const handleUpdate = (row) => {};
+  // const handleUpdate = (row) => {
+  //   console.log("row", row);
+       
+  //   navigate(`/comments/addcomment/{row.id}`);
+  // };
 
   const columns = [
     { field: "id", headerName: "id" },
+    {
+      field: "username",
+      headerName: "User Name",
+      flex:1
+    },
     { field: "CourseName", headerName: "Course Name", flex: 1 },
+    
     // {
     //   field: "CourseID",
     //   headerName: "Course ID",
@@ -49,19 +57,16 @@ export default function Comment() {
       flex: 1,
     },
     {
-      field: "username",
-      headerName: "User Name",
-      flex:1
-    },
-
-    {
       field: "operation",
       headerName: "opertation",
       flex: 1,
       renderCell: (row) => {
         return (
           <Box>
-            <Button variant="text" onClick={handleUpdate(row)}>
+            {/* <Button variant="text" onClick={handleUpdate(row)}>
+              Update
+            </Button> */}
+            <Button variant="text" onClick={handleEdit}>
               Update
             </Button>
           </Box>
