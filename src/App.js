@@ -12,6 +12,7 @@ import UpdateTeacher from "./pages/teacher/updateteacher";
 import Comment from "./pages/comments/index";
 import AddComment from "./pages/comments/addcomment";
 import CourseManagement from "./pages/courseManagement/CourseManagement";
+import CourseDisplay from './pages/courseManagement/CourseDisplay';
 import CourseCategory from "./pages/courseCategory/index";
 import AddCourseCategory from "./pages/courseCategory/addcoursecategory";
 import CreateCourse from "./pages/courseManagement/CreateCourse";
@@ -145,6 +146,16 @@ function App() {
               </NeedAuth>
             }
           />
+
+          <Route
+            path="/courses/:courseId"
+            element={
+              <NeedAuth>
+                <CourseDisplay />  {/* 课程展示页面 */}
+              </NeedAuth>
+            }
+          />
+
           <Route
             path="/createChapter/:courseid"
             element={

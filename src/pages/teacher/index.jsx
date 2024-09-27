@@ -56,7 +56,7 @@ export default function Teacher() {
   // **rowSelectionModel是MUI提供的方法，默认会选取colums配置中每行的唯一标识符——id
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
-  // **配置一个打开/关闭弹窗组件的状态
+  //**配置一个打开/关闭弹窗组件的状态
   const [open, setOpen] = useState(false);
 
   // **配置一个可以在弹窗中显示不同文本信息的状态
@@ -117,12 +117,19 @@ export default function Teacher() {
     {
       field: "HireDate",
       headerName: "Hire Date",
-      type: "dateTime",
-      valueGetter: (value) => {
-        let returnValue = value.row.HireDate && new Date(value.row.HireDate);
-        return returnValue;
-      },
       flex: 1,
+      valueGetter: (value) => {
+        let hireDate = value.row.HireDate && new Date(value.row.HireDate);
+        if (hireDate) {
+          // 用padStart方法把day和month的数字顶到两位数，不足两位数的话在前面填充0
+          const day = String(hireDate.getDate()).padStart(2, "0");
+          // js里的月份默认是0-11，所以+1变成1-12
+          const month = String(hireDate.getMonth() + 1).padStart(2, "0");
+          const year = hireDate.getFullYear();
+          return `${day}/${month}/${year}`; // 返回格式化后的日期
+        }
+        return "";
+      },
     },
     {
       field: "MobileNum",
@@ -134,10 +141,10 @@ export default function Teacher() {
       headerName: "Hire Status",
       flex: 1,
       valueGetter: (value) => {
-        if (value.row.HireStatus == 1) {
-          return "Yes";
+        if (value.row.HireStatus === 1) {
+          return "Active";
         }
-        return "No";
+        return "Inactive";
       },
     },
     {
@@ -187,7 +194,35 @@ export default function Teacher() {
       <Box m="20px">
         {/* 这个header是之前定义的header组件，box是mui提供的替换div的容器 */}
         <Header title="TEAM" subtitle="Managing Teachers" />
-        <Box>
+        <Box
+          m="40px 0 0 0"
+          height="75vh"
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+        >
           <Box sx={{ mb: "15px" }}>
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <Button variant="contained" onClick={handleAddTeacher}>

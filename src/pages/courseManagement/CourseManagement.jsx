@@ -12,7 +12,7 @@ import colors from "../../theme";
 
 export default function CourseManagement() {
   const [pageSearch, setPageSearch] = useState({
-    pageSize: 1,
+    pageSize: 10,
     page: 1,
   });
 
@@ -27,6 +27,7 @@ export default function CourseManagement() {
       const result = await getRequest(
         `/courses/${pageSearch.page}/${pageSearch.pageSize}`
       );
+      console.log(result); 
       // const result = await getRequest('courses/courselist');
       if (result.status === 200) {
         const rows = result.data.items.map((course) => ({
@@ -45,6 +46,11 @@ export default function CourseManagement() {
     };
     fetchCourses();
   }, [pageSearch]);
+
+  // 处理点击课程名称的跳转
+  const handleRowClick = (courseId) => {
+    navigate(`/courses/${courseId}`);  // 跳转到课程展示页面
+  };
 
   const handleDelete = () => {
     if (rowSelectionModel.length === 0) {
@@ -221,9 +227,10 @@ export default function CourseManagement() {
           paginationMode="server"
           rowSelection
           checkboxSelection
-          //disableSelectionOnClick
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          onPageChange={(newPage) => setPage(newPage)}
+          // 加入点击行跳转逻辑
+          onPageSizeChange={(newPageSize) => setPageSearch((prev) => ({ ...prev, pageSize: newPageSize }))}
+          onPageChange={(newPage) => setPageSearch((prev) => ({ ...prev, page: newPage }))}
+          onRowClick={handleRowClick}  
           // onPaginationModelChange={handlePaginationModel}
 
           onRowSelectionModelChange={(newSelection, a) => {
