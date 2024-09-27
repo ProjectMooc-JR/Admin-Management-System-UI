@@ -224,7 +224,7 @@ export default function CourseSchedule() {
             </Stack>
           </Box>
           <CourseScheduleList
-            rows={pageData.items}
+            rows={data.items}
             //rows={rows}
             columns={columns}
             data={data}

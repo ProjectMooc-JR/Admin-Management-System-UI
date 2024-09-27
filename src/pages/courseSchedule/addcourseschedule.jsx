@@ -17,7 +17,7 @@ import postRequest from "../../request/postRequest";
 import Header from "../../components/Header";
 import Autocomplete from "@mui/material/Autocomplete";
 import getRequest from "../../request/getRequest";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useNavigate } from "react-router-dom";
 
 export default function AddCourseSchedule() {
   const [courses, setCourses] = useState([]);
@@ -27,6 +27,8 @@ export default function AddCourseSchedule() {
   let { id } = useParams();
   // check the id. If it has one, then update
   const isUpdateMode = id !== undefined;
+  //add useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCourseAsync = async () => {
@@ -71,6 +73,7 @@ export default function AddCourseSchedule() {
       //CoursescheduleID: Yup.number().required("Required"),
     }),
     onSubmit: async (values, { resetForm }) => {
+      debugger;
       let result = await postRequest("/courseSchedule", {
         //CoursescheduleID: values.CoursescheduleID,
         startDate: values.StartDate,
@@ -85,8 +88,8 @@ export default function AddCourseSchedule() {
         console.log(result.status);
         toast.success("add success!");
         formik.resetForm();
-        Navigate("/courseSchedule");
-        //navigate("/", { replace: true });
+        navigate("/courseSchedule");
+        //navigate("/", { replace: true });revised Navigate to navigate
       } else {
         toast.error("add failed!");
       }
