@@ -14,9 +14,10 @@ import * as Yup from "yup";
 import postRequest from "../../request/postRequest";
 import getRequest from "../../request/getRequest";
 import MoocDropzone from "../../components/moocDropzone";
-
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function CreateCourse() {
+  const navigate = useNavigate();
   // 控制加载状态
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +26,10 @@ export default function CreateCourse() {
   const [categories, setCategories] = useState([]);
   const [coverFile, setCoverFile] = useState(null);
 
+  const handleCancel = () => {
+    formik.resetForm();
+    navigate("/CourseManagement");
+  };
 
   useEffect(() => {
     // Fetch teachers and categories from backend
@@ -75,7 +80,6 @@ export default function CreateCourse() {
       formData.append("CategoryID", inputValues.CategoryID);
       formData.append("TeacherID", inputValues.TeacherID);
       formData.append("Cover", coverFile);
-      
 
       // 提交数据到后端
       await postRequest("/courses", formData);
@@ -95,39 +99,7 @@ export default function CreateCourse() {
         gap: "24px",
       }}
     >
-
       <form onSubmit={formik.handleSubmit}>
-      <TextField
-          fullWidth
-          variant="filled"
-          margin="normal"
-          label="Course Name"
-          name="CourseName"
-          value={formik.values.CourseName}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.CourseName && Boolean(formik.errors.CourseName)
-          }
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Select Teacher</InputLabel>
-          <Select
-            variant="filled"
-            label="Teacher"
-            name="TeacherID"
-            value={formik.values.TeacherID}
-            onChange={formik.handleChange}
-            error={formik.touched.TeacherID && Boolean(formik.errors.TeacherID)}
-          >
-            {/* 使用 teachers.map 来遍历教师数据 */}
-            {teachers.map((teacher) => (
-              <MenuItem key={teacher.ID} value={teacher.ID}>
-                {teacher.username} {/* 显示教师的名字 */}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
         <FormControl fullWidth margin="normal">
           <InputLabel>Category</InputLabel>
           <Select
@@ -143,6 +115,34 @@ export default function CreateCourse() {
             {categories.map((category) => (
               <MenuItem key={category.ID} value={category.ID}>
                 {category.CategoryName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          fullWidth
+          variant="filled"
+          margin="normal"
+          label="Course Name"
+          name="CourseName"
+          value={formik.values.CourseName}
+          onChange={formik.handleChange}
+          error={formik.touched.CourseName && Boolean(formik.errors.CourseName)}
+        />
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Select Teacher</InputLabel>
+          <Select
+            variant="filled"
+            label="Teacher"
+            name="TeacherID"
+            value={formik.values.TeacherID}
+            onChange={formik.handleChange}
+            error={formik.touched.TeacherID && Boolean(formik.errors.TeacherID)}
+          >
+            {/* 使用 teachers.map 来遍历教师数据 */}
+            {teachers.map((teacher) => (
+              <MenuItem key={teacher.ID} value={teacher.ID}>
+                {teacher.username} {/* 显示教师的名字 */}
               </MenuItem>
             ))}
           </Select>
@@ -167,16 +167,27 @@ export default function CreateCourse() {
           label="Upload Course Cover"
         />
 
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{  flex: 1 }}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : "Create Course"}
+          </Button>
 
-
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={loading}
-        >
-          {loading ? <CircularProgress size={24} /> : "Create Course"}
-        </Button>
+          <Button
+            type="button"
+            variant="contained"
+            color="primary"
+            sx={{  flex: 1 }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+        </Box>
       </form>
     </Box>
   );
