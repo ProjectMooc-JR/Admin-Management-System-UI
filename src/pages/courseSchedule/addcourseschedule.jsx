@@ -27,7 +27,6 @@ export default function AddCourseSchedule() {
   let { id } = useParams();
   // check the id. If it has one, then update
   const isUpdateMode = id !== undefined;
-  //add useNavigate
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,7 +72,6 @@ export default function AddCourseSchedule() {
       //CoursescheduleID: Yup.number().required("Required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      debugger;
       let result = await postRequest("/courseSchedule", {
         //CoursescheduleID: values.CoursescheduleID,
         startDate: values.StartDate,
@@ -89,7 +87,7 @@ export default function AddCourseSchedule() {
         toast.success("add success!");
         formik.resetForm();
         navigate("/courseSchedule");
-        //navigate("/", { replace: true });revised Navigate to navigate
+        //navigate("/", { replace: true });
       } else {
         toast.error("add failed!");
       }
