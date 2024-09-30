@@ -37,6 +37,7 @@ export default function CourseManagement() {
           courseName: course.CourseName,
           description: course.Description,
           category: course.CategoryName,
+          cover: course.Cover,
           teacher: course.username,
           publishedAt: course.PublishedAt,
           chapterItems: course.chapterItems,
@@ -89,6 +90,18 @@ export default function CourseManagement() {
     { field: "description", headerName: "Description", flex: 1 },
     { field: "category", headerName: "Category", flex: 1 },
     { field: "teacher", headerName: "Teacher", flex: 1 },
+    {
+    field: "cover",
+    headerName: "Cover",
+    flex: 1,
+    renderCell: (params) => (
+      <img
+        src={params.row.cover}  // 从params.row.cover获取图片地址
+        alt="Course Cover"
+        style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
+      />
+    ),
+    },
     // { field: "publishedAt", headerName: "Published At", flex: 1 },
     {
       field: "publishedAt",
@@ -309,6 +322,18 @@ function Chapter(props) {
             headerName: "VideoURL",
             type: "string",
             flex: 1,
+          },
+          {
+            field: "cover",
+            headerName: "Cover",
+            flex: 1,
+            renderCell: (params) => (
+              <img
+                src={params.row.cover}  
+                alt="Course Cover"
+                style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
+              />
+            ),
           },
           {
             field: "operation",
