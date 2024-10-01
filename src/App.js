@@ -116,7 +116,7 @@ function App() {
             }
           />
           <Route
-            path="/comments/addcomment/:id?"
+            path="/comments/addcomment/:id"
             element={
               <NeedAuth>
                 <AddComment />
@@ -132,7 +132,7 @@ function App() {
             }
           />
           <Route
-            path="/teachers/updatecomment/:id"
+            path="/comments/updatecomment/:id"
             element={
               <NeedAuth>
                 <UpdateComment />

@@ -26,11 +26,11 @@ export default function Comment() {
     }));
   };
 
-  // const handleUpdate = (row) => {
-  //   console.log("row", row);
+  const handleUpdate = (row) => {
+    console.log("row", row);
        
-  //   navigate(`/comments/addcomment/{row.id}`);
-  // };
+    navigate(`/comments/updatecomment/{row.id}`);
+  };
 
   const columns = [
     { field: "id", headerName: "id" },
@@ -63,10 +63,7 @@ export default function Comment() {
       renderCell: (row) => {
         return (
           <Box>
-            {/* <Button variant="text" onClick={handleUpdate(row)}>
-              Update
-            </Button> */}
-            <Button variant="text" >
+            <Button variant="text" onClick={() => handleUpdate(row)}>
               Update
             </Button>
           </Box>

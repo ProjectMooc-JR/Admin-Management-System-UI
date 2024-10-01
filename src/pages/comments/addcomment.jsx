@@ -165,7 +165,19 @@ export default function AddComment() {
 };
 
   return (
-    <Box m="20px">
+    <Box 
+    // m="20px"
+      sx={{
+        bgcolor: "background.paper",
+        boxShadow: 1,
+        borderRadius: 2,
+        p: 2,
+        minWidth: 300,
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px",
+      }}
+    >
       <Header
         title="CREATE COMMENT"
         subtitle="Create a New Comment"
@@ -173,7 +185,7 @@ export default function AddComment() {
         urltitle={"CommentList"}
         // newtitle={"CommentList"}
       />
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit} className="add-teacher-form">
         <Box
           display="grid"
           gap="30px"
@@ -197,6 +209,7 @@ export default function AddComment() {
             renderInput={(params) => (
               <TextField
                 {...params}
+                fullWidth
                 label="Selected Course"
                 variant="filled"
                 error={
@@ -241,6 +254,7 @@ export default function AddComment() {
           <Autocomplete
             isOptionEqualToValue={(option, value) => option.value === value.value}
             // getOptionSelected={(option, value) => option.id === value.id}
+            fullWidth
             options={users}
             getOptionLabel={(option) => option.username}
             loading={loading}
@@ -301,20 +315,25 @@ export default function AddComment() {
             InputLabelProps={{ shrink: true }}
           />
         </Box>
-        <Box display="flex" justifyContent="end" mt="20px">
-          <Stack direction="row" spacing={2}>
-            <Button type="submit" color="secondary" variant="contained">
+        
+        <Box sx={{ display: "flex", gap: 2 }}>        
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ width: "400px", flex: 1 }}
+            >
               Create New Comment
             </Button>
             <Button
-              type="cancle"
-              color="secondary"
+              type="button"
               variant="contained"
+              color="primary"
+              sx={{ width: "400px", flex: 1 }}
               onClick={handleCancel}
             >
               Cancel
             </Button>
-          </Stack>
         </Box>
       </form>
     </Box>
