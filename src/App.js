@@ -23,6 +23,7 @@ import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
 import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
 import CreateChapter from "./pages/chapterManagement/CreateChapter";
+import UpdateComment from "./pages/comments/updatecomment";
 
 function App() {
   return (
@@ -127,6 +128,14 @@ function App() {
             element={
               <NeedAuth>
                 <AddComment />
+              </NeedAuth>
+            }
+          />
+          <Route
+            path="/teachers/updatecomment/:id"
+            element={
+              <NeedAuth>
+                <UpdateComment />
               </NeedAuth>
             }
           />

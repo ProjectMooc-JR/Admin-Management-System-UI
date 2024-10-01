@@ -132,6 +132,7 @@ export default function AddComment() {
       CommentContent: "",
       CommentTime: "",
     });
+    navigate("/comments");
   };
 
   const [isLoading, setIsLoading] = useState(false);
@@ -170,6 +171,7 @@ export default function AddComment() {
         subtitle="Create a New Comment"
         url="/comments"
         urltitle={"CommentList"}
+        // newtitle={"CommentList"}
       />
       <form onSubmit={formik.handleSubmit}>
         <Box
@@ -304,14 +306,14 @@ export default function AddComment() {
             <Button type="submit" color="secondary" variant="contained">
               Create New Comment
             </Button>
-            {/* <Button
+            <Button
               type="cancle"
               color="secondary"
               variant="contained"
               onClick={handleCancel}
             >
               Cancel
-            </Button> */}
+            </Button>
           </Stack>
         </Box>
       </form>
