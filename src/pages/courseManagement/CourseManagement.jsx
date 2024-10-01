@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import AlterDialog from "../../components/alterDialog";
 import getRequest from "../../request/getRequest";
@@ -16,6 +16,8 @@ export default function CourseManagement() {
     page: 1,
   });
 
+  const apiRef = useGridApiRef();
+
   const [courses, setCourses] = useState({ items: [], total: 0 });
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [open, setOpen] = useState(false);
@@ -27,7 +29,7 @@ export default function CourseManagement() {
       const result = await getRequest(
         `/courses/${pageSearch.page}/${pageSearch.pageSize}`
       );
-      console.log(result); 
+      console.log(result);
       // const result = await getRequest('courses/courselist');
       if (result.status === 200) {
         const rows = result.data.items.map((course) => ({
@@ -35,6 +37,7 @@ export default function CourseManagement() {
           courseName: course.CourseName,
           description: course.Description,
           category: course.CategoryName,
+          cover: course.Cover,
           teacher: course.username,
           publishedAt: course.PublishedAt,
           chapterItems: course.chapterItems,
@@ -49,7 +52,7 @@ export default function CourseManagement() {
 
   // 处理点击课程名称的跳转
   const handleRowClick = (courseId) => {
-    navigate(`/courses/${courseId}`);  // 跳转到课程展示页面
+    navigate(`/courses/${courseId}`); // 跳转到课程展示页面
   };
 
   const handleDelete = () => {
@@ -87,6 +90,18 @@ export default function CourseManagement() {
     { field: "description", headerName: "Description", flex: 1 },
     { field: "category", headerName: "Category", flex: 1 },
     { field: "teacher", headerName: "Teacher", flex: 1 },
+    {
+    field: "cover",
+    headerName: "Cover",
+    flex: 1,
+    renderCell: (params) => (
+      <img
+        src={params.row.cover}  // 从params.row.cover获取图片地址
+        alt="Course Cover"
+        style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
+      />
+    ),
+    },
     // { field: "publishedAt", headerName: "Published At", flex: 1 },
     {
       field: "publishedAt",
@@ -140,13 +155,20 @@ export default function CourseManagement() {
   };
 
   const handleAddChapter = () => {
-    // if (rowSelectionModel.length === 0) {
-    //   toast.error("Please select course to add a chapter.");
-    //   return;
-    // }
+    debugger;
+    let selectedRows = apiRef.current.getSelectedRows();
+    selectedRows = Array.from(selectedRows.values());
+    if (selectedRows.length === 0) {
+      toast.error("Please select course to add a chapter.");
+      return;
+    }
+    if (selectedRows.length > 1) {
+      toast.error("Please select only one course to add the chapter.");
+      return;
+    }
     //navigate("/createChapter/" + rowSelectionModel.id); // Add chapter route
 
-    navigate("/createChapter/" + 2); // Add chapter route
+    navigate("/createChapter/" + selectedRows[0].id); // Add chapter route
   };
 
   return (
@@ -227,14 +249,20 @@ export default function CourseManagement() {
           paginationMode="server"
           rowSelection
           checkboxSelection
+          indeterminateCheckboxAction="select"
+          apiRef={apiRef}
           // 加入点击行跳转逻辑
-          onPageSizeChange={(newPageSize) => setPageSearch((prev) => ({ ...prev, pageSize: newPageSize }))}
-          onPageChange={(newPage) => setPageSearch((prev) => ({ ...prev, page: newPage }))}
-          onRowClick={handleRowClick}  
+          onPageSizeChange={(newPageSize) =>
+            setPageSearch((prev) => ({ ...prev, pageSize: newPageSize }))
+          }
+          onPageChange={(newPage) =>
+            setPageSearch((prev) => ({ ...prev, page: newPage }))
+          }
+          // onRowClick={handleRowClick}
           // onPaginationModelChange={handlePaginationModel}
 
-          onRowSelectionModelChange={(newSelection, a) => {
-            setRowSelectionModel(newSelection);
+          onRowSelectionModelChange={() => {
+            alert("1");
           }}
           rowThreshold={0}
           getDetailPanelHeight={getDetailPanelHeight}
@@ -255,12 +283,24 @@ export default function CourseManagement() {
 
 function Chapter(props) {
   console.log("Chapter", props);
+  const navigate = useNavigate();
+
+  const handleUpdate = (row) => {
+    console.log("rowididi", row);
+    navigate(`/CreateChapter/0/${row.id}`);
+  };
+
+  const handleDetails = (row) => {
+    debugger;
+    console.log("rowididi", row);
+    navigate(`/CreateChapter/0/${row.id * -1}`);
+  };
 
   return (
     <Box sx={{ width: "98%", height: 400 }}>
       <DataGridPro
         density="compact"
-        getRowId={(row) => row.ChapterTitle}
+        getRowId={(row) => row.ID}
         columns={[
           { field: "ChapterTitle", headerName: "ChapterTitle", flex: 1 },
           {
@@ -276,11 +316,41 @@ function Chapter(props) {
             type: "number",
             flex: 1,
           },
+
           {
             field: "VideoURL",
             headerName: "VideoURL",
             type: "string",
             flex: 1,
+          },
+          {
+            field: "cover",
+            headerName: "Cover",
+            flex: 1,
+            renderCell: (params) => (
+              <img
+                src={params.row.cover}  
+                alt="Course Cover"
+                style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
+              />
+            ),
+          },
+          {
+            field: "operation",
+            headerName: "Operation",
+            flex: 1,
+            renderCell: (row) => {
+              return (
+                <Box>
+                  <Button variant="text" onClick={() => handleUpdate(row)}>
+                    Update
+                  </Button>
+                  <Button variant="text" onClick={() => handleDetails(row)}>
+                    Details
+                  </Button>
+                </Box>
+              );
+            },
           },
         ]}
         rows={props.row.chapterItems}

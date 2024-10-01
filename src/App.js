@@ -166,7 +166,7 @@ function App() {
           />
 
           <Route
-            path="/createChapter/:courseid"
+            path="/createChapter/:courseid/:chapterid"
             element={
               <NeedAuth>
                 <CreateChapter />
