@@ -323,18 +323,18 @@ function Chapter(props) {
             type: "string",
             flex: 1,
           },
-          {
-            field: "cover",
-            headerName: "Cover",
-            flex: 1,
-            renderCell: (params) => (
-              <img
-                src={params.row.cover}  
-                alt="Course Cover"
-                style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
-              />
-            ),
-          },
+          // {
+          //   field: "cover",
+          //   headerName: "Cover",
+          //   flex: 1,
+          //   renderCell: (params) => (
+          //     <img
+          //       src={params.row.cover}  
+          //       alt="Course Cover"
+          //       style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
+          //     />
+          //   ),
+          // },
           {
             field: "operation",
             headerName: "Operation",
