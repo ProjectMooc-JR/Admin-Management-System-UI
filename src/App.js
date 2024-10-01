@@ -12,7 +12,7 @@ import UpdateTeacher from "./pages/teacher/updateteacher";
 import Comment from "./pages/comments/index";
 import AddComment from "./pages/comments/addcomment";
 import CourseManagement from "./pages/courseManagement/CourseManagement";
-import CourseDisplay from './pages/courseManagement/CourseDisplay';
+import CourseDisplay from "./pages/courseManagement/CourseDisplay";
 import CourseCategory from "./pages/courseCategory/index";
 import AddCourseCategory from "./pages/courseCategory/addcoursecategory";
 import CreateCourse from "./pages/courseManagement/CreateCourse";
@@ -23,6 +23,7 @@ import { theme } from "./theme";
 import NeedAuth from "./components/NeedAuth";
 import UpdateCourseCategory from "./pages/courseCategory/updatecoursecategory";
 import CreateChapter from "./pages/chapterManagement/CreateChapter";
+import UpdateCourseSchedule from "./pages/courseSchedule/updatecourseschedule";
 
 function App() {
   return (
@@ -151,7 +152,7 @@ function App() {
             path="/courses/:courseId"
             element={
               <NeedAuth>
-                <CourseDisplay />  {/* 课程展示页面 */}
+                <CourseDisplay /> {/* 课程展示页面 */}
               </NeedAuth>
             }
           />
@@ -190,6 +191,15 @@ function App() {
             }
           />
         </Route>
+
+        <Route
+          path="/courseSchedule/updatecourseschedule/:id"
+          element={
+            <NeedAuth>
+              <UpdateCourseSchedule />
+            </NeedAuth>
+          }
+        />
       </Routes>
     </ThemeProvider>
   );

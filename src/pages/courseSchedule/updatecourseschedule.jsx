@@ -120,24 +120,39 @@ const UpdateCourseSchedule = () => {
                   label="Level"
                   onChange={formik.handleChange}
                 >
-                  <MenuItem value={0}>Zero</MenuItem>
-                  <MenuItem value={1}>One</MenuItem>
+                  <MenuItem value={0}>Yes</MenuItem>
+                  <MenuItem value={1}>No</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 required
                 type="date"
-                label="enddate"
+                label="startdate"
                 multiline
+                name="StartDate"
+                onChange={formik.handleChange}
+                value={formik.values.StartDate}
+                id="standard-required-99"
+                defaultValue=""
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="End Date"
                 name="EndDate"
                 onChange={formik.handleChange}
                 value={formik.values.EndDate}
-                id="standard-required-99"
-                defaultValue=""
+                error={formik.touched.EndDate && Boolean(formik.errors.EndDate)}
+                helperText={formik.touched.EndDate && formik.errors.EndDate}
+                autoComplete="End Date"
+                autoFocus
+                sx={{ gridColumn: "span 4" }}
               />
             </Grid>
             <Grid item xs={10}>
@@ -159,7 +174,7 @@ const UpdateCourseSchedule = () => {
                   variant="contained"
                   onClick={backToList}
                 >
-                  Back to list
+                  Cancel
                 </Button>
               </Box>
             </Grid>

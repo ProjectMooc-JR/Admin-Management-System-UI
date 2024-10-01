@@ -199,6 +199,7 @@ export default function AddCourseSchedule() {
             autoComplete="Start Date"
             autoFocus
             sx={{ gridColumn: "span 4" }}
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -213,6 +214,7 @@ export default function AddCourseSchedule() {
             autoComplete="End Date"
             autoFocus
             sx={{ gridColumn: "span 4" }}
+            InputLabelProps={{ shrink: true }}
           />
           {/* <TextField
             fullWidth
