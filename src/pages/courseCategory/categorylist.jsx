@@ -1,33 +1,32 @@
+import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-import React from "react";
-
-const CategoryList = (props) => {
+export default function CategoryList({
+  columns,
+  pageData,
+  pageSearch,
+  setPaginationModel,
+  setRowSelectionModel,
+}) {
   return (
     <DataGrid
+      checkboxSelection
       paginationMode="server"
+      pageSize={pageSearch.pageSize || 10}
+      rowCount={pageData.total || 0}
+      columns={columns}
+      rows={pageData.items}
       getRowId={(row) => row.ID}
-      pageSizeOptions={[5, 10, 100, 150, 300]}
-      rowCount={props.pageData.total}
-      rows={props.pageData.items}
-      columns={props.columns}
+      onPaginationModelChange={(model) => setPaginationModel(model)}
+      onRowSelectionModelChange={(newSelection) =>
+        setRowSelectionModel(newSelection)
+      }
+      pageSizeOptions={[10, 50, 100]}
       initialState={{
         pagination: {
-          paginationModel: { page: 0, pageSize: 10 },
-        },
-      }}
-      onPaginationModelChange={props.setPaginationModel}
-      onRowSelectionModelChange={(newRowSelectionModel) => {
-        props.setRowSelectionModel(newRowSelectionModel);
-      }}
-      checkboxSelection
-      sx={{
-        "& .MuiDataGrid-cell:focus": {
-          outline: "none",
+          paginationModel: { pageSize: pageSearch.pageSize || 10, page: 0 },
         },
       }}
     />
   );
-};
-
-export default CategoryList;
+}

@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 export default function Comment() {
   const [pageSearch, setpageSearch] = useState({
-    pageSize: 25,
+    pageSize: 10,
     page: 1,
   });
 
@@ -26,11 +26,11 @@ export default function Comment() {
     }));
   };
 
-  // const handleUpdate = (row) => {
-  //   console.log("row", row);
+  const handleUpdate = (row) => {
+    console.log("row", row);
        
-  //   navigate(`/comments/addcomment/{row.id}`);
-  // };
+    navigate(`/comments/updatecomment/{row.id}`);
+  };
 
   const columns = [
     { field: "id", headerName: "id" },
@@ -58,26 +58,18 @@ export default function Comment() {
     },
     {
       field: "operation",
-      headerName: "opertation",
+      headerName: "operation",
       flex: 1,
       renderCell: (row) => {
         return (
           <Box>
-            {/* <Button variant="text" onClick={handleUpdate(row)}>
-              Update
-            </Button> */}
-            <Button variant="text" onClick={handleEdit}>
+            <Button variant="text" onClick={() => handleUpdate(row)}>
               Update
             </Button>
           </Box>
         );
       },
     },
-    // {
-    //   field: "UserID",
-    //   headerName: "User ID",
-    //   flex: 1,
-    // },
   ];
 
   const [open, setOpen] = useState(false);
