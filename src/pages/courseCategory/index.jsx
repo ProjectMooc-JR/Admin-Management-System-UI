@@ -385,6 +385,8 @@ export default function CourseCategory() {
         }));
 
         // 更新状态
+        console.log("result.dataresult.data", result.data);
+        console.log("updatedItemsupdatedItemsupdatedItems", updatedItems);
         setPagedCategories({ ...result.data, items: updatedItems });
       } else setPagedCategories({ items: [], total: 0 });
     };

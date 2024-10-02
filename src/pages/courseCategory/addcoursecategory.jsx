@@ -53,6 +53,7 @@ const AddCourseCategory = () => {
     },
   });
   const [categoryList, setCategoryList] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState(1);
   const backToList = () => {
     navigate("/courseCategory", { replace: true });
   };
@@ -60,13 +61,16 @@ const AddCourseCategory = () => {
 
   async function handleSelectLevel(e) {
     formik.handleChange(e);
-    let result = await getRequest(`courseCategory/courseCategoryLevel/${e.target.value}`);
+    setSelectedLevel(e.target.value);
+    // let result = await getRequest(`courseCategory/courseCategoryLevel/${e.target.value}`);
+    let result = await getRequest(`/courseCategory`);
+    let filteredResult = result.data.items.filter((item) => item.Level === 1);
     if (result.status === 200) {
-      setCategoryList(result.data);
+      //TODO: filer only level 1 categories
+      setCategoryList(filteredResult);
     } else {
       setCategoryList([]);
     }
-    console.log(result.data);
   }
   return (
     <Box m={"20px"}>
@@ -135,14 +139,14 @@ const AddCourseCategory = () => {
                   label="Parent"
                   onChange={formik.handleChange}
                 >
-                  {categoryList.length > 0 ? (
+                  {selectedLevel === 2 ? (
                     categoryList.map((item, index) => {
                       return (
                         <MenuItem value={item.ID}>{item.CategoryName}</MenuItem>
                       );
                     })
                   ) : (
-                    <MenuItem value={0}>Zero</MenuItem>
+                    <MenuItem value={0}>N/A</MenuItem>
                   )}
                 </Select>
               </FormControl>

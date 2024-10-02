@@ -7,7 +7,7 @@ import {
   InputLabel,
   FormControl,
   MenuItem,
-  Stack
+  Stack,
 } from "@mui/material";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
@@ -48,9 +48,9 @@ export default function AddUser() {
         username: values.username,
         password: values.password,
         email: values.email,
-        address:values.address,
-        gender:values.gender,
-        age:values.age
+        address: values.address,
+        gender: values.gender,
+        age: values.age,
       });
 
       if (result.status == 1) {
@@ -64,7 +64,12 @@ export default function AddUser() {
   });
   return (
     <Box m="20px">
-      <Header title="CREATE USER" subtitle="Create a New User Profile" url="/users" urltitle={"UserList"} />
+      <Header
+        title="CREATE USER"
+        subtitle="Create a New User Profile"
+        url="/users"
+        urltitle={"UserList"}
+      />
       <form onSubmit={formik.handleSubmit}>
         <Box
           display="grid"

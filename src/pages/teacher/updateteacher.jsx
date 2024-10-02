@@ -94,7 +94,8 @@ export default function UpdateTeacher() {
 
     onSubmit: async (inputValues) => {
       let result = await putRequest(`/teachers/${id}`, {
-        User_id: selectedUser.id,
+        // User_id: selectedUser.id,
+        //todo: get correct user_id / OR Do nothing
         Specialization: inputValues.Specialization,
         Description: inputValues.Description,
         HireDate: inputValues.HireDate,
@@ -103,7 +104,7 @@ export default function UpdateTeacher() {
         LinkedInLink: inputValues.LinkedInLink,
       });
 
-      if (result.status === 201) {
+      if (result.status === 201 || result.status === 200) {
         toast.success("teacher update successfully.");
       } else {
         toast.error("failed to update teacher.");
