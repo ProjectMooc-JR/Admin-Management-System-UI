@@ -139,6 +139,7 @@ export default function AddCourseSchedule() {
             loading={loading}
             getOptionLabel={(option) => option.CourseName || ""}
             onChange={(event, value) => handleSelectedCourse(value)}
+            sx={{ gridColumn: "span 4" }}
             // value={formik.values.CourseName}
             //isOptionEqualToValue={optionEqualToValueChange}
             renderInput={(params) => (

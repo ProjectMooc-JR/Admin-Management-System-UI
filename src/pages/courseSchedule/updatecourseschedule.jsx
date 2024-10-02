@@ -128,15 +128,20 @@ const UpdateCourseSchedule = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                required
+                variant="filled"
                 type="date"
-                label="startdate"
-                multiline
+                label="Start Date"
                 name="StartDate"
                 onChange={formik.handleChange}
                 value={formik.values.StartDate}
-                id="standard-required-99"
-                defaultValue=""
+                error={
+                  formik.touched.StartDate && Boolean(formik.errors.StartDate)
+                }
+                helperText={formik.touched.StartDate && formik.errors.StartDate}
+                autoComplete="Start Date"
+                autoFocus
+                sx={{ gridColumn: "span 4" }}
+                InputLabelProps={{ shrink: true }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -153,6 +158,7 @@ const UpdateCourseSchedule = () => {
                 autoComplete="End Date"
                 autoFocus
                 sx={{ gridColumn: "span 4" }}
+                InputLabelProps={{ shrink: true }}
               />
             </Grid>
             <Grid item xs={10}>
