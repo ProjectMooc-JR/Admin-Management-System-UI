@@ -55,12 +55,6 @@ export default function CourseSchedule() {
       flex: 1,
       cellClassName: "name-column--cell",
     },
-    // {
-    //   field: "StartDate",
-    //   headerName: "Start Date",
-    //   type: "dateTime",
-    //   flex: 1,
-    // },
     {
       field: "StartDate",
       headerName: "Start Date",
@@ -166,7 +160,7 @@ export default function CourseSchedule() {
     }
     let ids = rowSelectionModel.join(",");
     let result = await deleteRequest(`/courseSchedule/${ids}`);
-    if (result.status == 200) {
+    if (result.status === 200) {
       toast.success("delete success!");
     } else {
       toast.error("delete fail!");

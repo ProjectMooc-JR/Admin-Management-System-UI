@@ -28,6 +28,9 @@ export default function AddCourseSchedule() {
   // check the id. If it has one, then update
   const isUpdateMode = id !== undefined;
   const navigate = useNavigate();
+  const backToList = () => {
+    navigate("/courseSchedule", { replace: true });
+  };
 
   useEffect(() => {
     const fetchCourseAsync = async () => {
@@ -257,14 +260,15 @@ export default function AddCourseSchedule() {
             <Button type="submit" color="secondary" variant="contained">
               Create New Course Schedule
             </Button>
-            {/* <Button
-              type="cancel"
-              color="secondary"
+
+            <Button
+              type="button"
+              color="grey"
               variant="contained"
-              onClick={() => formik.resetForm()}
+              onClick={backToList}
             >
               Cancel
-            </Button> */}
+            </Button>
           </Stack>
         </Box>
       </form>
