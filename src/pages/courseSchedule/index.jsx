@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 export default function CourseSchedule() {
   const [pageSearch, setpageSearch] = useState({
-    pageSize: 25,
+    pageSize: 10,
     page: 1,
   });
 
@@ -64,10 +64,19 @@ export default function CourseSchedule() {
     {
       field: "StartDate",
       headerName: "Start Date",
-      type: "dateTime",
+      //type: "dateTime",
+      //Use `valueGetter` to transform the value into a `Date` object.
       valueGetter: (value) => {
         let returnValue = value.row.StartDate && new Date(value.row.StartDate);
-        return returnValue;
+        if (returnValue) {
+          // 用padStart方法把day和month的数字顶到两位数，不足两位数的话在前面填充0
+          const day = String(returnValue.getDate()).padStart(2, "0");
+          // js里的月份默认是0-11，所以+1变成1-12
+          const month = String(returnValue.getMonth() + 1).padStart(2, "0");
+          const year = returnValue.getFullYear();
+          return `${day}/${month}/${year}`; // 返回格式化后的日期
+        }
+        return "";
       },
       flex: 1,
     },
@@ -75,12 +84,20 @@ export default function CourseSchedule() {
     {
       field: "EndDate",
       headerName: "End Date",
-      type: "dateTime",
+      //type: "dateTime",
+      flex: 1,
       valueGetter: (value) => {
         let returnValue = value.row.EndDate && new Date(value.row.EndDate);
-        return returnValue;
+        if (returnValue) {
+          // 用padStart方法把day和month的数字顶到两位数，不足两位数的话在前面填充0
+          const day = String(returnValue.getDate()).padStart(2, "0");
+          // js里的月份默认是0-11，所以+1变成1-12
+          const month = String(returnValue.getMonth() + 1).padStart(2, "0");
+          const year = returnValue.getFullYear();
+          return `${day}/${month}/${year}`; // 返回格式化后的日期
+        }
+        return "";
       },
-      flex: 1,
     },
     {
       field: "operation",
@@ -152,7 +169,7 @@ export default function CourseSchedule() {
     if (result.status == 200) {
       toast.success("delete success!");
     } else {
-      toast.success("delete fail!");
+      toast.error("delete fail!");
     }
     setpageSearch({ page: 1, pageSize: pageSearch.pageSize });
   };
