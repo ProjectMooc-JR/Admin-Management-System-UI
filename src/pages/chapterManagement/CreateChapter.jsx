@@ -40,8 +40,9 @@ export default function CreateChapter() {
   useEffect(() => {
     if (courseid == 0 && chapterid < 0) {
       setShowdetail(true);
-      
+
     }
+    
   }, []);
 
   // 管理课程列表和选中课程
@@ -67,23 +68,6 @@ export default function CreateChapter() {
 
   //     fetchCourses();
   // }, []);
-
-  const [chapterData, setChapterData] = useState({});
-  
-  useEffect(() => {
-  if (chapterid && courseid) {
-    setLoading(true);
-    getRequest(`/chapters/${courseid}/${chapterid}`)
-      .then(response => {
-        setChapterData(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching chapter details:", error);
-        setLoading(false);
-      });
-  }
-}, [courseid, chapterid]);
 
   const handleVideoUpload = (file) => {
     setVideoFile(file); // Store the uploaded video file in state

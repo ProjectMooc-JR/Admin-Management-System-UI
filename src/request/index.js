@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_BASE_API_URL,
+  baseURL: process.env.REACT_APP_BASE_API_URL + "api/",
   timeout: 100000,
   responseType: "json",
   responseEncoding: "utf8",

@@ -32,12 +32,13 @@ export default function CourseManagement() {
       console.log(result);
       // const result = await getRequest('courses/courselist');
       if (result.status === 200) {
+        debugger
         const rows = result.data.items.map((course) => ({
           id: course.id,
           courseName: course.CourseName,
           description: course.Description,
           category: course.CategoryName,
-          cover: course.Cover,
+          cover:process.env.REACT_APP_BASE_API_URL+""+ course.Cover,
           teacher: course.username,
           publishedAt: course.PublishedAt,
           chapterItems: course.chapterItems,
@@ -91,16 +92,16 @@ export default function CourseManagement() {
     { field: "category", headerName: "Category", flex: 1 },
     { field: "teacher", headerName: "Teacher", flex: 1 },
     {
-    field: "cover",
-    headerName: "Cover",
-    flex: 1,
-    renderCell: (params) => (
-      <img
-        src={params.row.cover}  // 从params.row.cover获取图片地址
-        alt="Course Cover"
-        style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
-      />
-    ),
+      field: "cover",
+      headerName: "Cover",
+      flex: 1,
+      renderCell: (params) => (
+        <img
+          src={params.row.cover} // 从params.row.cover获取图片地址
+          alt="Course Cover"
+          style={{ width: "50px", height: "50px", borderRadius: "5px" }}
+        />
+      ),
     },
     // { field: "publishedAt", headerName: "Published At", flex: 1 },
     {
@@ -168,7 +169,7 @@ export default function CourseManagement() {
     }
     //navigate("/createChapter/" + rowSelectionModel.id); // Add chapter route
 
-    navigate("/createChapter/" + selectedRows[0].id); // Add chapter route
+    navigate("/createChapter/" + selectedRows[0].id + "/0"); // Add chapter route
   };
 
   return (
@@ -329,9 +330,9 @@ function Chapter(props) {
           //   flex: 1,
           //   renderCell: (params) => (
           //     <img
-          //       src={params.row.cover}  
+          //       src={params.row.cover}
           //       alt="Course Cover"
-          //       style={{ width: "50px", height: "50px", borderRadius: "5px" }} 
+          //       style={{ width: "50px", height: "50px", borderRadius: "5px" }}
           //     />
           //   ),
           // },
