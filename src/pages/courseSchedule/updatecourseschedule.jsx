@@ -15,8 +15,11 @@ import putRequest from "../../request/putRequest";
 import toast from "react-hot-toast";
 
 const UpdateCourseSchedule = () => {
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  // 控制加载的状态
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  const [coursescheduleDetail, setCoursescheduleDetail] = useState({});
+  // const [coursescheduleDetail, setCoursescheduleDetail] = useState({});
   console.log("Course Schedule ID:", id);
   const formik = useFormik({
     initialValues: {
@@ -29,11 +32,11 @@ const UpdateCourseSchedule = () => {
       Course_id: Yup.string().required("Required"),
       StartDate: Yup.date().required("Required"),
       EndDate: Yup.date().required("Required"),
-      IsPublished: Yup.string(),
+      IsPublished: Yup.string("Required"),
     }),
     onSubmit: async (values) => {
       let result = await putRequest(`/courseSchedule/${id}`, {
-        Course_id: values.Course_id,
+        Course_id: selectedCourse.Course_id,
         StartDate: values.StartDate,
         EndDate: values.EndDate,
         IsPublished: values.IsPublished,
@@ -48,25 +51,40 @@ const UpdateCourseSchedule = () => {
   const [coursescheduleList, setCoursescheduleList] = useState([]);
 
   useEffect(() => {
-    let getCourseSchedule = async () => {
+    const getCourseSchedule = async () => {
+      // 先设置加载状态：打开加载状态
+      setLoading(true);
       let res = await getRequest(`/courseSchedule/${id}`);
-      // console.log(res.data[0])
+
+      console.log("course schedule", res.data);
       if (res.status === 200) {
-        setCoursescheduleDetail(res.data[0]);
-        console.log(coursescheduleDetail);
+        // setCoursescheduleDetail(res.data[0]);
+        // console.log(coursescheduleDetail);
         // 将获取到的 categoryDetail 更新到表单中
         formik.setValues({
-          Course_id: res.data[0].Course_id,
-          StartDate: res.data[0].StartDate,
-          EndDate: res.data[0].EndDate,
-          IsPublished: res.data[0].IsPublished,
+          Course_id: res.data.Course_id,
+          StartDate: formatDateToYYYYMMDD(new Date(res.data.startDate)),
+          EndDate: formatDateToYYYYMMDD(new Date(res.data.endDate)),
+          IsPublished: res.data.IsPublished,
         });
-      } else {
-        setCoursescheduleDetail({});
       }
+      // } else {
+      //   setCoursescheduleDetail({});
+      // }
+      setLoading(false);
     };
     getCourseSchedule();
-  }, [id]);
+  }, []);
+
+  function formatDateToYYYYMMDD(date) {
+    let year = date.getFullYear();
+    let month = String(date.getMonth() + 1).padStart(2, "0");
+    let day = String(date.getDate()).padStart(2, "0");
+    let timeFormat = `${year}-${month}-${day}`;
+    console.log("formatDateToYYYYMMDD", timeFormat);
+    return timeFormat;
+  }
+
   const navigate = useNavigate();
 
   const backToList = () => {
