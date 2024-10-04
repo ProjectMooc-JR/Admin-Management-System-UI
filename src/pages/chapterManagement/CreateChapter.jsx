@@ -20,11 +20,10 @@ import getRequest from "../../request/getRequest";
 // import Header from "../../components/Header";
 import MoocDropzone from "../../components/moocDropzone";
 import VideoUploadZone from "../../pages/courseManagement/VideoUploadZone";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useParams,useNavigate } from "react-router-dom";
 
 export default function CreateChapter() {
-  // 控制加载的状态
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   let { courseid, chapterid } = useParams();
   console.log("CreateChapter", courseid);
@@ -34,16 +33,36 @@ export default function CreateChapter() {
     setAvatarData(result);
   };
 
-
-  const[isShowDetail,setShowdetail]=useState(false);
+  const [isShowDetail, setShowdetail] = useState(false);
+  const [showVideoURL, setshowVideoURL] = useState("");
 
   useEffect(() => {
+    const getChapter = async (chapId) => {
+      let result = await getRequest(`chapters/${chapId}`);
+      if (result.status == 200) {
+
+        formik.setValues({
+          ChapterTitle: result.data[0].ChapterTitle,
+          ChapterDescription: result.data[0].ChapterDescription,
+          ChapterOrder: result.data[0].ChapterOrder,
+        });
+
+        setshowVideoURL(
+          process.env.REACT_APP_BASE_API_URL + result.data[0].VideoURL
+        );
+      }
+    };
+
     if (courseid == 0 && chapterid < 0) {
       setShowdetail(true);
-
+      getChapter(chapterid * -1);
     }
-    
   }, []);
+
+  const handleCancel = () => {
+    formik.resetForm();
+    navigate("/course-management");
+  };
 
   // 管理课程列表和选中课程
   const [courses, setCourses] = useState([]);
@@ -191,15 +210,35 @@ export default function CreateChapter() {
           helperText={formik.touched.ChapterOrder && formik.errors.ChapterOrder}
         />
 
-        <VideoUploadZone onVideoUpload={handleVideoUpload} />
+        {isShowDetail ? (
+          <div>
+            <video controls width={500} src={showVideoURL} type="video/mp4">
+              {/* <source src={showVideoURL} type="video/mp4"/> */}
+            </video>
+          </div>
+        ) : (
+          <VideoUploadZone onVideoUpload={handleVideoUpload} />
+        )}
+        {!isShowDetail && (
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ width: "400px" }}
+          >
+            Add Chapter
+          </Button>
+        )}
+        
         <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          sx={{ width: "400px" }}
-        >
-          Add Chapter
-        </Button>
+            type="button"
+            variant="contained"
+            color="primary"
+            sx={{  flex: 1 }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
       </form>
     </Box>
   );

@@ -28,7 +28,7 @@ export default function CreateCourse() {
 
   const handleCancel = () => {
     formik.resetForm();
-    navigate("/CourseManagement");
+    navigate("/course-management");
   };
 
   useEffect(() => {
@@ -74,6 +74,7 @@ export default function CreateCourse() {
       CategoryID: Yup.string().required("Category is required"),
     }),
     onSubmit: async (inputValues) => {
+      debugger;
       const formData = new FormData();
       formData.append("CourseName", inputValues.CourseName);
       formData.append("Description", inputValues.Description);
@@ -163,7 +164,7 @@ export default function CreateCourse() {
         />
 
         <MoocDropzone
-          onFileSelect={(file) => setCoverFile(file)}
+          onFileSelected={(file) => setCoverFile(file)}
           label="Upload Course Cover"
         />
 
@@ -187,6 +188,7 @@ export default function CreateCourse() {
           >
             Cancel
           </Button>
+        
         </Box>
       </form>
     </Box>

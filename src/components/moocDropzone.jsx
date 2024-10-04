@@ -12,8 +12,8 @@ export default function MoocDropzone(props) {
       setAvatarSrc(event.target.result);
 
       console.log("event.target.result", event.target.result);
-      if (props.avatarResult) {
-        props.avatarResult(event.target.result);
+      if (props.onFileSelected) {
+        props.onFileSelected(event.target.result);
       }
     };
 
