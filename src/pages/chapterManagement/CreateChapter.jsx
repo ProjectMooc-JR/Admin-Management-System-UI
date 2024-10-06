@@ -298,17 +298,6 @@ useEffect(() => {
           </Button>
         )}
         
-        {courseid === 0 && chapterid > 0 && (
-        <Button
-          type="button"
-          variant="contained"
-          color="primary"
-          sx={{ width: "48%" }}
-          onClick={handleUpdate}
-        >
-          Update Chapter
-        </Button>
-        )}
 
         
         {/* {courseid === 0 && chapterid > 0 && (
