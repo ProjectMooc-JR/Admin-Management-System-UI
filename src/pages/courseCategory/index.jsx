@@ -370,12 +370,16 @@ export default function CourseCategory() {
       let result = await getRequest(
         `/courseCategory/${pageSearch.page}/${pageSearch.pageSize}`
       );
-      if (result.status === 200) {
+      let categoryFull = await getRequest("/courseCategory");
+      // console.log("categoryFullcategoryFull", categoryFull);
+      if (result.status === 200 && categoryFull.status === 200) {
         // 创建ID和parent category name的映射关系，创建一个包含了ID和category name对应关系的object：
         const categoryPair = {};
-        result.data.items.forEach((category) => {
+        // console.log("categoryFullcategoryFull", categoryFull);
+        categoryFull.data.items.forEach((category) => {
           categoryPair[category.ID] = category.CategoryName;
         });
+        console.log("categoryPair", categoryPair);
         // 把每个items里的parent ID更新为parent category name
         const updatedItems = result.data.items.map((category) => ({
           ...category,
