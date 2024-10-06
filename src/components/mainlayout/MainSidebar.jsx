@@ -89,6 +89,13 @@ export default function MainSidebar() {
             <MenuItem
               component={<Link />}
               icon={<PeopleOutlinedIcon />}
+              to="/course-management"
+            >
+              Course
+            </MenuItem>
+            <MenuItem
+              component={<Link />}
+              icon={<PeopleOutlinedIcon />}
               to="/courseSchedule"
             >
               {" "}
@@ -101,13 +108,7 @@ export default function MainSidebar() {
             >
               Comments
             </MenuItem>
-            <MenuItem
-              component={<Link />}
-              icon={<PeopleOutlinedIcon />}
-              to="/course-management"
-            >
-              Course
-            </MenuItem>
+          
             {/* <MenuItem
               component={<Link />}
               icon={<PeopleOutlinedIcon />}
@@ -115,10 +116,8 @@ export default function MainSidebar() {
             >
               Chapter
             </MenuItem> */}
-            <MenuItem icon={<PeopleOutlinedIcon />}> Line charts </MenuItem>
+            
           </SubMenu>
-          <MenuItem icon={<PeopleOutlinedIcon />}> Documentation </MenuItem>
-          <MenuItem icon={<PeopleOutlinedIcon />}> Calendar </MenuItem>
         </Menu>
       </Sidebar>
     </Box>

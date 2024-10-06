@@ -96,6 +96,7 @@ export default function CourseManagement() {
       headerName: "Cover",
       flex: 1,
       renderCell: (params) => (
+        
         <img
           src={params.row.cover} // 从params.row.cover获取图片地址
           alt="Course Cover"
