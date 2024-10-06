@@ -298,7 +298,7 @@ export default function CreateChapter() {
           </Button>
         )}
 
-        // 增加更新章节按钮
+        
         {/* {courseid === 0 && chapterid > 0 && (
         <Button
           type="button"
