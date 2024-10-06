@@ -72,11 +72,49 @@ export default function CreateChapter() {
     }
 }, [courseid, chapterid]);
 
+//我的版本
+//   useEffect(() => {
+//     const getChapter = async (chapId) => {
+//         try {
+//             let result = await getRequest(`chapters/${chapId}`);
+//             if (result.status === 200) {
+//                 formik.setValues({
+//                     ChapterTitle: result.data[0].ChapterTitle,
+//                     ChapterDescription: result.data[0].ChapterDescription,
+//                     ChapterOrder: result.data[0].ChapterOrder,
+//                 });
+
+//                 // when it is detail page, show the video
+//                 if (courseid === 0 && chapterid < 0) {
+//                     setshowVideoURL(process.env.REACT_APP_BASE_API_URL + result.data[0].VideoURL);
+//                 } else if (courseid !== 0 && chapterid > 0) {
+//                     // when it is update page, reset the video url
+//                     setshowVideoURL("");
+//                 }
+//             } else {
+//                 console.error("Failed to load chapter data:", result.message);
+//             }
+//         } catch (error) {
+//             console.error("Error fetching chapter:", error);
+//         }
+//     };
+
+//     // based on the courseid and chapterid, decide to show detail or not
+//     if (courseid === 0 && chapterid < 0) {
+//         setShowdetail(true); 
+//         getChapter(chapterid * -1); 
+//     } else if (courseid !== 0 && chapterid > 0) {
+//         setShowdetail(false); 
+//         getChapter(chapterid); 
+//     }
+// }, [courseid, chapterid]);
+
   const handleCancel = () => {
     formik.resetForm();
     navigate("/course-management");
   };
 
+<<<<<<< HEAD
 const handleUpdate = async () => {
     const updatedChapter = {
         ChapterTitle: formik.values.ChapterTitle,      // 从表单中获取的章节标题
@@ -107,6 +145,35 @@ const handleUpdate = async () => {
     }
 };
 
+=======
+// 添加章节处理函数
+//   const handleUpdate = async () => {
+//     const updatedChapter = {
+//         ChapterTitle: formik.values.ChapterTitle,      // 从表单中获取的章节标题
+//         ChapterDescription: formik.values.ChapterDescription,  // 从表单中获取的章节描述
+//         ChapterOrder: formik.values.ChapterOrder,      // 从表单中获取的章节顺序
+//         VideoURL: showVideoURL // 从 state 获取的视频 URL（或者是新上传的视频 URL）
+//     };
+//     try {
+//         const response = await fetch(`/api/chapters/${chapterid}`, {
+//             method: 'PUT',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify(updatedChapter)
+//         });
+//         const result = await response.json();
+//         if (result.isSuccess) {
+//             alert("Chapter updated successfully!");
+//             navigate("/course-management");  // 更新成功后导航到课程管理页面
+//         } else {
+//             alert("Failed to update chapter: " + result.message);
+//         }
+//     } catch (error) {
+//         console.error("Error updating chapter:", error);
+//     }
+// };
+>>>>>>> restore-previous-version
 
 
   // 管理课程列表和选中课程
@@ -265,7 +332,11 @@ const handleUpdate = async () => {
           <VideoUploadZone onVideoUpload={handleVideoUpload} />
         )}
         
+<<<<<<< HEAD
       < Box sx={{ display: "flex", justifyContent: "space-between" }}>
+=======
+        < Box sx={{ display: "flex", justifyContent: "space-between" }}>
+>>>>>>> restore-previous-version
         {!isShowDetail && (
           <Button
             type="submit"
@@ -276,6 +347,19 @@ const handleUpdate = async () => {
             Add Chapter
           </Button>
         )}
+
+        
+        {/* {courseid === 0 && chapterid > 0 && (
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          sx={{ width: "48%" }}
+          onClick={handleUpdate}
+        >
+          Update Chapter
+        </Button>
+        )} */}
         
         {courseid === 0 && chapterid > 0 && (
         <Button
@@ -293,7 +377,11 @@ const handleUpdate = async () => {
             type="button"
             variant="contained"
             color="primary"
+<<<<<<< HEAD
             sx={{ width: "48%" }}
+=======
+            sx={{  width: "48%" }}
+>>>>>>> restore-previous-version
             onClick={handleCancel}
           >
             Cancel
